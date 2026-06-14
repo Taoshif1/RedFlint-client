@@ -1,2 +1,9 @@
+.red-hat-display-900 {
+  font-family: "Red Hat Display", sans-serif;
+  font-optical-sizing: auto;
+  /* font-style: italic; */
+  font-weight: 900;
+}
+
 @import "tailwindcss";
 @plugin "daisyui";
