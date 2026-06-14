@@ -1,4 +1,5 @@
 import React from "react";
+import Logo from './shared/Logo'
 
 const Navbar = () => {
   //logic
@@ -41,7 +42,7 @@ const Navbar = () => {
         </div>
       </div>
       <div className="navbar-center">
-        <a className="btn btn-ghost text-xl">RedFlint</a>
+        <Logo></Logo>
       </div>
       <div className="navbar-end">
         <button className="btn btn-ghost btn-circle">
