@@ -1,14 +1,14 @@
 import Navbar from './components/Navbar'
 import HeroSection from './components/shared/Carousel'
 import Footer from './components/Footer'
-import TopBanner from './components/shared/TopBanner'
+import FashionBanner from './components/shared/FashionBanner'
 
 function App() {
 
   return (
     <>
     <Navbar></Navbar>
-    <TopBanner></TopBanner>
+    <FashionBanner></FashionBanner>
     <HeroSection></HeroSection>
     <Footer></Footer>
     </>
