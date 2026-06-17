@@ -1,17 +1,14 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
 import Navbar from './components/Navbar'
 import HeroSection from './components/shared/Carousel'
 import Footer from './components/Footer'
+import TopBanner from './components/shared/TopBanner'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
     <Navbar></Navbar>
+    <TopBanner></TopBanner>
     <HeroSection></HeroSection>
     <Footer></Footer>
     </>
