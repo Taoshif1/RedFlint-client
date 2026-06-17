@@ -1,9 +1,49 @@
-.red-hat-display-900 {
+@import "tailwindcss";
+
+@plugin "daisyui" {
+  themes: redflint --default, dark;
+}
+
+/* Short font utility class */
+.red-hat {
   font-family: "Red Hat Display", sans-serif;
   font-optical-sizing: auto;
-  /* font-style: italic; */
   font-weight: 900;
 }
 
-@import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui/theme" {
+  name: "redflint";
+  default: true;
+  prefersdark: true;
+  color-scheme: dark;
+
+  /* Black and dark gray bases */
+  --color-base-100: #000000;
+  --color-base-200: #0d0d0d;
+  --color-base-300: #1a1a1a;
+  --color-base-content: #ffffff;
+
+  /* Primary & Secondary set to matching Reds */
+  --color-primary: #e50000;   /* Red */
+  --color-primary-content: #ffffff;  /*white*/
+
+  --color-secondary: #990000;
+  --color-secondary-content: #ffffff; 
+
+  --color-accent: #ffffff;
+  --color-accent-content: #000000;
+
+  --color-neutral: #1a1a1a;
+  --color-neutral-content: #ffffff;
+
+  --color-info: #38bdf8;
+  --color-success: #22c55e;
+  --color-warning: #fbbf24;
+  --color-error: #ef4444;
+
+  --radius-selector: 0.75rem;
+  --radius-field: 0.5rem;
+  --radius-box: 1rem;
+
+  --border: 1px;
+}
