@@ -4,7 +4,7 @@ import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import Navbar from './components/Navbar'
 import HeroSection from './components/shared/Carousel'
-
+import Footer from './components/Footer'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -13,7 +13,7 @@ function App() {
     <>
     <Navbar></Navbar>
     <HeroSection></HeroSection>
-     
+    <Footer></Footer>
     </>
   )
 }
