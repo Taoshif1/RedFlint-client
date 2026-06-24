@@ -1,10 +1,16 @@
+import { NavLink } from "react-router";
 import Logo from "./shared/Logo";
 
-const Navbar = () => {
-  return (
-    <div className="sticky top-0 z-50 bg-base-100 border-b border-base-300">
-      <div className="navbar max-w-7xl mx-auto px-4 min-h-20">
 
+const Navbar = () => {
+  const navLinkClass = ({ isActive }) =>
+    isActive
+      ? "text-primary font-semibold"
+      : "font-semibold hover:text-primary transition";
+
+  return (
+    <div className="sticky top-0 z-50 bg-base-100/90 backdrop-blur-md border-b border-base-300">
+      <div className="navbar max-w-7xl mx-auto px-4 min-h-20">
         {/* Mobile Menu */}
         <div className="navbar-start lg:hidden">
           <div className="dropdown">
@@ -30,39 +36,51 @@ const Navbar = () => {
               className="menu menu-sm dropdown-content mt-3 z-[100] w-56 rounded-box bg-base-200 p-2 shadow"
             >
               <li>
-                <a>Products</a>
+                <NavLink to="/products">Products</NavLink>
               </li>
 
               <li>
-                <a>Special Edition</a>
+                <NavLink to="/special-edition">Special Edition</NavLink>
               </li>
 
               <li>
-                <a>Login</a>
+                <NavLink to="/login">Login</NavLink>
+              </li>
+
+              <li>
+                <NavLink to="/register">Register</NavLink>
               </li>
             </ul>
           </div>
         </div>
 
         {/* Desktop Left */}
-        <div className="navbar-start hidden lg:flex gap-8">
-          <a className="font-semibold hover:text-primary transition">
+        <div className="navbar-start hidden lg:flex items-center gap-8">
+          <NavLink to="/products" className={navLinkClass}>
             Products
-          </a>
+          </NavLink>
 
-          <a className="font-semibold hover:text-primary transition">
+          <NavLink
+            to="/special-edition"
+            className={({ isActive }) =>
+              isActive
+                ? "badge badge-primary badge-lg"
+                : "badge badge-outline badge-primary badge-lg hover:bg-primary hover:text-white transition"
+            }
+          >
             Special Edition
-          </a>
+          </NavLink>
         </div>
 
         {/* Center Logo */}
         <div className="navbar-center absolute left-1/2 -translate-x-1/2">
-          <Logo />
+          <NavLink to="/">
+            <Logo />
+          </NavLink>
         </div>
 
         {/* Desktop Right */}
-        <div className="navbar-end hidden lg:flex gap-5">
-
+        <div className="navbar-end hidden lg:flex items-center gap-5">
           {/* Search */}
           <button className="hover:text-primary transition">
             <svg
@@ -81,10 +99,30 @@ const Navbar = () => {
             </svg>
           </button>
 
-          <button className="font-semibold hover:text-primary transition">
-            Login
-          </button>
+          {/* Profile */}
+          <NavLink
+            to="/login"
+            className={({ isActive }) =>
+              `hover:text-primary transition ${isActive ? "text-primary" : ""}`
+            }
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.8"
+                d="M5.121 17.804A9 9 0 1118.879 17.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+          </NavLink>
 
+          {/* Cart */}
           <button className="relative hover:text-primary transition">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -108,8 +146,8 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Right */}
-        <div className="navbar-end lg:hidden gap-3">
-
+        <div className="navbar-end lg:hidden items-center gap-3">
+          {/* Search */}
           <button className="hover:text-primary transition">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -127,6 +165,30 @@ const Navbar = () => {
             </svg>
           </button>
 
+          {/* Profile */}
+          <NavLink
+            to="/login"
+            className={({ isActive }) =>
+              `hover:text-primary transition ${isActive ? "text-primary" : ""}`
+            }
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.8"
+                d="M5.121 17.804A9 9 0 1118.879 17.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+          </NavLink>
+
+          {/* Cart */}
           <button className="relative hover:text-primary transition">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -148,7 +210,6 @@ const Navbar = () => {
             </span>
           </button>
         </div>
-
       </div>
     </div>
   );
