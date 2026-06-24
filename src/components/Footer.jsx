@@ -4,9 +4,11 @@ import RedFlintLogo from "./shared/Logo";
 const Footer = () => {
   return (
     <div>
-      <footer className="footer sm:footer-horizontal justify-between w-full bg-base-300 text-primary p-10">
-        <nav>
-          <h6 className="footer-title">Services</h6>
+      <footer className="grid grid-cols-1 md:grid-cols-3 gap-10 justify-items-center w-full text-primary p-10 max-w-7xl mx-auto">
+
+        <nav className="flex flex-col items-center text-center gap-2">
+
+          <h6 className="footer-title text-lg font-bold">Services</h6>
 
           <a className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200">
             Branding
@@ -21,8 +23,9 @@ const Footer = () => {
           </a>
         </nav>
 
-        <nav>
-          <h6 className="footer-title">Company</h6>
+        <nav className="flex flex-col items-center text-center gap-2">
+
+          <h6 className="footer-title text-lg font-bold">Company</h6>
 
           <a className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200">
             About us
@@ -37,10 +40,11 @@ const Footer = () => {
           </a>
         </nav>
 
-        <nav>
-          <h6 className="footer-title">Social</h6>
+        <nav className="flex flex-col items-center text-center gap-2">
 
-          <div className="grid grid-flow-col -ml-8 gap-6">
+          <h1 className="footer-title text-lg font-bold">Social</h1>
+
+          <div className="grid grid-flow-col gap-6">
             {/* Instagram */}
             <a className="text-red-500 hover:text-white active:text-white hover:scale-105 transition-all duration-200 cursor-pointer">
               <svg
@@ -81,13 +85,14 @@ const Footer = () => {
             </a>
           </div>
 
-          <div className="flex justify-center mt-4 -ml-22">
+          <div className="flex justify-center mt-4">
             <RedFlintLogo />
           </div>
         </nav>
       </footer>
 
-      <p className="pb-5 text-center bg-base-300 text-primary">
+      <p className="pb-5 text-center text-primary text-sm border-t border-base-200/10 pt-4">
+
         Copyright © {new Date().getFullYear()} - All right reserved
       </p>
     </div>
