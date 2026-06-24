@@ -1,6 +1,6 @@
 import { NavLink } from "react-router";
 import Logo from "./shared/Logo";
-
+import SearchBar from "./shared/SearchBar";
 
 const Navbar = () => {
   const navLinkClass = ({ isActive }) =>
@@ -81,23 +81,7 @@ const Navbar = () => {
 
         {/* Desktop Right */}
         <div className="navbar-end hidden lg:flex items-center gap-5">
-          {/* Search */}
-          <button className="hover:text-primary transition">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.8"
-                d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </button>
+          <SearchBar></SearchBar>
 
           {/* Profile */}
           <NavLink
