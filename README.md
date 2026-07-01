@@ -167,8 +167,9 @@ npm run preview
 
 ## Folder Structure
 
+
 ```bash
-RedFlint-client
+client
 ├─ eslint.config.js
 ├─ index.html
 ├─ package-lock.json
@@ -192,8 +193,15 @@ RedFlint-client
 │  │     ├─ Carousel.jsx
 │  │     ├─ FashionBanner.jsx
 │  │     └─ Logo.jsx
+│  ├─ context
+│  │  ├─ AuthContext.jsx
+│  │  └─ AuthProvider.jsx
+│  ├─ firebase
+│  │  └─ firebase.config.js
+│  ├─ hooks
+│  │  └─ useAuth.js
 │  ├─ index.css
-│  ├─ Layouts
+│  ├─ layouts
 │  │  └─ MainLayout.jsx
 │  ├─ main.jsx
 │  ├─ pages
@@ -203,8 +211,11 @@ RedFlint-client
 │  │  ├─ Products.jsx
 │  │  ├─ Register.jsx
 │  │  └─ SpecialEdition.jsx
-│  └─ routes
-│     └─ router.jsx
+│  ├─ routes
+│  │  ├─ PrivateRoute.jsx
+│  │  └─ router.jsx
+│  └─ utils
+│     └─ uploadImage.js
 └─ vite.config.js
 
 ```
@@ -218,4 +229,5 @@ REDFLINT aims to establish a strong digital presence that reflects the quality, 
 ---
 
 © REDFLINT — Premium Menswear.
+
 
