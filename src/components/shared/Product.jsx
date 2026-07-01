@@ -1,7 +1,6 @@
 import React from 'react';
 
 const Product = ({ product }) => {
-  // Destructure properties from the product object
   const { image, title, description, tags, isNew } = product;
 
   return (
