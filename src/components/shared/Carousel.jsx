@@ -1,13 +1,13 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import { motion } from "framer-motion"; // অ্যানিমেশনের জন্য ইমপোর্ট করা হয়েছে
+import { motion } from "framer-motion"; 
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-import hero1 from "../../assets/Hero1.jpg";
+import hero1 from "../../assets/hero1.jpg";
 import hero2 from "../../assets/hero2.jpg";
 import hero3 from "../../assets/hero3.webp";
 
