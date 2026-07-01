@@ -17,6 +17,7 @@ const AboutSection = () => {
             />
           </div>
         </div>
+        
       
         <div className="flex-1 text-center lg:text-left">
           
