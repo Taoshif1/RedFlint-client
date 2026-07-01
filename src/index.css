@@ -47,3 +47,34 @@
 
   --border: 1px;
 }
+
+/* ---------------------------
+GRADIENT COLORS
+--------------------------- */
+.bg-redflint-gradient {
+  background: linear-gradient(
+    135deg,
+    #000000 0%,
+    #0d0d0d 35%,
+    #4a0000 75%,
+    #e50000 100%
+  );
+}
+
+.text-redflint-gradient {
+  background: linear-gradient(
+    90deg,
+    #ffffff,
+    #e50000
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.border-redflint-gradient {
+  border: 1px solid transparent;
+  background:
+    linear-gradient(#000, #000) padding-box,
+    linear-gradient(90deg, #990000, #e50000) border-box;
+}

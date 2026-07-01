@@ -178,7 +178,6 @@ RedFlint-client
 │  └─ icons.svg
 ├─ README.md
 ├─ src
-│  ├─ App.jsx
 │  ├─ assets
 │  │  ├─ hero.png
 │  │  ├─ Hero1.jpg
@@ -194,7 +193,18 @@ RedFlint-client
 │  │     ├─ FashionBanner.jsx
 │  │     └─ Logo.jsx
 │  ├─ index.css
-│  └─ main.jsx
+│  ├─ Layouts
+│  │  └─ MainLayout.jsx
+│  ├─ main.jsx
+│  ├─ pages
+│  │  ├─ ErrorPage.jsx
+│  │  ├─ Home.jsx
+│  │  ├─ Login.jsx
+│  │  ├─ Products.jsx
+│  │  ├─ Register.jsx
+│  │  └─ SpecialEdition.jsx
+│  └─ routes
+│     └─ router.jsx
 └─ vite.config.js
 
 ```
