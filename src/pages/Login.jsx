@@ -1,6 +1,10 @@
 import React from "react";
+import { useNavigate } from "react-router";
+
 
 const Login = () => {
+    const navigate = useNavigate();
+
   return (
     <div>
       <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
@@ -12,7 +16,8 @@ const Login = () => {
         <label className="label">Password</label>
         <input type="password" className="input" placeholder="Password" />
 
-        <button className="btn btn-neutral mt-4">Login</button>
+        <button onClick={() => navigate("/dashboard")} className="btn btn-neutral mt-4">Login</button>
+
       </fieldset>{" "}
     </div>
   );
