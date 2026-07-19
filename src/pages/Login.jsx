@@ -1,9 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router";
 
-
 const Login = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -16,9 +15,13 @@ const Login = () => {
         <label className="label">Password</label>
         <input type="password" className="input" placeholder="Password" />
 
-        <button onClick={() => navigate("/dashboard")} className="btn btn-neutral mt-4">Login</button>
-
-      </fieldset>{" "}
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="btn btn-neutral mt-4"
+        >
+          Login
+        </button>
+      </fieldset>
     </div>
   );
 };

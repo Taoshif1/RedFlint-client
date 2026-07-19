@@ -201,7 +201,11 @@ client
 │  ├─ hooks
 │  │  └─ useAuth.js
 │  ├─ index.css
+<<<<<<< HEAD
+│  ├─ Layouts
+=======
 │  ├─ layouts
+>>>>>>> f7d32654dd1d857ed7cda8a599d1cdb0338a79f8
 │  │  └─ MainLayout.jsx
 │  ├─ main.jsx
 │  ├─ pages
@@ -211,11 +215,16 @@ client
 │  │  ├─ Products.jsx
 │  │  ├─ Register.jsx
 │  │  └─ SpecialEdition.jsx
+<<<<<<< HEAD
+│  └─ routes
+│     └─ router.jsx
+=======
 │  ├─ routes
 │  │  ├─ PrivateRoute.jsx
 │  │  └─ router.jsx
 │  └─ utils
 │     └─ uploadImage.js
+>>>>>>> f7d32654dd1d857ed7cda8a599d1cdb0338a79f8
 └─ vite.config.js
 
 ```
