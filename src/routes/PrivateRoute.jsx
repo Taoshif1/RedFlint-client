@@ -1,9 +1,9 @@
-import React from "react";
-import { useAuth } from "../hooks/useAuth";
-import { Navigate } from "react-router";
+import { Navigate, useLocation } from "react-router";
+import useAuth from "../hooks/useAuth";
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
+  const location = useLocation();
 
   // loading ? <span className="loading loading-spinner loading-lg"></span> :
   if (loading) {

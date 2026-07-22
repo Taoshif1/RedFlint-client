@@ -180,19 +180,27 @@ client
 ├─ README.md
 ├─ src
 │  ├─ assets
+│  │  ├─ Blue_Plaid.png
+│  │  ├─ Desert_Sand.png
 │  │  ├─ hero.png
 │  │  ├─ Hero1.jpg
 │  │  ├─ hero2.jpg
 │  │  ├─ hero3.webp
+│  │  ├─ Indigo_Blue.png
+│  │  ├─ Mint_Pattern.jpg
 │  │  ├─ react.svg
+│  │  ├─ Stone_Gray.png
 │  │  └─ vite.svg
 │  ├─ components
 │  │  ├─ Footer.jsx
 │  │  ├─ Navbar.jsx
 │  │  └─ shared
+│  │     ├─ AboutSection.jsx
 │  │     ├─ Carousel.jsx
 │  │     ├─ FashionBanner.jsx
-│  │     └─ Logo.jsx
+│  │     ├─ Logo.jsx
+│  │     ├─ Product.jsx
+│  │     └─ SearchBar.jsx
 │  ├─ context
 │  │  ├─ AuthContext.jsx
 │  │  └─ AuthProvider.jsx
@@ -201,34 +209,25 @@ client
 │  ├─ hooks
 │  │  └─ useAuth.js
 │  ├─ index.css
-<<<<<<< HEAD
-│  ├─ Layouts
-=======
 │  ├─ layouts
->>>>>>> f7d32654dd1d857ed7cda8a599d1cdb0338a79f8
 │  │  └─ MainLayout.jsx
 │  ├─ main.jsx
 │  ├─ pages
+│  │  ├─ CustomerDashboard.jsx
 │  │  ├─ ErrorPage.jsx
 │  │  ├─ Home.jsx
 │  │  ├─ Login.jsx
 │  │  ├─ Products.jsx
 │  │  ├─ Register.jsx
 │  │  └─ SpecialEdition.jsx
-<<<<<<< HEAD
-│  └─ routes
-│     └─ router.jsx
-=======
 │  ├─ routes
 │  │  ├─ PrivateRoute.jsx
 │  │  └─ router.jsx
 │  └─ utils
 │     └─ uploadImage.js
->>>>>>> f7d32654dd1d857ed7cda8a599d1cdb0338a79f8
 └─ vite.config.js
 
 ```
-
 ---
 
 ## Vision

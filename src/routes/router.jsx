@@ -8,9 +8,9 @@ import SpecialEdition from "../pages/SpecialEdition";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ErrorPage from "../pages/ErrorPage";
+import PrivateRoute from "./PrivateRoute";
 
 import CustomerDashboard from "../pages/CustomerDashboard";
-
 
 export const router = createBrowserRouter([
   {
@@ -38,12 +38,14 @@ export const router = createBrowserRouter([
         path: "register",
         Component: Register,
       },
-
       {
         path: "dashboard",
-        Component: CustomerDashboard,
+        element: (
+          <PrivateRoute>
+            <CustomerDashboard />
+          </PrivateRoute>
+        ),
       },
-
     ],
   },
 ]);

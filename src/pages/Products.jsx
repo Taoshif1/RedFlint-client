@@ -12,7 +12,7 @@ const Products = () => {
     {
       id: 1,
       title: "Blue Plaid",
-      price:"1200",
+      price: "1200",
       description: "Snap into style. Crafted with precision",
       image: BluePlaid,
       tags: ["Signature", "Full-Sleeve"],
@@ -21,7 +21,7 @@ const Products = () => {
     {
       id: 2,
       title: "Desert Sand",
-      price:"1200",
+      price: "1200",
       description: "Step into warm sophistication with the Desert Sand shirt",
       image: DesertSand,
       tags: ["Cuban", "Half-Sleeve"],
@@ -30,8 +30,9 @@ const Products = () => {
     {
       id: 3,
       title: "Indigo Blue",
-      price:"1200",
-      description: "Bold in the details. The Indigo Blue Shirt makes its mark with rich color",
+      price: "1200",
+      description:
+        "Bold in the details. The Indigo Blue Shirt makes its mark with rich color",
       image: IndigoBlue,
       tags: ["Signature", "Full-Sleeve"],
       isNew: false,
@@ -39,8 +40,9 @@ const Products = () => {
     {
       id: 4,
       title: "Mint Pattern",
-      price:"1200",
-      description: "The Mint Pattern Shirt, where cool tones meet geometric precision.",
+      price: "1200",
+      description:
+        "The Mint Pattern Shirt, where cool tones meet geometric precision.",
       image: MintPattern,
       tags: ["Plaid", "Full-Sleeve"],
       isNew: false,
@@ -48,8 +50,9 @@ const Products = () => {
     {
       id: 5,
       title: "Stone Gray",
-      price:"1200",
-      description: "Stone Gray Shirt, where understated elegance defines your style.",
+      price: "1200",
+      description:
+        "Stone Gray Shirt, where understated elegance defines your style.",
       image: StoneGray,
       tags: ["Signature", "Full-Sleeve"],
       isNew: false,
