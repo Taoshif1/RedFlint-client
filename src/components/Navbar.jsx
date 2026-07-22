@@ -81,13 +81,18 @@ const Navbar = () => {
 
         {/* Desktop Right */}
         <div className="navbar-end hidden lg:flex items-center gap-5">
-          <SearchBar></SearchBar>
+          {/* Search */}
+          <button className="hover:text-primary transition">
+            <SearchBar />
+          </button>
 
           {/* Profile */}
           <NavLink
             to="/login"
             className={({ isActive }) =>
-              `hover:text-primary transition ${isActive ? "text-primary" : ""}`
+              `hover:text-primary transition ${
+                isActive ? "text-primary" : ""
+              }`
             }
           >
             <svg
@@ -153,7 +158,9 @@ const Navbar = () => {
           <NavLink
             to="/login"
             className={({ isActive }) =>
-              `hover:text-primary transition ${isActive ? "text-primary" : ""}`
+              `hover:text-primary transition ${
+                isActive ? "text-primary" : ""
+              }`
             }
           >
             <svg

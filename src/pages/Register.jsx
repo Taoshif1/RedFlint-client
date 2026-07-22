@@ -64,17 +64,9 @@ const Register = () => {
           "&background=e50000&color=fff",
       });
 
-      // Later:
-      // Save name, phone, email to MongoDB
-
-      console.log({
-        name,
-        phone,
-        email,
-      });
+      console.log({ name, phone, email });
 
       toast.success("Registration Successful!");
-
       navigate("/");
     } catch (error) {
       toast.error(error.message);
@@ -88,7 +80,6 @@ const Register = () => {
       await googleSignIn();
 
       toast.success("Logged in with Google!");
-
       navigate("/");
     } catch (error) {
       toast.error(error.message);
