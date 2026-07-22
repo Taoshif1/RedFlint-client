@@ -1,10 +1,11 @@
 import React from 'react';
-
+import { Link } from "react-router";
 const Product = ({ product }) => {
   const { image, title, price, description, tags, isNew } = product;
 
-  return (
-    <div className="card bg-base-100 w-full max-w-sm shadow-sm border border-base-200">
+ return (
+  <Link to={`/products/${product.id}`}>
+    <div className="card bg-base-100 w-full max-w-sm shadow-sm border border-base-200 hover:shadow-xl transition-all duration-300 cursor-pointer">
       <figure className="overflow-hidden rounded-t-xl">
   <img
     src={image}
@@ -27,7 +28,8 @@ const Product = ({ product }) => {
           ))}
         </div>
       </div>
-    </div>
+     </div>
+  </Link>
   );
 }
 export default Product;

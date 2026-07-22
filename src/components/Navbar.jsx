@@ -3,16 +3,18 @@ import { NavLink, useNavigate } from "react-router";
 import useAuth from "../hooks/useAuth";
 import Logo from "./shared/Logo";
 import SearchBar from "./shared/SearchBar";
+import ShoppingCart from "./shared/ShoppingCart";
+
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
   const navigate = useNavigate();
 
-  // Navigation & Search State
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
-  // Explicit State for Profile Dropdowns
   const [isDesktopProfileOpen, setIsDesktopProfileOpen] = useState(false);
   const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
 
@@ -20,7 +22,7 @@ const Navbar = () => {
   const mobileProfileRef = useRef(null);
   const mobileMenuRef = useRef(null); // Ref for mobile menu
 
-  // Close dropdowns when clicking outside
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -39,7 +41,7 @@ const Navbar = () => {
         mobileMenuRef.current &&
         !mobileMenuRef.current.contains(event.target)
       ) {
-        setIsMenuOpen(false); // Syncs cross icon state back to hamburger
+        setIsMenuOpen(false);
       }
     };
 
@@ -305,6 +307,8 @@ const Navbar = () => {
 
           <button
             type="button"
+            onClick={() => setIsCartOpen(true)}
+
             className="relative hover:text-primary transition"
           >
             <svg
@@ -415,6 +419,8 @@ const Navbar = () => {
 
           <button
             type="button"
+            onClick={() => setIsCartOpen(true)}
+
             className="relative hover:text-primary transition"
           >
             <svg
@@ -444,6 +450,11 @@ const Navbar = () => {
           <SearchBar />
         </div>
       )}
+      <ShoppingCart
+    isOpen={isCartOpen}
+    onClose={() => setIsCartOpen(false)}
+    cartItems={[]}
+/>
     </div>
   );
 };
