@@ -9,6 +9,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ErrorPage from "../pages/ErrorPage";
 import PrivateRoute from "./PrivateRoute";
+import ProductDetails from "../pages/ProductDetails";
 
 import CustomerDashboard from "../pages/CustomerDashboard";
 
@@ -45,6 +46,10 @@ export const router = createBrowserRouter([
             <CustomerDashboard />
           </PrivateRoute>
         ),
+      },
+      {
+        path: "products/:id",
+        Component: ProductDetails,
       },
     ],
   },
