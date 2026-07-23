@@ -168,6 +168,7 @@ npm run preview
 ## Folder Structure
 
 
+
 ```bash
 client
 ├─ eslint.config.js
@@ -189,18 +190,36 @@ client
 │  │  ├─ Indigo_Blue.png
 │  │  ├─ Mint_Pattern.jpg
 │  │  ├─ react.svg
+│  │  ├─ size-guide.jpg
 │  │  ├─ Stone_Gray.png
 │  │  └─ vite.svg
 │  ├─ components
+│  │  ├─ dashboard
+│  │  │  ├─ AccountInfo.jsx
+│  │  │  ├─ AddressBook.jsx
+│  │  │  ├─ DashboardHeader.jsx
+│  │  │  ├─ DashboardSidebar.jsx
+│  │  │  ├─ DashboardStats.jsx
+│  │  │  ├─ RecentOrders.jsx
+│  │  │  └─ Wishlist.jsx
 │  │  ├─ Footer.jsx
 │  │  ├─ Navbar.jsx
+│  │  ├─ product
+│  │  │  ├─ ProductDescription.jsx
+│  │  │  ├─ ProductGallery.jsx
+│  │  │  ├─ ProductInfo.jsx
+│  │  │  ├─ QuantitySelector.jsx
+│  │  │  ├─ SizeGuide.jsx
+│  │  │  └─ SizeSelector.jsx
+│  │  ├─ ProductList.jsx
 │  │  └─ shared
 │  │     ├─ AboutSection.jsx
 │  │     ├─ Carousel.jsx
 │  │     ├─ FashionBanner.jsx
 │  │     ├─ Logo.jsx
 │  │     ├─ Product.jsx
-│  │     └─ SearchBar.jsx
+│  │     ├─ SearchBar.jsx
+│  │     └─ ShoppingCart.jsx
 │  ├─ context
 │  │  ├─ AuthContext.jsx
 │  │  └─ AuthProvider.jsx
@@ -217,6 +236,7 @@ client
 │  │  ├─ ErrorPage.jsx
 │  │  ├─ Home.jsx
 │  │  ├─ Login.jsx
+│  │  ├─ ProductDetails.jsx
 │  │  ├─ Products.jsx
 │  │  ├─ Register.jsx
 │  │  └─ SpecialEdition.jsx
@@ -237,5 +257,4 @@ REDFLINT aims to establish a strong digital presence that reflects the quality, 
 ---
 
 © REDFLINT — Premium Menswear.
-
 
