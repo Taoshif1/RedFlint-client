@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from "react";
 import { auth } from "../firebase/firebase.config";
 import { AuthContext } from "./AuthContext";
+import { axiosSecure } from "../hooks/useAxiosSecure";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -47,8 +48,26 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+
+      if (currentUser) {
+        try {
+          await axiosSecure.post("/api/auth/jwt", {
+            email: currentUser.email,
+            uid: currentUser.uid,
+          });
+        } catch (error) {
+          console.error("JWT creation error:", error);
+        }
+      } else {
+        try {
+          await axiosSecure.post("/api/auth/logout");
+        } catch (error) {
+          console.error("Logout error:", error);
+        }
+      }
+
       setLoading(false);
     });
 
