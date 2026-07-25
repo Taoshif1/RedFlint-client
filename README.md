@@ -25,6 +25,20 @@ The website emphasizes:
 
 ## Core Features
 
+- Firebase Authentication
+- Email & Password Registration
+- Google Authentication
+- JWT Authentication using HttpOnly Cookies
+- Protected Routes
+- Customer Dashboard
+- MongoDB User Management
+- Last Login Tracking
+- Responsive UI
+- DaisyUI + TailwindCSS
+- React Router Data API
+
+---
+
 ### Premium Navigation
 
 * Fully responsive navbar
@@ -64,9 +78,23 @@ The website emphasizes:
 
 ### Frontend
 
-* React 19
-* Vite
-* JavaScript (ES6+)
+- React
+- Vite
+- React Router
+- Firebase Authentication
+- Axios
+- React Hot Toast
+- React Icons
+
+### Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- JWT
+- Cookie Parser
+- CORS
+- Dotenv
 
 ### Styling
 
@@ -165,9 +193,7 @@ npm run preview
 
 ---
 
-## Folder Structure
-
-
+## 📁 Folder Structure
 
 ```bash
 client
@@ -226,7 +252,8 @@ client
 │  ├─ firebase
 │  │  └─ firebase.config.js
 │  ├─ hooks
-│  │  └─ useAuth.js
+│  │  ├─ useAuth.js
+│  │  └─ useAxiosSecure.js
 │  ├─ index.css
 │  ├─ layouts
 │  │  └─ MainLayout.jsx
@@ -250,6 +277,73 @@ client
 ```
 ---
 
+## Authentication Flow
+
+1. User registers using Firebase Authentication.
+2. User profile is stored in MongoDB.
+3. Firebase authentication state changes.
+4. Backend generates a JWT.
+5. JWT is stored as an HttpOnly Cookie.
+6. Protected API routes validate the JWT.
+7. User login updates the `lastLoginAt` timestamp.
+
+---
+
+## Environment Variables
+
+### Client
+
+```env
+VITE_apiKey=
+VITE_authDomain=
+VITE_projectId=
+VITE_storageBucket=
+VITE_messagingSenderId=
+VITE_appId=
+```
+
+### Server
+
+```env
+PORT=3000
+
+DB_USER=
+
+DB_PASS=
+
+JWT_SECRET=
+```
+
+---
+
+## Current Progress
+
+- ✅ Firebase Authentication
+- ✅ JWT Authentication
+- ✅ MongoDB Integration
+- ✅ User Registration
+- ✅ Email Login
+- ✅ Google Login
+- ✅ Dashboard Authentication
+- ✅ Secure Axios Instance
+
+---
+
+## Upcoming Features
+
+- Product Management
+- Shopping Cart
+- Wishlist
+- Checkout
+- Stripe Payment Gateway
+- Admin Dashboard
+- Order Management
+- Product Reviews
+- Search & Filtering
+- Address Management
+
+---
+
 ## Vision
 
 REDFLINT aims to establish a strong digital presence that reflects the quality, craftsmanship & sophistication of its fashion collections while providing customers with a seamless online shopping experience.
@@ -257,4 +351,3 @@ REDFLINT aims to establish a strong digital presence that reflects the quality, 
 ---
 
 © REDFLINT — Premium Menswear.
-
