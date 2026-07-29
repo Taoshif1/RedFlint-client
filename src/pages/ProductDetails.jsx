@@ -1,6 +1,6 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-
-import ProductList from "../components/ProductList";
+import api from "../api/axios";
 
 import ProductGallery from "../components/product/ProductGallery";
 import ProductInfo from "../components/product/ProductInfo";
@@ -10,17 +10,23 @@ import ProductDescription from "../components/product/ProductDescription";
 const ProductDetails = () => {
   const { id } = useParams();
 
-  const product = ProductList.find(
-    (item) => item.id === Number(id)
-  );
+  const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    api
+      .get(`/products/${id}`)
+      .then((res) => {
+        setProduct(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [id]);
 
   if (!product) {
     return (
       <div className="max-w-7xl mx-auto px-6 py-20 text-center">
-        <h2 className="text-3xl font-bold">Product Not Found</h2>
-        <p className="mt-2 text-base-content/70">
-          The product you're looking for doesn't exist.
-        </p>
+        <h2 className="text-3xl font-bold">Loading...</h2>
       </div>
     );
   }
@@ -38,7 +44,7 @@ const ProductDetails = () => {
         </span>
       </div>
 
-      {/* Product Section */}
+      {/* Product */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
         <ProductGallery
           images={product.images}
@@ -48,10 +54,8 @@ const ProductDetails = () => {
         <ProductInfo product={product} />
       </div>
 
-      {/* Size Guide */}
       <SizeGuide />
 
-      {/* Product Description */}
       <ProductDescription
         description={product.description}
       />
