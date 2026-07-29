@@ -4,7 +4,6 @@ import QuantitySelector from "./QuantitySelector";
 const ProductInfo = ({ product }) => {
   return (
     <div className="space-y-8">
-      {/* Product Title & Price */}
       <div>
         <h1 className="text-4xl font-bold">{product.title}</h1>
 
@@ -13,13 +12,10 @@ const ProductInfo = ({ product }) => {
         </p>
       </div>
 
-      {/* Size Selector */}
       <SizeSelector sizes={product.sizes} />
 
-      {/* Quantity Selector */}
       <QuantitySelector />
 
-      {/* Add to Cart */}
       <button className="btn btn-primary w-full">
         Add to Cart
       </button>
