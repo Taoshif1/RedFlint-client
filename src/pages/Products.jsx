@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import api from "../api/axios";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 import Product from "../components/shared/Product";
 
 const Products = () => {
+  const axiosSecure = useAxiosSecure();
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    api
+    axiosSecure
       .get("/products")
       .then((res) => {
         setProducts(res.data);

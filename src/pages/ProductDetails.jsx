@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import api from "../api/axios";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 import ProductGallery from "../components/product/ProductGallery";
 import ProductInfo from "../components/product/ProductInfo";
@@ -9,11 +9,12 @@ import ProductDescription from "../components/product/ProductDescription";
 
 const ProductDetails = () => {
   const { id } = useParams();
+  const axiosSecure = useAxiosSecure();
 
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    api
+    axiosSecure
       .get(`/products/${id}`)
       .then((res) => {
         setProduct(res.data);
