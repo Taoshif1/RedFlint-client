@@ -74,7 +74,7 @@ const Register = () => {
       });
 
       // Save email/password user to DB
-      await axiosSecure.post("/api/users", {
+      await axiosSecure.post("/users", {
         uid: firebaseUser.uid,
         name,
         phone,
@@ -98,7 +98,7 @@ const Register = () => {
       const firebaseUser = result.user;
 
       // Sync Google user profile data securely with backend database
-      await axiosSecure.post("/api/users", {
+      await axiosSecure.post("/users", {
         uid: firebaseUser.uid,
         name: firebaseUser.displayName,
         phone: firebaseUser.phoneNumber || "Not Provided",

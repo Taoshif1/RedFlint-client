@@ -53,7 +53,7 @@ const AuthProvider = ({ children }) => {
 
       if (currentUser) {
         try {
-          await axiosSecure.post("/api/auth/jwt", {
+          await axiosSecure.post("/auth/jwt", {
             email: currentUser.email,
             uid: currentUser.uid,
           });
@@ -62,7 +62,7 @@ const AuthProvider = ({ children }) => {
         }
       } else {
         try {
-          await axiosSecure.post("/api/auth/logout");
+          await axiosSecure.post("/auth/logout");
         } catch (error) {
           console.error("Logout error:", error);
         }

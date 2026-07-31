@@ -37,7 +37,7 @@ const Login = () => {
 
       const firebaseUser = result.user;
 
-      await axiosSecure.patch(`/api/users/login/${firebaseUser.email}`);
+      await axiosSecure.patch(`/users/login/${firebaseUser.email}`);
 
       toast.success("Login Successful!");
 
@@ -72,7 +72,7 @@ const Login = () => {
 
       const firebaseUser = result.user;
 
-      await axiosSecure.post("/api/users", {
+      await axiosSecure.post("/users", {
         uid: firebaseUser.uid,
         name: firebaseUser.displayName,
         phone: firebaseUser.phoneNumber || "Not Provided",
@@ -80,7 +80,7 @@ const Login = () => {
         photoURL: firebaseUser.photoURL,
       });
 
-      await axiosSecure.patch(`/api/users/login/${firebaseUser.email}`);
+      await axiosSecure.patch(`/users/login/${firebaseUser.email}`);
 
       toast.success("Logged in with Google!");
 
