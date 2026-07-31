@@ -237,7 +237,6 @@ client
 │  │  │  ├─ QuantitySelector.jsx
 │  │  │  ├─ SizeGuide.jsx
 │  │  │  └─ SizeSelector.jsx
-│  │  ├─ ProductList.jsx
 │  │  └─ shared
 │  │     ├─ AboutSection.jsx
 │  │     ├─ Carousel.jsx
@@ -272,6 +271,7 @@ client
 │  │  └─ router.jsx
 │  └─ utils
 │     └─ uploadImage.js
+├─ vercel.json
 └─ vite.config.js
 
 ```
