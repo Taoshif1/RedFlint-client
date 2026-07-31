@@ -13,6 +13,9 @@ import ProductDetails from "../pages/ProductDetails";
 
 import CustomerDashboard from "../pages/CustomerDashboard";
 
+import DashboardLayout from "../layouts/DashboardLayout";
+import AdminDashboard from "../pages/AdminDashboard" ;
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -50,6 +53,16 @@ export const router = createBrowserRouter([
       {
         path: "products/:id",
         Component: ProductDetails,
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    element: <DashboardLayout />,
+    children: [
+      {
+        index: true,
+        element: <AdminDashboard />,
       },
     ],
   },
