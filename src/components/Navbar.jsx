@@ -4,12 +4,14 @@ import useAuth from "../hooks/useAuth";
 import Logo from "./shared/Logo";
 import SearchBar from "./shared/SearchBar";
 import ShoppingCart from "./shared/ShoppingCart";
+import useCart from "../hooks/useCart";
 
+import { FiMenu, FiX, FiUser, FiShoppingCart, FiSearch } from "react-icons/fi";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
+  const { cart } = useCart();
   const navigate = useNavigate();
-
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -21,7 +23,6 @@ const Navbar = () => {
   const desktopProfileRef = useRef(null);
   const mobileProfileRef = useRef(null);
   const mobileMenuRef = useRef(null); // Ref for mobile menu
-
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -91,36 +92,10 @@ const Navbar = () => {
             >
               {isMenuOpen ? (
                 // Cross Icon
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6 text-primary"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <FiX size={24} className="text-primary" />
               ) : (
                 // Hamburger Icon
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.8"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
+                <FiMenu size={24} />
               )}
             </button>
 
@@ -287,72 +262,33 @@ const Navbar = () => {
               )}
             </div>
           ) : (
-            <NavLink to="/login" className={navLinkClass}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-6 h-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.8"
-                  d="M5.121 17.804A9 9 0 1118.879 17.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
+            <NavLink to="/login">
+              <FiUser size={22} className="hover:text-primary transition" />
             </NavLink>
           )}
 
-          <button
-            type="button"
-            onClick={() => setIsCartOpen(true)}
-
-            className="relative hover:text-primary transition"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.8"
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4m1.6 8L5.4 5M7 13l-1 5h13M9 20a1 1 0 100 2 1 1 0 000-2zm8 0a1 1 0 100 2 1 1 0 000-2z"
-              />
-            </svg>
-            <span className="absolute -top-2 -right-2 badge badge-primary badge-sm">
-              2
+          <div className="indicator">
+            <span className="indicator-item badge badge-primary badge-sm">
+              {cart.length}
             </span>
-          </button>
+
+            <button
+              type="button"
+              onClick={() => setIsCartOpen(true)}
+              className="btn btn-ghost btn-circle hover:text-primary"
+            >
+              <FiShoppingCart size={22} />
+            </button>
+          </div>
         </div>
 
         {/* ----------------- MOBILE RIGHT ----------------- */}
         <div className="navbar-end lg:hidden items-center gap-3">
           <button
-            type="button"
             onClick={() => setIsMobileSearchOpen((prev) => !prev)}
-            className="hover:text-primary transition"
-            aria-label="Toggle Search Bar"
+            className="btn btn-ghost btn-circle btn-sm"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.8"
-                d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
+            <FiSearch size={18} />
           </button>
 
           {user ? (
@@ -399,48 +335,24 @@ const Navbar = () => {
               )}
             </div>
           ) : (
-            <NavLink to="/login" className={navLinkClass}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.8"
-                  d="M5.121 17.804A9 9 0 1118.879 17.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
+            <NavLink to="/login">
+              <FiUser size={22} className="hover:text-primary transition" />
             </NavLink>
           )}
 
-          <button
-            type="button"
-            onClick={() => setIsCartOpen(true)}
-
-            className="relative hover:text-primary transition"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.8"
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4m1.6 8L5.4 5M7 13l-1 5h13M9 20a1 1 0 100 2 1 1 0 000-2zm8 0a1 1 0 100 2 1 1 0 000-2z"
-              />
-            </svg>
-            <span className="absolute -top-2 -right-2 badge badge-primary badge-xs">
-              2
+          <div className="indicator">
+            <span className="indicator-item badge badge-primary badge-sm">
+              {cart.length}
             </span>
-          </button>
+
+            <button
+              type="button"
+              onClick={() => setIsCartOpen(true)}
+              className="btn btn-ghost btn-circle hover:text-primary"
+            >
+              <FiShoppingCart size={22} />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -451,10 +363,10 @@ const Navbar = () => {
         </div>
       )}
       <ShoppingCart
-    isOpen={isCartOpen}
-    onClose={() => setIsCartOpen(false)}
-    cartItems={[]}
-/>
+        isOpen={isCartOpen}
+        onClose={() => setIsCartOpen(false)}
+        cartItems={cart}
+      />
     </div>
   );
 };

@@ -6,10 +6,13 @@ import "./index.css";
 
 import AuthProvider from "./context/AuthProvider";
 import { router } from "./routes/router";
+import CartProvider from "./context/CartProvider";
 
 createRoot(document.getElementById("root")).render(
   <AuthProvider>
-    <RouterProvider router={router} />
-    <Toaster position="top-right" reverseOrder={false} />
+    <CartProvider>
+      <RouterProvider router={router} />
+      <Toaster position="top-right" reverseOrder={false} />
+    </CartProvider>
   </AuthProvider>,
 );

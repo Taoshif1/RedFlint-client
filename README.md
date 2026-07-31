@@ -247,12 +247,15 @@ client
 │  │     └─ ShoppingCart.jsx
 │  ├─ context
 │  │  ├─ AuthContext.jsx
-│  │  └─ AuthProvider.jsx
+│  │  ├─ AuthProvider.jsx
+│  │  ├─ CartContext.jsx
+│  │  └─ CartProvider.jsx
 │  ├─ firebase
 │  │  └─ firebase.config.js
 │  ├─ hooks
 │  │  ├─ useAuth.js
-│  │  └─ useAxiosSecure.js
+│  │  ├─ useAxiosSecure.js
+│  │  └─ useCart.js
 │  ├─ index.css
 │  ├─ layouts
 │  │  └─ MainLayout.jsx
