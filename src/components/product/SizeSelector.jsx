@@ -1,8 +1,8 @@
-import { useState } from "react";
-
-const SizeSelector = ({ sizes }) => {
-  const [selectedSize, setSelectedSize] = useState(null);
-
+const SizeSelector = ({
+  sizes,
+  selectedSize,
+  setSelectedSize,
+}) => {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
