@@ -1,9 +1,9 @@
-import DashboardHeader from "../components/dashboard/DashboardHeader";
-import DashboardStats from "../components/dashboard/DashboardStats";
-import RecentOrders from "../components/dashboard/RecentOrders";
-import Wishlist from "../components/dashboard/Wishlist";
-import AddressBook from "../components/dashboard/AddressBook";
-import AccountInfo from "../components/dashboard/AccountInfo";
+import DashboardHeader from "../components/dashboard/customer/DashboardHeader";
+import DashboardStats from "../components/dashboard/customer/DashboardStats";
+import RecentOrders from "../components/dashboard/customer/RecentOrders";
+import Wishlist from "../components/dashboard/customer/Wishlist";
+import AddressBook from "../components/dashboard/customer/AddressBook";
+import AccountInfo from "../components/dashboard/customer/AccountInfo";
 
 const CustomerDashboard = () => {
   return (

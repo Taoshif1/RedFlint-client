@@ -8,22 +8,18 @@ const DashboardLayout = () => {
 
   return (
     <div className="h-screen bg-[#0F0F0F] text-white overflow-hidden">
-
       <AdminDashboardHeader
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
 
       <div className="flex h-[calc(100vh-80px)]">
-
         <AdminDashboardSidebar sidebarOpen={sidebarOpen} />
 
         <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
-
       </div>
-
     </div>
   );
 };

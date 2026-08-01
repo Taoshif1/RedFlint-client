@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
+import useUser from "../../../hooks/useUser";
 
 const DashboardHeader = () => {
-  const { user, logOut } = useAuth();
+  const { logOut } = useAuth();
+  const { user } = useUser();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -16,8 +18,8 @@ const DashboardHeader = () => {
     }
   };
 
-  const memberSince = user?.metadata?.creationTime
-    ? new Date(user.metadata.creationTime).toLocaleDateString("en-US", {
+  const memberSince = user?.createdAt
+    ? new Date(user.createdAt).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
       })
@@ -26,7 +28,7 @@ const DashboardHeader = () => {
   const avatar =
     user?.photoURL ||
     `https://ui-avatars.com/api/?name=${encodeURIComponent(
-      user?.displayName || "User",
+      user?.name || "Customer",
     )}&background=e50000&color=ffffff`;
 
   return (
@@ -36,7 +38,7 @@ const DashboardHeader = () => {
         <div className="flex flex-col sm:flex-row items-center sm:items-center gap-6">
           <div className="avatar">
             <div className="w-28 rounded-full ring ring-primary ring-offset-base-200 ring-offset-2">
-              <img src={avatar} alt={user?.displayName || "User"} />
+              <img src={avatar} alt={user?.name || "User"} />
             </div>
           </div>
 
@@ -46,7 +48,7 @@ const DashboardHeader = () => {
             </p>
 
             <h1 className="text-4xl font-black red-hat mt-2">
-              {user?.displayName || "Customer"}
+              {user?.name || "Customer"}
             </h1>
 
             <p className="mt-2 text-base-content/70">{user?.email}</p>

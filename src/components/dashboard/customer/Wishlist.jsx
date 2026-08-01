@@ -1,6 +1,6 @@
-import BluePlaid from "../../assets/Blue_Plaid.png";
-import StoneGray from "../../assets/Stone_Gray.png";
-import DesertSand from "../../assets/Desert_Sand.png";
+import BluePlaid from "../../../assets/Blue_Plaid.png";
+import StoneGray from "../../../assets/Stone_Gray.png";
+import DesertSand from "../../../assets/Desert_Sand.png";
 
 const wishlist = [
   {
