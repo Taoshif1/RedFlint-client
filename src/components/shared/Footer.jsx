@@ -1,5 +1,5 @@
 import React from "react";
-import RedFlintLogo from "./shared/Logo";
+import RedFlintLogo from "./Logo";
 
 const Footer = () => {
   return (

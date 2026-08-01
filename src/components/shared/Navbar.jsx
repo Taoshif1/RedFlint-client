@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router";
-import useAuth from "../hooks/useAuth";
-import Logo from "./shared/Logo";
-import SearchBar from "./shared/SearchBar";
-import ShoppingCart from "./shared/ShoppingCart";
-import useCart from "../hooks/useCart";
+import useAuth from "../../hooks/useAuth";
+import Logo from "./Logo";
+import SearchBar from "./SearchBar";
+import ShoppingCart from "./ShoppingCart";
+import useCart from "../../hooks/useCart";
 
 import { FiMenu, FiX, FiUser, FiShoppingCart, FiSearch } from "react-icons/fi";
 
