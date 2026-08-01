@@ -1,12 +1,60 @@
-import { FiTrash2 } from "react-icons/fi";
+import { FiShoppingCart, FiTrash2 } from "react-icons/fi";
+import toast from "react-hot-toast";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
-const ShoppingCart = ({ isOpen, onClose, cartItems }) => {
+const ShoppingCart = ({ isOpen, onClose, cartItems, refetch }) => {
+  const axiosSecure = useAxiosSecure();
+
   if (!isOpen) return null;
 
   const total = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + Number(item.price) * Number(item.quantity),
     0,
   );
+
+  const formattedTotal = total.toLocaleString("en-BD");
+
+  const updateQuantity = async (item, quantity) => {
+    if (quantity < 1) return;
+
+    try {
+      await axiosSecure.patch(`/cart/${item._id}`, {
+        quantity,
+      });
+
+      refetch();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axiosSecure.delete(`/cart/${id}`);
+
+      toast.success("Removed from cart");
+
+      refetch();
+    } catch (err) {
+      console.error(err);
+
+      toast.error("Failed to remove item");
+    }
+  };
+
+  const handleClearCart = async () => {
+    try {
+      await axiosSecure.delete("/cart");
+
+      toast.success("Cart cleared");
+
+      refetch();
+    } catch (err) {
+      console.error(err);
+
+      toast.error("Failed");
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-[9999]">
@@ -30,34 +78,75 @@ const ShoppingCart = ({ isOpen, onClose, cartItems }) => {
         {/* Cart Items */}
         <div className="flex-1 overflow-y-auto p-5 space-y-5">
           {cartItems.length === 0 ? (
-            <div className="h-full flex items-center justify-center">
-              <p className="text-base-content/60">Your cart is empty.</p>
+            <div className="flex flex-col items-center justify-center h-full gap-5">
+              <FiShoppingCart size={60} />
+
+              <p>Your cart is empty.</p>
+
+              <button onClick={onClose} className="btn btn-primary">
+                Continue Shopping
+              </button>
             </div>
           ) : (
             cartItems.map((item) => (
               <div
                 key={item._id}
-                className="flex gap-4 border-b border-base-300 pb-4"
+                className="flex items-center justify-between gap-4 border-b border-base-300 pb-4"
               >
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-24 h-24 rounded-xl object-cover"
-                />
+                {/* Left side: Image and details */}
+                <div className="flex gap-4 items-center">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-24 h-24 rounded-xl object-cover"
+                  />
 
-                <div className="flex-1">
-                  <h3 className="font-bold">{item.title}</h3>
+                  <div className="flex flex-col gap-1">
+                    <h4 className="font-semibold text-base-content line-clamp-1">
+                      {item.title}
+                    </h4>
 
-                  <p className="text-sm text-base-content/60">
-                    Size : {item.size}
-                  </p>
+                    {/* Size and Price Row */}
+                    <div className="flex items-center gap-2 text-sm text-base-content/70">
+                      <span>৳{Number(item.price).toLocaleString("en-BD")}</span>
+                      {item.size && (
+                        <>
+                          <span className="text-base-content/30">•</span>
+                          <span className="badge badge-sm badge-outline">
+                            Size: {item.size}
+                          </span>
+                        </>
+                      )}
+                    </div>
 
-                  <p className="text-sm">Qty : {item.quantity}</p>
+                    {/* Quantity Controls */}
+                    <div className="flex items-center gap-2 mt-1">
+                      <button
+                        className="btn btn-xs"
+                        onClick={() => updateQuantity(item, item.quantity - 1)}
+                      >
+                        -
+                      </button>
 
-                  <p className="font-bold text-primary mt-2">৳{item.price}</p>
+                      <span className="font-medium min-w-[20px] text-center">
+                        {item.quantity}
+                      </span>
+
+                      <button
+                        className="btn btn-xs"
+                        onClick={() => updateQuantity(item, item.quantity + 1)}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
-                <button className="btn btn-ghost btn-circle text-error">
+                {/* Right side: Delete Button */}
+                <button
+                  onClick={() => handleDelete(item._id)}
+                  className="btn btn-ghost btn-circle text-error flex-shrink-0"
+                >
                   <FiTrash2 size={20} />
                 </button>
               </div>
@@ -66,14 +155,22 @@ const ShoppingCart = ({ isOpen, onClose, cartItems }) => {
         </div>
 
         {/* Footer */}
-
         <div className="border-t border-base-300 p-5 space-y-4">
           <div className="flex justify-between text-lg font-bold">
             <span>Total</span>
-            <span>৳{total}</span>
+            <span>৳{formattedTotal}</span>
           </div>
 
-          <button className="btn btn-primary w-full">Checkout</button>
+          <button
+            className="btn btn-primary w-full"
+            disabled={!cartItems.length}
+          >
+            Proceed to Checkout
+          </button>
+
+          <button onClick={handleClearCart} className="btn btn-outline w-full">
+            Clear Cart
+          </button>
         </div>
       </div>
     </div>

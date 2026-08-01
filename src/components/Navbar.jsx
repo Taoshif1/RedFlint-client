@@ -10,7 +10,7 @@ import { FiMenu, FiX, FiUser, FiShoppingCart, FiSearch } from "react-icons/fi";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
-  const { cart } = useCart();
+  const { cart, refetch } = useCart();
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -79,7 +79,7 @@ const Navbar = () => {
     isActive ? "text-primary font-bold bg-base-300" : "hover:text-primary";
 
   return (
-    <div className="sticky top-0 z-50 bg-base-100/90 backdrop-blur-md border-b border-base-300">
+    <div className="sticky top-0 z-100 bg-base-100/90 backdrop-blur-md border-b border-base-300">
       <div className="navbar max-w-7xl mx-auto px-4 min-h-20">
         {/* ----------------- MOBILE MENU START ----------------- */}
         <div className="navbar-start lg:hidden">
@@ -366,6 +366,7 @@ const Navbar = () => {
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
         cartItems={cart}
+        refetch={refetch}
       />
     </div>
   );

@@ -1,7 +1,10 @@
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
+import useUser from "../../../hooks/useUser";
 
 const AccountInfo = () => {
-  const { user } = useAuth();
+  const { user: firebaseUser } = useAuth();
+
+  const { user } = useUser();
 
   return (
     <section className="bg-base-200 rounded-box border border-base-300 shadow-md">
@@ -17,7 +20,7 @@ const AccountInfo = () => {
 
           <input
             type="text"
-            value={user?.displayName || ""}
+            value={user?.name || ""}
             readOnly
             className="input input-bordered w-full"
           />
@@ -30,7 +33,7 @@ const AccountInfo = () => {
 
           <input
             type="email"
-            value={user?.email || ""}
+            value={user?.email || "N/A"}
             readOnly
             className="input input-bordered w-full"
           />
@@ -51,12 +54,38 @@ const AccountInfo = () => {
 
         <div>
           <label className="label">
+            <span className="label-text">Phone</span>
+          </label>
+
+          <input
+            type="text"
+            value={user?.phone || ""}
+            readOnly
+            className="input input-bordered w-full"
+          />
+        </div>
+
+        <div>
+          <label className="label">
             <span className="label-text">Authentication</span>
           </label>
 
           <input
             type="text"
-            value={user?.providerData?.[0]?.providerId || "password"}
+            value={firebaseUser?.providerData?.[0]?.providerId || "password"}
+            readOnly
+            className="input input-bordered w-full"
+          />
+        </div>
+
+        <div>
+          <label className="label">
+            <span className="label-text">Role</span>
+          </label>
+
+          <input
+            type="text"
+            value={user?.role || ""}
             readOnly
             className="input input-bordered w-full"
           />

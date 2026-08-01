@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const ProductGallery = ({ images, title }) => {
+const ProductGallery = ({ images, title, season, category, isFeatured, isSpecial }) => {
   const [selectedImage, setSelectedImage] = useState(images[0]);
 
   return (
@@ -12,6 +12,19 @@ const ProductGallery = ({ images, title }) => {
           alt={title}
           className="w-full aspect-square object-cover"
         />
+        <div className="flex gap-2 mt-4">
+          <span className="badge badge-outline">{season}</span>
+
+          <span className="badge badge-primary">{category}</span>
+
+          {isFeatured && (
+            <span className="badge badge-success">Featured</span>
+          )}
+
+          {isSpecial && (
+            <span className="badge badge-secondary">Special Edition</span>
+          )}
+        </div>
       </div>
 
       {/* Thumbnail Images */}

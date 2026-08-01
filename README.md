@@ -221,13 +221,18 @@ client
 │  │  └─ vite.svg
 │  ├─ components
 │  │  ├─ dashboard
-│  │  │  ├─ AccountInfo.jsx
-│  │  │  ├─ AddressBook.jsx
-│  │  │  ├─ DashboardHeader.jsx
-│  │  │  ├─ DashboardSidebar.jsx
-│  │  │  ├─ DashboardStats.jsx
-│  │  │  ├─ RecentOrders.jsx
-│  │  │  └─ Wishlist.jsx
+│  │  │  ├─ admin
+│  │  │  │  ├─ AdminDashboardHeader.jsx
+│  │  │  │  ├─ AdminDashboardSidebar.jsx
+│  │  │  │  └─ product.jsx
+│  │  │  └─ customer
+│  │  │     ├─ AccountInfo.jsx
+│  │  │     ├─ AddressBook.jsx
+│  │  │     ├─ DashboardHeader.jsx
+│  │  │     ├─ DashboardSidebar.jsx
+│  │  │     ├─ DashboardStats.jsx
+│  │  │     ├─ RecentOrders.jsx
+│  │  │     └─ Wishlist.jsx
 │  │  ├─ Footer.jsx
 │  │  ├─ Navbar.jsx
 │  │  ├─ product
@@ -255,12 +260,16 @@ client
 │  ├─ hooks
 │  │  ├─ useAuth.js
 │  │  ├─ useAxiosSecure.js
-│  │  └─ useCart.js
+│  │  ├─ useCart.js
+│  │  ├─ useUser.js
+│  │  └─ useWishlist.js
 │  ├─ index.css
 │  ├─ layouts
+│  │  ├─ DashboardLayout.jsx
 │  │  └─ MainLayout.jsx
 │  ├─ main.jsx
 │  ├─ pages
+│  │  ├─ AdminDashboard.jsx
 │  │  ├─ CustomerDashboard.jsx
 │  │  ├─ ErrorPage.jsx
 │  │  ├─ Home.jsx
@@ -354,3 +363,4 @@ REDFLINT aims to establish a strong digital presence that reflects the quality, 
 ---
 
 © REDFLINT — Premium Menswear.
+
