@@ -2,22 +2,34 @@ import { useState } from "react";
 import { Outlet } from "react-router";
 import AdminDashboardHeader from "../components/dashboard/admin/AdminDashboardHeader";
 import AdminDashboardSidebar from "../components/dashboard/admin/AdminDashboardSidebar";
+import Footer from "../components/Footer";
 
 const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="h-screen bg-[#0F0F0F] text-white overflow-hidden">
+    <div className="h-screen bg-[#0F0F0F] text-white flex flex-col overflow-hidden">
+      {/* Header - fixed at top, does not scroll */}
       <AdminDashboardHeader
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />
 
-      <div className="flex h-[calc(100vh-80px)]">
-        <AdminDashboardSidebar sidebarOpen={sidebarOpen} />
+      {/* Body: Sidebar (fixed) + Main (scrollable) */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar - fixed, does not scroll with content */}
+        <div className="h-full overflow-y-auto shrink-0">
+          <AdminDashboardSidebar sidebarOpen={sidebarOpen} />
+        </div>
 
-        <main className="flex-1 overflow-y-auto p-6">
-          <Outlet />
+        {/* Main Content - only this part scrolls */}
+        <main className="flex-1 overflow-y-auto">
+          <div className="p-6">
+            <Outlet />
+          </div>
+
+          {/* Footer scrolls with content, at the bottom of main area */}
+          <Footer />
         </main>
       </div>
     </div>
