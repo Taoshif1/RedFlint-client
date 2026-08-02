@@ -224,7 +224,12 @@ client
 │  │  │  ├─ admin
 │  │  │  │  ├─ AdminDashboardHeader.jsx
 │  │  │  │  ├─ AdminDashboardSidebar.jsx
-│  │  │  │  └─ product.jsx
+│  │  │  │  ├─ WelcomeCard.jsx
+│  │  │  │  ├─ DashboardStats.jsx
+│  │  │  │  ├─ RecentOrders.jsx
+│  │  │  │  ├─ TopProducts.jsx
+│  │  │  │  ├─ LowStockAlert.jsx
+│  │  │  │  └─ Product.jsx
 │  │  │  └─ customer
 │  │  │     ├─ AccountInfo.jsx
 │  │  │     ├─ AddressBook.jsx
