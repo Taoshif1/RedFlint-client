@@ -1,0 +1,140 @@
+import { useParams } from "react-router";
+import useOrder from "../hooks/useOrder";
+
+const badgeColor = (status) => {
+  switch (status) {
+    case "Delivered":
+      return "badge-success";
+
+    case "Pending":
+      return "badge-warning";
+
+    case "Cancelled":
+      return "badge-error";
+
+    default:
+      return "badge-neutral";
+  }
+};
+
+const OrderDetails = () => {
+  const { id } = useParams();
+
+  const { order, loading } = useOrder(id);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-20">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
+  }
+
+  if (!order) {
+    return (
+      <div className="text-center py-20">
+        <h2 className="text-3xl font-bold">Order Not Found</h2>
+      </div>
+    );
+  }
+
+  return (
+    <section className="max-w-7xl mx-auto py-10 space-y-8">
+      <div className="bg-base-200 rounded-box shadow border border-base-300 p-8">
+        <div className="flex flex-col lg:flex-row justify-between gap-6">
+          <div>
+            <h1 className="text-4xl font-bold">Order Details</h1>
+
+            <p className="opacity-70 mt-2">Order ID: {order._id}</p>
+
+            <p className="opacity-70">
+              {new Date(order.createdAt).toLocaleString()}
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <span className={`badge ${badgeColor(order.orderStatus)} badge-lg`}>
+              {order.orderStatus}
+            </span>
+
+            <span
+              className={`badge ${badgeColor(order.payment.status)} badge-lg`}
+            >
+              Payment : {order.payment.status}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
+          <div className="bg-base-200 rounded-box shadow border border-base-300">
+            <div className="p-6 border-b border-base-300">
+              <h2 className="text-2xl font-bold">Ordered Products</h2>
+            </div>
+
+            <div className="divide-y divide-base-300">
+              {order.products.map((product) => (
+                <div key={product.productId} className="flex gap-5 p-6">
+                  <img
+                    src={product.image}
+                    alt={product.title}
+                    className="w-28 h-28 rounded-lg object-cover"
+                  />
+
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold">{product.title}</h3>
+
+                    <p>Size : {product.size}</p>
+
+                    <p>Quantity : {product.quantity}</p>
+
+                    <p className="text-primary font-bold mt-2">
+                      ৳ {product.price}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div className="bg-base-200 rounded-box shadow border border-base-300 p-6 space-y-5">
+            <h2 className="text-2xl font-bold">Shipping</h2>
+
+            <div>
+              <p className="font-semibold">{order.customerName}</p>
+
+              <p>{order.phone}</p>
+
+              <p>{order.address}</p>
+            </div>
+
+            <div className="divider"></div>
+
+            <div className="space-y-2">
+              <div className="flex justify-between">
+                <span>Subtotal</span>
+                <span>৳ {order.subtotal}</span>
+              </div>
+
+              <div className="flex justify-between">
+                <span>Shipping</span>
+                <span>৳ {order.shipping}</span>
+              </div>
+
+              <div className="flex justify-between text-xl font-bold">
+                <span>Total</span>
+
+                <span className="text-primary">৳ {order.total}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default OrderDetails;

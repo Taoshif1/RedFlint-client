@@ -39,7 +39,7 @@ const Checkout = () => {
     setLoading(true);
 
     try {
-      await axiosSecure.post("/orders", {
+      await axiosSecure.post("/payments", {
         customerName: name,
         phone,
         address,

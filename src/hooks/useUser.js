@@ -5,25 +5,24 @@ import useAxiosSecure from "./useAxiosSecure";
 
 const useUser = () => {
   const { user } = useAuth();
-
   const axiosSecure = useAxiosSecure();
 
   const [dbUser, setDbUser] = useState(null);
-
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user?.email) {
-      setDbUser(null);
-      setLoading(false);
-      return;
-    }
-
     const fetchUser = async () => {
-      try {
-        const res = await axiosSecure.get(`/users/${user.email}`);
+      if (!user?.email) {
+        setDbUser(null);
+        setLoading(false);
+        return;
+      }
 
-        setDbUser(res.data);
+      setLoading(true);
+
+      try {
+        const { data } = await axiosSecure.get(`/users/${user.email}`);
+        setDbUser(data);
       } catch (error) {
         console.error(error);
       } finally {
@@ -39,5 +38,4 @@ const useUser = () => {
     loading,
   };
 };
-
 export default useUser;

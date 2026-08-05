@@ -3,7 +3,7 @@ import { Outlet } from "react-router";
 import AdminDashboardHeader from "../components/dashboard/admin/AdminDashboardHeader";
 import AdminDashboardSidebar from "../components/dashboard/admin/AdminDashboardSidebar";
 
-const DashboardLayout = () => {
+const AdminDashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -24,4 +24,4 @@ const DashboardLayout = () => {
   );
 };
 
-export default DashboardLayout;
+export default AdminDashboardLayout;
