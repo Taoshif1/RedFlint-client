@@ -1,9 +1,13 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router";
+
 
 export default function ExpandableSearch({ onSearch }) {
+  const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
-  
+
   const inputRef = useRef(null);
   const containerRef = useRef(null);
 
@@ -17,7 +21,10 @@ export default function ExpandableSearch({ onSearch }) {
   // Collapse the bar if clicked outside while empty
   useEffect(() => {
     function handleClickOutside(event) {
-      if (containerRef.current && !containerRef.current.contains(event.target)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target)
+      ) {
         if (query === "") {
           setIsOpen(false);
         }
@@ -31,26 +38,36 @@ export default function ExpandableSearch({ onSearch }) {
   const handleInputChange = (e) => {
     const val = e.target.value;
     setQuery(val);
-    if (onSearch) {
-      onSearch(val);  
-    }
+
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!query.trim()) return;
+
+    navigate(`/products?search=${encodeURIComponent(query)}`);
   };
 
   return (
-    <form 
+    <form
       ref={containerRef}
-      onSubmit={handleSubmit} 
+      onSubmit={handleSubmit}
       className="flex items-center bg-base-100 rounded-full border border-base-300 p-2 overflow-hidden shadow-sm transition-all duration-300 ease-in-out"
       style={{ width: isOpen ? "300px" : "48px" }}
     >
-     
-      <button 
+      <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          if (!isOpen) {
+            setIsOpen(true);
+            return;
+          }
+
+          if (query.trim()) {
+            navigate(`/products?search=${encodeURIComponent(query)}`);
+          }
+        }}
         className="hover:text-primary transition shrink-0 p-1"
       >
         <svg
@@ -77,9 +94,9 @@ export default function ExpandableSearch({ onSearch }) {
         onChange={handleInputChange}
         placeholder="Search"
         className="outline-none bg-transparent w-full pl-3 pr-2 transition-opacity duration-200 placeholder:opacity-25 placeholder:text-neutral-content text-sm"
-        style={{ 
+        style={{
           opacity: isOpen ? 1 : 0,
-          pointerEvents: isOpen ? "auto" : "none" 
+          pointerEvents: isOpen ? "auto" : "none",
         }}
       />
     </form>
