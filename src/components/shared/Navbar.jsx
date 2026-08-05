@@ -5,13 +5,17 @@ import Logo from "./Logo";
 import SearchBar from "./SearchBar";
 import ShoppingCart from "./ShoppingCart";
 import useCart from "../../hooks/useCart";
+import useUser from "../../hooks/useUser";
 
 import { FiMenu, FiX, FiUser, FiShoppingCart, FiSearch } from "react-icons/fi";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
+  const { user: dbUser, loading: userLoading } = useUser();
   const { cart, refetch } = useCart();
   const navigate = useNavigate();
+
+  const dashboardPath = dbUser?.role === "admin" ? "/admin" : "/dashboard";
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -133,7 +137,7 @@ const Navbar = () => {
                     </li>
                     <li>
                       <NavLink
-                        to="/dashboard"
+                        to={dashboardPath}
                         onClick={closeMenu}
                         className={navLinkClass}
                       >
@@ -243,7 +247,7 @@ const Navbar = () => {
                   </li>
                   <li>
                     <NavLink
-                      to="/dashboard"
+                      to={dashboardPath}
                       onClick={closeMenu}
                       className={dropdownLinkClass}
                     >
@@ -316,7 +320,7 @@ const Navbar = () => {
                   </li>
                   <li>
                     <NavLink
-                      to="/dashboard"
+                      to={dashboardPath}
                       onClick={closeMenu}
                       className={dropdownLinkClass}
                     >

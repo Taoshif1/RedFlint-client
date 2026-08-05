@@ -19,8 +19,19 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const from = location.state?.from?.pathname || "/dashboard";
+  const from = location.state?.from?.pathname;
   // const [googleLoading, setGoogleLoading] = useState(false);
+
+  const redirectUser = async (email) => {
+    const res = await axiosSecure.get(`/users/${email}`);
+
+    if (res.data.role === "admin") {
+      navigate("/admin", { replace: true });
+      return;
+    }
+
+    navigate(from || "/dashboard", { replace: true });
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -41,7 +52,7 @@ const Login = () => {
 
       toast.success("Login Successful!");
 
-      navigate(from, { replace: true });
+      await redirectUser(firebaseUser.email);
     } catch (error) {
       switch (error.code) {
         case "auth/invalid-credential":
@@ -84,7 +95,7 @@ const Login = () => {
 
       toast.success("Logged in with Google!");
 
-      navigate(from, { replace: true });
+      await redirectUser(firebaseUser.email);
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -132,7 +143,11 @@ const Login = () => {
             </div>
 
             <div className="text-right">
-              <button type="button" href="#" className="text-sm text-primary hover:underline">
+              <button
+                type="button"
+                href="#"
+                className="text-sm text-primary hover:underline"
+              >
                 Forgot Password?
               </button>
             </div>
