@@ -4,7 +4,7 @@ import AdminDashboardHeader from "../components/dashboard/admin/AdminDashboardHe
 import AdminDashboardSidebar from "../components/dashboard/admin/AdminDashboardSidebar";
 import Footer from "../components/Footer";
 
-const DashboardLayout = () => {
+const AdminDashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -36,4 +36,4 @@ const DashboardLayout = () => {
   );
 };
 
-export default DashboardLayout;
+export default AdminDashboardLayout;
