@@ -1,38 +1,33 @@
-const orders = [
-  {
-    id: "#RF10231",
-    date: "23 Jul 2026",
-    status: "Delivered",
-    total: "$129.99",
-  },
-  {
-    id: "#RF10230",
-    date: "20 Jul 2026",
-    status: "Processing",
-    total: "$79.99",
-  },
-  {
-    id: "#RF10228",
-    date: "18 Jul 2026",
-    status: "Cancelled",
-    total: "$49.99",
-  },
-];
+import useOrders from "../../../hooks/useOrders";
+import { Link } from "react-router";
 
 const statusBadge = (status) => {
   switch (status) {
     case "Delivered":
       return "badge badge-success";
-    case "Processing":
+
+    case "Pending":
       return "badge badge-warning";
+
     case "Cancelled":
       return "badge badge-error";
+
     default:
-      return "badge";
+      return "badge badge-neutral";
   }
 };
 
 const RecentOrders = () => {
+  const { orders, loading } = useOrders();
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-10">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
+  }
+
   return (
     <section className="bg-base-200 rounded-box border border-base-300 shadow-md">
       <div className="p-6 border-b border-base-300 flex justify-between items-center">
@@ -55,21 +50,25 @@ const RecentOrders = () => {
 
           <tbody>
             {orders.map((order) => (
-              <tr key={order.id}>
-                <td className="font-semibold">{order.id}</td>
+              <tr key={order._id}>
+                <td className="font-semibold">
+                  #{order._id.toString().slice(-6).toUpperCase()}
+                </td>
 
-                <td>{order.date}</td>
+                <td>{new Date(order.createdAt).toLocaleDateString()}</td>
 
                 <td>
-                  <span className={statusBadge(order.status)}>
-                    {order.status}
+                  <span className={statusBadge(order.orderStatus)}>
+                    {order.orderStatus}
                   </span>
                 </td>
 
-                <td className="font-bold text-primary">{order.total}</td>
+                <td className="font-bold text-primary">৳{order.total ?? 0}</td>
 
                 <td>
-                  <button className="btn btn-xs btn-primary">Details</button>
+                  <Link to={`/dashboard/orders/${order._id}`}>
+                    <button className="btn btn-xs btn-primary">Details</button>
+                  </Link>
                 </td>
               </tr>
             ))}

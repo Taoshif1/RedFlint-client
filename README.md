@@ -14,12 +14,12 @@ REDFLINT focuses on delivering a luxury-first shopping experience for modern gen
 
 The website emphasizes:
 
-* Premium product presentation
-* Strong visual storytelling
-* Luxury brand aesthetics
-* Mobile-first responsiveness
-* Fast loading performance
-* Clean user experience
+- Premium product presentation
+- Strong visual storytelling
+- Luxury brand aesthetics
+- Mobile-first responsiveness
+- Fast loading performance
+- Clean user experience
 
 ---
 
@@ -41,36 +41,36 @@ The website emphasizes:
 
 ### Premium Navigation
 
-* Fully responsive navbar
-* Centered REDFLINT branding
-* Product navigation
-* Special Edition collection access
-* Search functionality
-* User authentication entry point
-* Shopping cart integration
+- Fully responsive navbar
+- Centered REDFLINT branding
+- Product navigation
+- Special Edition collection access
+- Search functionality
+- User authentication entry point
+- Shopping cart integration
 
 ### Fashion Showcase Banner
 
-* Luxury product gallery
-* Featured collection highlight
-* Premium call-to-action section
-* Responsive image presentation
-* Brand storytelling section
+- Luxury product gallery
+- Featured collection highlight
+- Premium call-to-action section
+- Responsive image presentation
+- Brand storytelling section
 
 ### Hero Carousel
 
-* Swiper powered slider
-* Promotional campaigns
-* Seasonal collections
-* Responsive design
-* Smooth transitions
+- Swiper powered slider
+- Promotional campaigns
+- Seasonal collections
+- Responsive design
+- Smooth transitions
 
 ### Footer
 
-* Social media integration
-* Company information
-* Navigation shortcuts
-* Brand identity reinforcement
+- Social media integration
+- Company information
+- Navigation shortcuts
+- Brand identity reinforcement
 
 ---
 
@@ -98,14 +98,14 @@ The website emphasizes:
 
 ### Styling
 
-* Tailwind CSS v4
-* DaisyUI v5
-* Custom REDFLINT Theme
+- Tailwind CSS v4
+- DaisyUI v5
+- Custom REDFLINT Theme
 
 ### Components
 
-* Swiper.js
-* Responsive UI Components
+- Swiper.js
+- Responsive UI Components
 
 ---
 
@@ -139,9 +139,9 @@ Text:
 
 ### Typography
 
-* Red Hat Display
-* Heavy Weight Headlines
-* Luxury Editorial Style
+- Red Hat Display
+- Heavy Weight Headlines
+- Luxury Editorial Style
 
 ---
 
@@ -149,11 +149,11 @@ Text:
 
 The website is optimized for:
 
-* Mobile Devices
-* Tablets
-* Laptops
-* Desktop Displays
-* Ultra-wide Screens
+- Mobile Devices
+- Tablets
+- Laptops
+- Desktop Displays
+- Ultra-wide Screens
 
 ---
 
@@ -222,24 +222,24 @@ client
 │  ├─ components
 │  │  ├─ dashboard
 │  │  │  ├─ admin
+│  │  │  │  ├─ AddProduct.jsx
 │  │  │  │  ├─ AdminDashboardHeader.jsx
 │  │  │  │  ├─ AdminDashboardSidebar.jsx
-│  │  │  │  ├─ WelcomeCard.jsx
-│  │  │  │  ├─ DashboardStats.jsx
-│  │  │  │  ├─ RecentOrders.jsx
-│  │  │  │  ├─ TopProducts.jsx
-│  │  │  │  ├─ LowStockAlert.jsx
-│  │  │  │  └─ Product.jsx
+│  │  │  │  ├─ AdminOrders.jsx
+│  │  │  │  ├─ AdminProducts.jsx
+│  │  │  │  ├─ AdminStats.jsx
+│  │  │  │  ├─ Customers.jsx
+│  │  │  │  └─ Settings.jsx
 │  │  │  └─ customer
+│  │  │     ├─ Account.jsx
 │  │  │     ├─ AccountInfo.jsx
 │  │  │     ├─ AddressBook.jsx
 │  │  │     ├─ DashboardHeader.jsx
 │  │  │     ├─ DashboardSidebar.jsx
 │  │  │     ├─ DashboardStats.jsx
+│  │  │     ├─ Overview.jsx
 │  │  │     ├─ RecentOrders.jsx
 │  │  │     └─ Wishlist.jsx
-│  │  ├─ Footer.jsx
-│  │  ├─ Navbar.jsx
 │  │  ├─ product
 │  │  │  ├─ ProductDescription.jsx
 │  │  │  ├─ ProductGallery.jsx
@@ -251,7 +251,9 @@ client
 │  │     ├─ AboutSection.jsx
 │  │     ├─ Carousel.jsx
 │  │     ├─ FashionBanner.jsx
+│  │     ├─ Footer.jsx
 │  │     ├─ Logo.jsx
+│  │     ├─ Navbar.jsx
 │  │     ├─ Product.jsx
 │  │     ├─ SearchBar.jsx
 │  │     └─ ShoppingCart.jsx
@@ -263,27 +265,35 @@ client
 │  ├─ firebase
 │  │  └─ firebase.config.js
 │  ├─ hooks
+│  │  ├─ useAddresses.js
+│  │  ├─ useAdminOrders.js
 │  │  ├─ useAuth.js
 │  │  ├─ useAxiosSecure.js
 │  │  ├─ useCart.js
+│  │  ├─ useOrder.js
+│  │  ├─ useOrders.js
 │  │  ├─ useUser.js
 │  │  └─ useWishlist.js
 │  ├─ index.css
 │  ├─ layouts
-│  │  ├─ DashboardLayout.jsx
+│  │  ├─ AdminDashboardLayout.jsx
+│  │  ├─ CustomerDashboardLayout.jsx
 │  │  └─ MainLayout.jsx
 │  ├─ main.jsx
 │  ├─ pages
-│  │  ├─ AdminDashboard.jsx
-│  │  ├─ CustomerDashboard.jsx
+│  │  ├─ AdminOverview.jsx
+│  │  ├─ Checkout.jsx
+│  │  ├─ CustomerOverview.jsx
 │  │  ├─ ErrorPage.jsx
 │  │  ├─ Home.jsx
 │  │  ├─ Login.jsx
+│  │  ├─ OrderDetails.jsx
 │  │  ├─ ProductDetails.jsx
 │  │  ├─ Products.jsx
 │  │  ├─ Register.jsx
 │  │  └─ SpecialEdition.jsx
 │  ├─ routes
+│  │  ├─ AdminRoute.jsx
 │  │  ├─ PrivateRoute.jsx
 │  │  └─ router.jsx
 │  └─ utils
@@ -292,6 +302,7 @@ client
 └─ vite.config.js
 
 ```
+
 ---
 
 ## Authentication Flow
@@ -368,4 +379,3 @@ REDFLINT aims to establish a strong digital presence that reflects the quality, 
 ---
 
 © REDFLINT — Premium Menswear.
-

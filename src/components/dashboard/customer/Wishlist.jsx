@@ -1,29 +1,47 @@
-import BluePlaid from "../../../assets/Blue_Plaid.png";
-import StoneGray from "../../../assets/Stone_Gray.png";
-import DesertSand from "../../../assets/Desert_Sand.png";
-
-const wishlist = [
-  {
-    id: 1,
-    name: "Blue Plaid Shirt",
-    price: "$89.99",
-    image: BluePlaid,
-  },
-  {
-    id: 2,
-    name: "Stone Gray Shirt",
-    price: "$74.99",
-    image: StoneGray,
-  },
-  {
-    id: 3,
-    name: "Desert Sand Shirt",
-    price: "$84.99",
-    image: DesertSand,
-  },
-];
+import useWishlist from "../../../hooks/useWishlist";
+import useCart from "../../../hooks/useCart";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const Wishlist = () => {
+  const { wishlist, loading, refetch } = useWishlist();
+  const { cart, refetch: refetchCart } = useCart();
+  const axiosSecure = useAxiosSecure();
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-10">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
+  }
+
+  const handleRemove = async (id) => {
+    try {
+      await axiosSecure.delete(`/wishlist/${id}`);
+
+      refetch();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleAddToCart = async (item) => {
+    try {
+      await axiosSecure.post("/cart", {
+        productId: item.productId,
+        title: item.title,
+        image: item.image,
+        price: item.price,
+        size: "M",
+        quantity: 1,
+      });
+
+      refetchCart();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <section className="bg-base-200 rounded-box border border-base-300 shadow-md">
       <div className="p-6 border-b border-base-300 flex justify-between items-center">
@@ -35,26 +53,34 @@ const Wishlist = () => {
       <div className="grid gap-6 p-6 sm:grid-cols-2 lg:grid-cols-3">
         {wishlist.map((item) => (
           <div
-            key={item.id}
+            key={item._id}
             className="card bg-base-100 border border-base-300 hover:shadow-xl transition-all duration-300"
           >
             <figure className="h-60 overflow-hidden">
               <img
                 src={item.image}
-                alt={item.name}
+                alt={item.title}
                 className="w-full h-full object-cover hover:scale-105 transition duration-300"
               />
             </figure>
 
             <div className="card-body">
-              <h3 className="card-title">{item.name}</h3>
+              <h3 className="card-title">{item.title}</h3>
 
-              <p className="text-primary font-bold">{item.price}</p>
+              <p className="text-primary font-bold">৳{item.price}</p>
 
               <div className="card-actions justify-end mt-2">
-                <button className="btn btn-primary btn-sm">Add to Cart</button>
+                <button
+                  onClick={() => handleAddToCart(item)}
+                  className="btn btn-primary btn-sm"
+                >
+                  Add to Cart
+                </button>
 
-                <button className="btn btn-outline btn-error btn-sm">
+                <button
+                  onClick={() => handleRemove(item._id)}
+                  className="btn btn-outline btn-error btn-sm"
+                >
                   Remove
                 </button>
               </div>
