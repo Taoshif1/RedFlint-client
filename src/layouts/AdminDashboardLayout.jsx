@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Outlet } from "react-router";
 import AdminDashboardHeader from "../components/dashboard/admin/AdminDashboardHeader";
 import AdminDashboardSidebar from "../components/dashboard/admin/AdminDashboardSidebar";
-import Footer from "../components/Footer";
+import Footer from "../components/shared/Footer";
 
 const AdminDashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
