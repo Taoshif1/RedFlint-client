@@ -1,47 +1,51 @@
 import React from "react";
-import RedFlintLogo from "./Logo";
+import RedFlintLogo from "./shared/Logo";
+import { Link } from "react-router";
 
 const Footer = () => {
   return (
     <div>
       <footer className="grid grid-cols-1 md:grid-cols-3 gap-10 justify-items-center w-full text-primary p-10 max-w-7xl mx-auto">
-
         <nav className="flex flex-col items-center text-center gap-2">
-
           <h6 className="footer-title text-lg font-bold">Services</h6>
 
           <a className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200">
-            Branding
+            <Link to="return">
+            Return Policy
+            </Link>
           </a>
 
           <a className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200">
-            Design
-          </a>
-
-          <a className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200">
+            <Link to="motto">
             Our Motto
+            </Link>
           </a>
         </nav>
 
         <nav className="flex flex-col items-center text-center gap-2">
-
           <h6 className="footer-title text-lg font-bold">Company</h6>
 
           <a className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200">
-            About us
+            <Link to="/about">
+              About Us
+            </Link>
           </a>
 
           <a className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200">
+            <Link to="/contact">
             Contact Us
+            </Link>
+            
           </a>
 
           <a className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200">
+            <Link to="/delivery">
             Delivery
+            </Link>
           </a>
         </nav>
 
         <nav className="flex flex-col items-center text-center gap-2">
-
           <h1 className="footer-title text-lg font-bold">Social</h1>
 
           <div className="grid grid-flow-col gap-6">
@@ -92,7 +96,6 @@ const Footer = () => {
       </footer>
 
       <p className="pb-5 text-center text-primary text-sm border-t border-base-200/10 pt-4">
-
         Copyright © {new Date().getFullYear()} - All right reserved
       </p>
     </div>

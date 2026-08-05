@@ -13,6 +13,13 @@ import ErrorPage from "../pages/ErrorPage";
 import PrivateRoute from "./PrivateRoute";
 import ProductDetails from "../pages/ProductDetails";
 
+import AboutUs from "../pages/AboutUs";
+import ReturnPolicy from "../pages/ReturnPolicy";
+import OurMotto from "../pages/OurMotto";
+import ContactUs from "../pages/ContactUs";
+import Delivery from "../pages/Delivery";
+
+import CustomerDashboard from "../pages/CustomerDashboard";
 import AdminOverview from "../pages/AdminOverview";
 import CustomerOverview from "../pages/CustomerOverview";
 
@@ -54,6 +61,34 @@ export const router = createBrowserRouter([
       {
         path: "register",
         Component: Register,
+      },
+      {
+        path:"about",
+        Component: AboutUs,
+      },
+      {
+        path:"return",
+        Component:ReturnPolicy
+      },
+      {
+        path:"motto",
+        Component:OurMotto
+      },
+      {
+        path:"contact",
+        Component:ContactUs
+      },
+      {
+        path:"delivery",
+        Component:Delivery
+      },
+      {
+        path: "dashboard",
+        element: (
+          <PrivateRoute>
+            <CustomerDashboard />
+          </PrivateRoute>
+        ),
       },
       {
         path: "products/:id",
