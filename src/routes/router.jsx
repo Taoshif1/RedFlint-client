@@ -19,7 +19,7 @@ import OurMotto from "../pages/OurMotto";
 import ContactUs from "../pages/ContactUs";
 import Delivery from "../pages/Delivery";
 
-import CustomerDashboard from "../pages/CustomerDashboard";
+import CustomerDashboard from "../pages/CustomerOverview";
 import AdminOverview from "../pages/AdminOverview";
 import CustomerOverview from "../pages/CustomerOverview";
 
