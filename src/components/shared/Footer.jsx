@@ -9,40 +9,44 @@ const Footer = () => {
         <nav className="flex flex-col items-center text-center gap-2">
           <h6 className="footer-title text-lg font-bold">Services</h6>
 
-          <a className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200">
-            <Link to="return">
+          <Link 
+            to="/return" 
+            className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200"
+          >
             Return Policy
-            </Link>
-          </a>
+          </Link>
 
-          <a className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200">
-            <Link to="motto">
+          <Link 
+            to="/motto" 
+            className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200"
+          >
             Our Motto
-            </Link>
-          </a>
+          </Link>
         </nav>
 
         <nav className="flex flex-col items-center text-center gap-2">
           <h6 className="footer-title text-lg font-bold">Company</h6>
 
-          <a className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200">
-            <Link to="/about">
-              About Us
-            </Link>
-          </a>
+          <Link 
+            to="/about" 
+            className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200"
+          >
+            About Us
+          </Link>
 
-          <a className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200">
-            <Link to="/contact">
+          <Link 
+            to="/contact" 
+            className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200"
+          >
             Contact Us
-            </Link>
-            
-          </a>
+          </Link>
 
-          <a className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200">
-            <Link to="/delivery">
+          <Link 
+            to="/delivery" 
+            className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200"
+          >
             Delivery
-            </Link>
-          </a>
+          </Link>
         </nav>
 
         <nav className="flex flex-col items-center text-center gap-2">
@@ -96,7 +100,7 @@ const Footer = () => {
       </footer>
 
       <p className="pb-5 text-center text-primary text-sm border-t border-base-200/10 pt-4">
-        Copyright © {new Date().getFullYear()} - All right reserved
+        Copyright © {new Date().getFullYear()} - All rights reserved
       </p>
     </div>
   );
