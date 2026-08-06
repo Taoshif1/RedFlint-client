@@ -35,6 +35,7 @@ import AdminProducts from "../components/dashboard/admin/AdminProducts";
 import AddProduct from "../components/dashboard/admin/AddProduct";
 import Customers from "../components/dashboard/admin/Customers";
 import Settings from "../components/dashboard/admin/Settings";
+import AdminProfile from "../components/dashboard/admin/AdminProfile";
 
 export const router = createBrowserRouter([
   {
@@ -63,24 +64,24 @@ export const router = createBrowserRouter([
         Component: Register,
       },
       {
-        path:"about",
+        path: "about",
         Component: AboutUs,
       },
       {
-        path:"return",
-        Component:ReturnPolicy
+        path: "return",
+        Component: ReturnPolicy,
       },
       {
-        path:"motto",
-        Component:OurMotto
+        path: "motto",
+        Component: OurMotto,
       },
       {
-        path:"contact",
-        Component:ContactUs
+        path: "contact",
+        Component: ContactUs,
       },
       {
-        path:"delivery",
-        Component:Delivery
+        path: "delivery",
+        Component: Delivery,
       },
       {
         path: "dashboard",
@@ -169,6 +170,10 @@ export const router = createBrowserRouter([
       {
         path: "settings",
         Component: Settings,
+      },
+      {
+        path: "profile",
+        Component: AdminProfile,
       },
     ],
   },

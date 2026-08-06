@@ -227,9 +227,14 @@ client
 │  │  │  │  ├─ AdminDashboardSidebar.jsx
 │  │  │  │  ├─ AdminOrders.jsx
 │  │  │  │  ├─ AdminProducts.jsx
+│  │  │  │  ├─ AdminProfile.jsx
 │  │  │  │  ├─ AdminStats.jsx
 │  │  │  │  ├─ Customers.jsx
-│  │  │  │  └─ Settings.jsx
+│  │  │  │  ├─ LowStockAlert.jsx
+│  │  │  │  ├─ RecentOrders.jsx
+│  │  │  │  ├─ Settings.jsx
+│  │  │  │  ├─ TopProducts.jsx
+│  │  │  │  └─ WelcomeCard.jsx
 │  │  │  └─ customer
 │  │  │     ├─ Account.jsx
 │  │  │     ├─ AccountInfo.jsx
@@ -272,7 +277,11 @@ client
 │  │  ├─ useCart.js
 │  │  ├─ useOrder.js
 │  │  ├─ useOrders.js
+│  │  ├─ useProducts.js
+│  │  ├─ useSettings.js
+│  │  ├─ useSpecialProducts.js
 │  │  ├─ useUser.js
+│  │  ├─ useUsers.js
 │  │  └─ useWishlist.js
 │  ├─ index.css
 │  ├─ layouts
@@ -281,16 +290,21 @@ client
 │  │  └─ MainLayout.jsx
 │  ├─ main.jsx
 │  ├─ pages
+│  │  ├─ AboutUs.jsx
 │  │  ├─ AdminOverview.jsx
 │  │  ├─ Checkout.jsx
+│  │  ├─ ContactUs.jsx
 │  │  ├─ CustomerOverview.jsx
+│  │  ├─ Delivery.jsx
 │  │  ├─ ErrorPage.jsx
 │  │  ├─ Home.jsx
 │  │  ├─ Login.jsx
 │  │  ├─ OrderDetails.jsx
+│  │  ├─ OurMotto.jsx
 │  │  ├─ ProductDetails.jsx
 │  │  ├─ Products.jsx
 │  │  ├─ Register.jsx
+│  │  ├─ ReturnPolicy.jsx
 │  │  └─ SpecialEdition.jsx
 │  ├─ routes
 │  │  ├─ AdminRoute.jsx
@@ -377,5 +391,3 @@ JWT_SECRET=
 REDFLINT aims to establish a strong digital presence that reflects the quality, craftsmanship & sophistication of its fashion collections while providing customers with a seamless online shopping experience.
 
 ---
-
-© REDFLINT — Premium Menswear.

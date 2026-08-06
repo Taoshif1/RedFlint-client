@@ -42,7 +42,7 @@ const AdminDashboardHeader = ({ sidebarOpen, setSidebarOpen }) => {
           />
         </div>
 
-        <Link to="/dashboard/profile" className="cursor-pointer">
+        <Link to="/admin/profile" className="cursor-pointer">
           <div className="avatar">
             <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
               <img src={avatar} alt={user?.name || "User"} />
@@ -50,12 +50,15 @@ const AdminDashboardHeader = ({ sidebarOpen, setSidebarOpen }) => {
           </div>
         </Link>
 
-        <button className="relative text-xl text-white hover:text-red-500 transition duration-300 cursor-pointer">
+        <Link
+          to="/admin/notifications"
+          className="relative text-xl text-white hover:text-red-500 transition duration-300 cursor-pointer"
+        >
           <FaBell />
           <span className="absolute -top-2 -right-2 bg-red-600 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white">
             3
           </span>
-        </button>
+        </Link>
       </div>
     </header>
   );
