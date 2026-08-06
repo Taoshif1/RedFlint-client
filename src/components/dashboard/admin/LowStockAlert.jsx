@@ -1,72 +1,64 @@
-import BluePlaid from "../../../assets/Blue_Plaid.png";
-import StoneGray from "../../../assets/Stone_Gray.png";
-import DesertSand from "../../../assets/Desert_Sand.png";
-
-const lowStock = [
-  {
-    id: 1,
-    name: "Blue Plaid Shirt",
-    stock: 3,
-    image: BluePlaid,
-  },
-  {
-    id: 2,
-    name: "Stone Gray Shirt",
-    stock: 5,
-    image: StoneGray,
-  },
-  {
-    id: 3,
-    name: "Desert Sand Shirt",
-    stock: 2,
-    image: DesertSand,
-  },
-];
+import { Link } from "react-router";
+import useProducts from "../../../hooks/useProducts";
 
 const LowStockAlert = () => {
+  const { products, loading } = useProducts();
+
+  if (loading) {
+    return (
+      <div className="card bg-base-200">
+        <div className="card-body">
+          <span className="loading loading-spinner"></span>
+        </div>
+      </div>
+    );
+  }
+
+  const lowStock = products
+    .filter((product) => product.totalStock <= 10)
+    .sort((a, b) => a.totalStock - b.totalStock);
+
   return (
-    <section className="mt-8 bg-[#181818] rounded-2xl border border-zinc-800 shadow-md">
-      <div className="p-6 border-b border-zinc-800 flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">
-          Low Stock Alert
-        </h2>
+    <div className="card bg-base-200 border border-base-300 shadow">
+      <div className="card-body">
+        <div className="flex justify-between items-center">
+          <h2 className="card-title">Low Stock Alert</h2>
 
-        <button className="btn btn-sm btn-outline btn-error">
-          Manage Inventory
-        </button>
-      </div>
+          <Link to="/admin/products" className="text-primary text-sm">
+            View Products
+          </Link>
+        </div>
 
-      <div className="divide-y divide-zinc-800">
-        {lowStock.map((product) => (
-          <div
-            key={product.id}
-            className="flex items-center justify-between p-5 hover:bg-[#202020] transition"
-          >
-            <div className="flex items-center gap-4">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-16 h-16 rounded-lg object-cover"
-              />
+        {lowStock.length === 0 ? (
+          <p className="text-success">🎉 All products have sufficient stock.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Stock</th>
+                </tr>
+              </thead>
 
-              <div>
-                <h3 className="font-semibold text-white">
-                  {product.name}
-                </h3>
+              <tbody>
+                {lowStock.slice(0, 5).map((product) => (
+                  <tr key={product._id}>
+                    <td>{product.title}</td>
 
-                <p className="text-sm text-red-400">
-                  Only {product.stock} left
-                </p>
-              </div>
-            </div>
-
-            <button className="btn btn-sm btn-error">
-              Restock
-            </button>
+                    <td>
+                      <span className="badge badge-error">
+                        {product.totalStock}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        ))}
+        )}
       </div>
-    </section>
+    </div>
   );
 };
 

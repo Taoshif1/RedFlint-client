@@ -1,23 +1,27 @@
-import { FaUserShield } from "react-icons/fa";
+import useUser from "../../../hooks/useUser";
 
 const WelcomeCard = () => {
+  const { user } = useUser();
+
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
   return (
-    <div className="bg-[#181818] border border-zinc-800 rounded-2xl p-8 mb-8">
-      <div className="flex items-center justify-between">
+    <div className="card bg-base-200 border border-base-300 shadow">
+      <div className="card-body">
+        <p className="text-sm text-base-content/60">{today}</p>
 
-        <div>
-          <p className="text-gray-400 text-2xl ">
-            Welcome Back, <span className="text-red-500 text-3xl">Admin</span>
-          </p>
-          <p className="text-gray-400 mt-3">
-            Here's what's happening in your store today.
-          </p>
-        </div>
+        <h2 className="text-3xl font-bold mt-2">Welcome back,</h2>
 
-        <div className="hidden md:flex w-20 h-20 rounded-full bg-red-600 items-center justify-center">
-          <FaUserShield className="text-4xl text-white" />
-        </div>
+        <h1 className="text-4xl font-black text-primary">{user?.name}</h1>
 
+        <p className="text-base-content/70">
+          Manage your store, orders and customers from one place.
+        </p>
       </div>
     </div>
   );

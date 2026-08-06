@@ -11,9 +11,8 @@ export const uploadImage = async (imageFile) => {
 
   const { data } = await axios.post(
     `https://api.imgbb.com/1/upload?key=${imageKey}`,
-    formData
+    formData,
   );
 
-//   console.log(data);
   return data.data.url;
 };

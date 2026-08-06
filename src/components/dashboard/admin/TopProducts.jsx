@@ -1,88 +1,50 @@
-import BluePlaid from "../../../assets/Blue_Plaid.png";
-import StoneGray from "../../../assets/Stone_Gray.png";
-import DesertSand from "../../../assets/Desert_Sand.png";
-
-const products = [
-  {
-    id: 1,
-    name: "Blue Plaid Shirt",
-    price: "$89.99",
-    sold: 124,
-    stock: 32,
-    image: BluePlaid,
-  },
-  {
-    id: 2,
-    name: "Stone Gray Shirt",
-    price: "$74.99",
-    sold: 98,
-    stock: 18,
-    image: StoneGray,
-  },
-  {
-    id: 3,
-    name: "Desert Sand Shirt",
-    price: "$84.99",
-    sold: 86,
-    stock: 12,
-    image: DesertSand,
-  },
-];
+import { Link } from "react-router";
+import useProducts from "../../../hooks/useProducts";
 
 const TopProducts = () => {
-  return (
-    <section className="mt-8 bg-[#181818] rounded-2xl border border-zinc-800 shadow-md">
-      <div className="p-6 border-b border-zinc-800 flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">
-          Top Selling Products
-        </h2>
+  const { products, loading } = useProducts();
 
-        <button className="btn btn-sm btn-outline btn-error">
-          View All
-        </button>
+  if (loading) {
+    return (
+      <div className="card bg-base-200 border border-base-300 shadow">
+        <div className="card-body">
+          <span className="loading loading-spinner"></span>
+        </div>
       </div>
+    );
+  }
 
-      <div className="grid gap-6 p-6 sm:grid-cols-2 lg:grid-cols-3">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="bg-[#242424] border border-zinc-800 rounded-xl overflow-hidden hover:border-red-500 transition-all duration-300"
-          >
-            <figure className="h-60 overflow-hidden">
-              <img
-                src={product.image}
-                alt={product.name}
-                className="w-full h-full object-cover hover:scale-105 transition duration-300"
-              />
-            </figure>
+  const featured = products.filter((product) => product.isFeatured).slice(0, 5);
 
-            <div className="p-5">
-              <h3 className="text-lg font-bold text-white">
-                {product.name}
-              </h3>
+  return (
+    <div className="card bg-base-200 border border-base-300 shadow">
+      <div className="card-body">
+        <div className="flex justify-between items-center">
+          <h2 className="card-title">Featured Products</h2>
 
-              <p className="text-red-500 font-semibold mt-2">
-                {product.price}
-              </p>
+          <Link to="/admin/products" className="text-primary text-sm">
+            View All
+          </Link>
+        </div>
 
-              <div className="flex justify-between mt-4 text-sm text-gray-400">
-                <span>
-                  Sold: <span className="text-white">{product.sold}</span>
-                </span>
+        <div className="space-y-4">
+          {featured.map((product) => (
+            <div
+              key={product._id}
+              className="flex justify-between items-center"
+            >
+              <div>
+                <h3 className="font-semibold">{product.title}</h3>
 
-                <span>
-                  Stock: <span className="text-green-400">{product.stock}</span>
-                </span>
+                <p className="text-sm opacity-70">{product.category}</p>
               </div>
 
-              <button className="btn btn-error btn-sm w-full mt-5">
-                View Product
-              </button>
+              <span className="badge badge-primary">৳{product.offerPrice}</span>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </section>
+    </div>
   );
 };
 
