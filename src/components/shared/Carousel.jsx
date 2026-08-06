@@ -1,7 +1,8 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import { motion } from "framer-motion"; 
+import { motion } from "framer-motion";
+import { Link } from "react-router";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -62,7 +63,7 @@ const HeroSection = () => {
                 }}
               >
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/30" />
+                <div className="absolute inset-0 bg-black/40"></div>
 
                 {/* Content */}
                 <div className="relative z-10 flex h-full items-center px-6 md:px-20">
@@ -95,6 +96,21 @@ const HeroSection = () => {
                     </motion.p>
                   </div>
                 </div>
+
+                {/* View Collection button */}
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={isActive ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.5, delay: 0.6 }}
+                  className="absolute bottom-5 right-5 md:bottom-8 md:right-8 z-20"
+                >
+                  <Link
+                    to="/products"
+                    className="inline-flex items-center justify-center rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:bg-red-700"
+                  >
+                    View Collection
+                  </Link>
+                </motion.div>
               </div>
             )}
           </SwiperSlide>
