@@ -9,15 +9,15 @@ const Footer = () => {
         <nav className="flex flex-col items-center text-center gap-2">
           <h6 className="footer-title text-lg font-bold">Services</h6>
 
-          <Link 
-            to="/return" 
+          <Link
+            to="/return"
             className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200"
           >
             Return Policy
           </Link>
 
-          <Link 
-            to="/motto" 
+          <Link
+            to="/motto"
             className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200"
           >
             Our Motto
@@ -27,22 +27,22 @@ const Footer = () => {
         <nav className="flex flex-col items-center text-center gap-2">
           <h6 className="footer-title text-lg font-bold">Company</h6>
 
-          <Link 
-            to="/about" 
+          <Link
+            to="/about"
             className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200"
           >
             About Us
           </Link>
 
-          <Link 
-            to="/contact" 
+          <Link
+            to="/contact"
             className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200"
           >
             Contact Us
           </Link>
 
-          <Link 
-            to="/delivery" 
+          <Link
+            to="/delivery"
             className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200"
           >
             Delivery
@@ -54,7 +54,13 @@ const Footer = () => {
 
           <div className="grid grid-flow-col gap-6">
             {/* Instagram */}
-            <a className="text-red-500 hover:text-white active:text-white hover:scale-105 transition-all duration-200 cursor-pointer">
+            <a
+              href="https://www.instagram.com/redflintclothing"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit our Instagram page"
+              className="text-red-500 hover:text-white active:text-white hover:scale-105 transition-all duration-200 cursor-pointer"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -67,7 +73,13 @@ const Footer = () => {
             </a>
 
             {/* YouTube */}
-            <a className="text-red-500 hover:text-white active:text-white hover:scale-105 transition-all duration-200 cursor-pointer">
+            <a
+              href="https://www.youtube.com/@redflintbd"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit our YouTube channel"
+              className="text-red-500 hover:text-white active:text-white hover:scale-105 transition-all duration-200 cursor-pointer"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -75,12 +87,18 @@ const Footer = () => {
                 viewBox="0 0 24 24"
                 className="fill-current"
               >
-                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"></path>
+                <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
               </svg>
             </a>
 
             {/* Facebook */}
-            <a className="text-red-500 hover:text-white active:text-white hover:scale-105 transition-all duration-200 cursor-pointer">
+            <a
+              href="https://www.facebook.com/redflintbd"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit our Facebook page"
+              className="text-red-500 hover:text-white active:text-white hover:scale-105 transition-all duration-200 cursor-pointer"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -88,7 +106,7 @@ const Footer = () => {
                 viewBox="0 0 24 24"
                 className="fill-current"
               >
-                <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"></path>
+                <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z" />
               </svg>
             </a>
           </div>
