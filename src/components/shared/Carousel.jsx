@@ -7,9 +7,9 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
-import hero1 from "../../assets/Hero1.jpg";
-import hero2 from "../../assets/hero2.jpg";
-import hero3 from "../../assets/hero3.webp";
+import hero1 from "../../assets/hero1.webp";
+import hero2 from "../../assets/hero2.png";
+import hero3 from "../../assets/hero3.png";
 
 const slides = [
   {

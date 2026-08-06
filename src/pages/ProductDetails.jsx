@@ -61,9 +61,9 @@ const ProductDetails = () => {
         <ProductInfo product={product} />
       </div>
 
-      <SizeGuide />
-
       <ProductDescription description={product.description} />
+
+      <SizeGuide />
     </div>
   );
 };
