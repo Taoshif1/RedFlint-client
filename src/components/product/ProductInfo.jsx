@@ -89,10 +89,6 @@ const ProductInfo = ({ product }) => {
 
           <span className="badge badge-primary">{product.category}</span>
 
-          {product.isFeatured && (
-            <span className="badge badge-success">Featured</span>
-          )}
-
           {product.isSpecial && (
             <span className="badge badge-secondary">Special Edition</span>
           )}
