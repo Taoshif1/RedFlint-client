@@ -195,7 +195,6 @@ npm run preview
 
 ## 📁 Folder Structure
 
-```
 client
 ├─ eslint.config.js
 ├─ index.html
@@ -310,12 +309,16 @@ client
 │  │  ├─ AdminRoute.jsx
 │  │  ├─ PrivateRoute.jsx
 │  │  └─ router.jsx
+│  ├─ test
+│  │  ├─ product
+│  │  │  ├─ QuantitySelector.test.jsx
+│  │  │  └─ SizeSelector.test.jsx
+│  │  ├─ setup.js
+│  │  └─ setup.test.js
 │  └─ utils
 │     └─ uploadImage.js
 ├─ vercel.json
 └─ vite.config.js
-
-```
 
 ---
 
