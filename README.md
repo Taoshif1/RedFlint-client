@@ -195,7 +195,7 @@ npm run preview
 
 ## 📁 Folder Structure
 
-```bash
+```
 client
 ├─ eslint.config.js
 ├─ index.html
@@ -207,17 +207,12 @@ client
 ├─ README.md
 ├─ src
 │  ├─ assets
-│  │  ├─ Blue_Plaid.png
-│  │  ├─ Desert_Sand.png
 │  │  ├─ hero.png
-│  │  ├─ Hero1.jpg
-│  │  ├─ hero2.jpg
-│  │  ├─ hero3.webp
-│  │  ├─ Indigo_Blue.png
-│  │  ├─ Mint_Pattern.jpg
+│  │  ├─ hero1.webp
+│  │  ├─ hero2.png
+│  │  ├─ hero3.png
 │  │  ├─ react.svg
 │  │  ├─ size-guide.jpg
-│  │  ├─ Stone_Gray.png
 │  │  └─ vite.svg
 │  ├─ components
 │  │  ├─ dashboard
@@ -226,10 +221,12 @@ client
 │  │  │  │  ├─ AdminDashboardHeader.jsx
 │  │  │  │  ├─ AdminDashboardSidebar.jsx
 │  │  │  │  ├─ AdminOrders.jsx
+│  │  │  │  ├─ AdminProductDetails.jsx
 │  │  │  │  ├─ AdminProducts.jsx
 │  │  │  │  ├─ AdminProfile.jsx
 │  │  │  │  ├─ AdminStats.jsx
 │  │  │  │  ├─ Customers.jsx
+│  │  │  │  ├─ EditProduct.jsx
 │  │  │  │  ├─ LowStockAlert.jsx
 │  │  │  │  ├─ RecentOrders.jsx
 │  │  │  │  ├─ Settings.jsx
@@ -256,10 +253,12 @@ client
 │  │     ├─ AboutSection.jsx
 │  │     ├─ Carousel.jsx
 │  │     ├─ FashionBanner.jsx
+│  │     ├─ FeaturedProducts.jsx
 │  │     ├─ Footer.jsx
 │  │     ├─ Logo.jsx
 │  │     ├─ Navbar.jsx
 │  │     ├─ Product.jsx
+│  │     ├─ ScrollToTop.jsx
 │  │     ├─ SearchBar.jsx
 │  │     └─ ShoppingCart.jsx
 │  ├─ context
@@ -275,6 +274,7 @@ client
 │  │  ├─ useAuth.js
 │  │  ├─ useAxiosSecure.js
 │  │  ├─ useCart.js
+│  │  ├─ useFeaturedProducts.js
 │  │  ├─ useOrder.js
 │  │  ├─ useOrders.js
 │  │  ├─ useProducts.js
