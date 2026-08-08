@@ -13,33 +13,34 @@ const menus = [
   {
     name: "Dashboard",
     path: "/admin",
-    icon: <FaChartPie />,
+    icon: FaChartPie,
     end: true,
   },
   {
     name: "Orders",
     path: "/admin/orders",
-    icon: <FaClipboardList />,
+    icon: FaClipboardList,
   },
   {
     name: "Products",
     path: "/admin/products",
-    icon: <FaBoxOpen />,
+    icon: FaBoxOpen,
+    end: true,
   },
   {
     name: "Add Product",
     path: "/admin/products/add",
-    icon: <FaPlusSquare />,
+    icon: FaPlusSquare,
   },
   {
     name: "Customers",
     path: "/admin/customers",
-    icon: <FaUsers />,
+    icon: FaUsers,
   },
   {
     name: "Settings",
     path: "/admin/settings",
-    icon: <FaCog />,
+    icon: FaCog,
   },
 ];
 
@@ -50,31 +51,37 @@ const AdminDashboardSidebar = ({ sidebarOpen }) => {
         sidebarOpen ? "w-64" : "w-0"
       }`}
     >
-      <div className="w-64 h-full px-5 py-8">
-        <ul className="p-6 space-y-5">
-          <li>
-            <NavLink to="/admin">Dashboard</NavLink>
-          </li>
+      <div className="w-64 p-4">
+        <div className="mb-6 px-3">
+          <h2 className="text-lg font-bold text-white">RedFlint Admin</h2>
 
-          <li>
-            <NavLink to="/admin/orders">Orders</NavLink>
-          </li>
+          <p className="text-xs text-zinc-500">Store Management</p>
+        </div>
 
-          <li>
-            <NavLink to="/admin/products">Products</NavLink>
-          </li>
+        <ul className="space-y-2">
+          {menus.map((menu) => {
+            const Icon = menu.icon;
 
-          <li>
-            <NavLink to="/admin/products/add">Add Product</NavLink>
-          </li>
+            return (
+              <li key={menu.path}>
+                <NavLink
+                  to={menu.path}
+                  end={menu.end}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
+                      isActive
+                        ? "bg-primary text-white"
+                        : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                    }`
+                  }
+                >
+                  <Icon className="text-lg" />
 
-          <li>
-            <NavLink to="/admin/customers">Customers</NavLink>
-          </li>
-
-          <li>
-            <NavLink to="/admin/settings">Settings</NavLink>
-          </li>
+                  <span>{menu.name}</span>
+                </NavLink>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </aside>

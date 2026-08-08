@@ -53,9 +53,12 @@ const ProductDetails = () => {
       {/* Product */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
         <ProductGallery
-          product={product}
           images={product.images}
           title={product.title}
+          season={product.season}
+          category={product.category}
+          isFeatured={product.isFeatured}
+          isSpecial={product.isSpecial}
         />
 
         <ProductInfo product={product} />

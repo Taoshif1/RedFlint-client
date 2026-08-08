@@ -321,18 +321,19 @@ const AdminProducts = () => {
 
                       <td>
                         <div className="flex justify-center gap-2">
-                          <Link to={`/products/${product._id}`}>
-                            <button className="btn btn-xs btn-info">
-                              View
-                            </button>
+                          <Link
+                            to={`/admin/products/${product._id}`}
+                            className="btn btn-xs btn-info"
+                          >
+                            View
                           </Link>
 
-                          <button
+                          <Link
+                            to={`/admin/products/${product._id}/edit`}
                             className="btn btn-xs btn-warning"
-                            onClick={() => console.log(product)}
                           >
                             Edit
-                          </button>
+                          </Link>
 
                           <button
                             onClick={() => handleDelete(product._id)}

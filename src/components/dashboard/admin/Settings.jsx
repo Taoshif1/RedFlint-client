@@ -89,6 +89,7 @@ const Settings = () => {
                   onChange={handleChange}
                   className="input input-bordered"
                   placeholder="Store Name"
+                  required
                 />
 
                 <input
@@ -97,6 +98,7 @@ const Settings = () => {
                   onChange={handleChange}
                   className="input input-bordered"
                   placeholder="Support Email"
+                  required
                 />
 
                 <input
@@ -161,11 +163,33 @@ const Settings = () => {
                   className="toggle toggle-primary"
                 />
               </label>
+
+              <div className="alert alert-warning py-3 px-4 mt-3">
+                <div>
+                  <h3 className="font-bold">Maintenance Mode</h3>
+
+                  <p className="text-sm">
+                    When enabled, customers should not be able to place new
+                    orders while you perform store maintenance.
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div className="flex justify-end">
-              <button type="submit" className="btn btn-primary">
-                Save Changes
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn btn-primary min-w-32"
+              >
+                {loading ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
               </button>
             </div>
           </form>

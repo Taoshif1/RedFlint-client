@@ -36,6 +36,8 @@ import AddProduct from "../components/dashboard/admin/AddProduct";
 import Customers from "../components/dashboard/admin/Customers";
 import Settings from "../components/dashboard/admin/Settings";
 import AdminProfile from "../components/dashboard/admin/AdminProfile";
+import EditProduct from "../components/dashboard/admin/EditProduct";
+import AdminProductDetails from "../components/dashboard/admin/AdminProductDetails";
 
 export const router = createBrowserRouter([
   {
@@ -174,6 +176,14 @@ export const router = createBrowserRouter([
       {
         path: "profile",
         Component: AdminProfile,
+      },
+      {
+        path: "products/:id",
+        Component: AdminProductDetails,
+      },
+      {
+        path: "products/:id/edit",
+        Component: EditProduct,
       },
     ],
   },
