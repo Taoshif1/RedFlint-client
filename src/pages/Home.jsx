@@ -2,6 +2,7 @@ import FashionBanner from "../components/shared/FashionBanner";
 import HeroSection from "../components/shared/Carousel";
 import FeaturedProducts from "../components/shared/FeaturedProducts";
 import ShoppingCart from "../components/shared/ShoppingCart";
+import CustomerReviews from "../components/shared/CustomerReviews";
 
 const Home = () => {
   return (
@@ -11,6 +12,8 @@ const Home = () => {
       <HeroSection />
 
       <FeaturedProducts />
+
+      <CustomerReviews />
 
       <ShoppingCart />
     </>

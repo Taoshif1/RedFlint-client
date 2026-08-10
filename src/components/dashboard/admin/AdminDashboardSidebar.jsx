@@ -5,6 +5,7 @@ import {
   FaUsers,
   FaPlusSquare,
   FaCog,
+  FaStar,
 } from "react-icons/fa";
 
 import { NavLink } from "react-router";
@@ -20,6 +21,11 @@ const menus = [
     name: "Orders",
     path: "/admin/orders",
     icon: FaClipboardList,
+  },
+  {
+    name: "Reviews",
+    path: "/admin/reviews",
+    icon: FaStar,
   },
   {
     name: "Products",
