@@ -17,6 +17,13 @@ const Footer = () => {
           </Link>
 
           <Link
+            to="/track-order"
+            className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200"
+          >
+            Track Order
+          </Link>
+
+          <Link
             to="/motto"
             className="link link-hover text-primary hover:text-white active:text-white hover:scale-105 transition-all duration-200"
           >

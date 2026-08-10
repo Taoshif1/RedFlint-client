@@ -1,5 +1,7 @@
 import { createBrowserRouter } from "react-router";
 
+import TrackOrder from "../pages/TrackOrder";
+
 import MainLayout from "../layouts/MainLayout";
 import CustomerDashboardLayout from "../layouts/CustomerDashboardLayout";
 import AdminDashboardLayout from "../layouts/AdminDashboardLayout";
@@ -100,6 +102,10 @@ export const router = createBrowserRouter([
       {
         path: "checkout",
         Component: Checkout,
+      },
+      {
+        path: "track-order",
+        Component: TrackOrder,
       },
     ],
   },

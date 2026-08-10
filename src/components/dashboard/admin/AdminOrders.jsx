@@ -9,6 +9,7 @@ import {
   Clock,
   XCircle,
   AlertCircle,
+  Truck,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import useAdminOrders from "../../../hooks/useAdminOrders";
@@ -35,6 +36,11 @@ const getStatusBadge = (status) => {
       return {
         badge: "bg-rose-500/10 text-rose-400 border-rose-500/20",
         icon: <XCircle className="w-3.5 h-3.5 mr-1" />,
+      };
+    case "shipped":
+      return {
+        badge: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+        icon: <Truck className="w-3.5 h-3.5 mr-1" />,
       };
     default:
       return {
