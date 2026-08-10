@@ -321,7 +321,6 @@ const Checkout = () => {
         if (buyNowItem) {
           orderData.products = items.map((item) => ({
             productId: item.productId,
-            orderSource: buyNowItem ? "buy_now" : "cart",
             size: item.size,
             quantity: item.quantity,
           }));
@@ -342,12 +341,11 @@ const Checkout = () => {
           ...commonData,
 
           email: email.trim(),
+          orderSource: buyNowItem ? "buy_now" : "cart",
 
           products: items.map((item) => ({
             productId: item.productId,
-
             size: item.size,
-
             quantity: item.quantity,
           })),
         };

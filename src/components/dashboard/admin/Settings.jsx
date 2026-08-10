@@ -13,6 +13,7 @@ const Settings = () => {
     storeName: "",
     supportEmail: "",
     supportPhone: "",
+    whatsappNumber: "",
     currency: "BDT",
     shippingFee: 0,
     freeShipping: 0,
@@ -25,6 +26,7 @@ const Settings = () => {
         storeName: settings.storeName || "",
         supportEmail: settings.supportEmail || "",
         supportPhone: settings.supportPhone || "",
+        whatsappNumber: settings.whatsappNumber || "",
         currency: settings.currency || "BDT",
         shippingFee: settings.shippingFee || 0,
         freeShipping: settings.freeShipping || 0,
@@ -107,6 +109,15 @@ const Settings = () => {
                   onChange={handleChange}
                   className="input input-bordered"
                   placeholder="Support Phone"
+                />
+
+                <input
+                  type="tel"
+                  name="whatsappNumber"
+                  value={formData.whatsappNumber}
+                  onChange={handleChange}
+                  className="input input-bordered"
+                  placeholder="WhatsApp Number"
                 />
 
                 <select

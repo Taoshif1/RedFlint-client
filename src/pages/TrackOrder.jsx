@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useLocation } from "react-router";
 import toast from "react-hot-toast";
+import { FaWhatsapp } from "react-icons/fa";
+
+import useSettings from "../hooks/useSettings";
+import { buildWhatsAppUrl } from "../utils/whatsapp";
 
 import { Check, Package, Search, Truck, XCircle } from "lucide-react";
 
@@ -22,6 +26,8 @@ const TrackOrder = () => {
   const [order, setOrder] = useState(null);
 
   const [loading, setLoading] = useState(false);
+
+  const { settings } = useSettings();
 
   const handleTrack = async (event) => {
     event.preventDefault();
@@ -60,6 +66,16 @@ const TrackOrder = () => {
   const currentIndex = TRACKING_STEPS.indexOf(currentStatus);
 
   const cancelled = currentStatus === "Cancelled";
+
+  const whatsappNumber = settings?.whatsappNumber || settings?.supportPhone;
+
+  const whatsappUrl =
+    order && whatsappNumber
+      ? buildWhatsAppUrl(
+          whatsappNumber,
+          `Hi RedFlint, I need help regarding my order ${order.orderNumber}.`,
+        )
+      : "";
 
   return (
     <div className="max-w-5xl mx-auto px-4 md:px-6 py-12">
@@ -159,6 +175,17 @@ const TrackOrder = () => {
                   </span>
                 </div>
               </div>
+              {whatsappUrl && (
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-success w-full"
+                >
+                  <FaWhatsapp size={20} />
+                  Contact Support About This Order
+                </a>
+              )}
             </div>
           </div>
 
