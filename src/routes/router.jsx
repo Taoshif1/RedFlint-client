@@ -40,6 +40,7 @@ import Settings from "../components/dashboard/admin/Settings";
 import AdminProfile from "../components/dashboard/admin/AdminProfile";
 import EditProduct from "../components/dashboard/admin/EditProduct";
 import AdminProductDetails from "../components/dashboard/admin/AdminProductDetails";
+import AdminReviews from "../components/dashboard/admin/AdminReviews";
 
 export const router = createBrowserRouter([
   {
@@ -106,6 +107,10 @@ export const router = createBrowserRouter([
       {
         path: "track-order",
         Component: TrackOrder,
+      },
+      {
+        path: "reviews",
+        Component: AdminReviews,
       },
     ],
   },

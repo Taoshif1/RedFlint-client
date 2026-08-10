@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+
+import { Link, useParams } from "react-router";
+
 import useAxiosSecure from "../hooks/useAxiosSecure";
-import { Link } from "react-router";
 
 import ProductGallery from "../components/product/ProductGallery";
 import ProductInfo from "../components/product/ProductInfo";
 import SizeGuide from "../components/product/SizeGuide";
 import ProductDescription from "../components/product/ProductDescription";
+import ProductReviews from "../components/product/ProductReviews";
 
 const ProductDetails = () => {
   const { id } = useParams();
+
   const axiosSecure = useAxiosSecure();
 
   const [product, setProduct] = useState(null);
@@ -23,12 +26,14 @@ const ProductDetails = () => {
       .catch((err) => {
         console.error(err);
       });
-  }, [id]);
+  }, [axiosSecure, id]);
 
   if (!product) {
     return (
       <div className="max-w-7xl mx-auto px-6 py-20 text-center">
-        <h2 className="text-3xl font-bold">Loading...</h2>
+        <span className="loading loading-spinner loading-lg" />
+
+        <h2 className="text-xl font-semibold mt-4">Loading product...</h2>
       </div>
     );
   }
@@ -36,6 +41,7 @@ const ProductDetails = () => {
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
       {/* Breadcrumb */}
+
       <div className="breadcrumbs text-sm mb-8">
         <ul>
           <li>
@@ -51,6 +57,7 @@ const ProductDetails = () => {
       </div>
 
       {/* Product */}
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
         <ProductGallery
           images={product.images}
@@ -67,6 +74,8 @@ const ProductDetails = () => {
       <ProductDescription description={product.description} />
 
       <SizeGuide />
+
+      <ProductReviews productId={product._id} productTitle={product.title} />
     </div>
   );
 };
