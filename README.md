@@ -195,7 +195,20 @@ npm run preview
 
 ## 📁 Folder Structure
 
+
+```bash
 client
+├─ coverage
+│  ├─ base.css
+│  ├─ block-navigation.js
+│  ├─ clover.xml
+│  ├─ coverage-final.json
+│  ├─ favicon.png
+│  ├─ index.html
+│  ├─ prettify.css
+│  ├─ prettify.js
+│  ├─ sort-arrow-sprite.png
+│  └─ sorter.js
 ├─ eslint.config.js
 ├─ index.html
 ├─ package-lock.json
@@ -316,10 +329,12 @@ client
 │  │  ├─ setup.js
 │  │  └─ setup.test.js
 │  └─ utils
+│     ├─ guestCart.js
 │     └─ uploadImage.js
 ├─ vercel.json
 └─ vite.config.js
 
+```
 ---
 
 ## Authentication Flow

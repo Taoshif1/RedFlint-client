@@ -1,201 +1,739 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import useAxiosSecure from "../hooks/useAxiosSecure";
+import { useEffect, useMemo, useState } from "react";
+
+import { Link, useLocation } from "react-router";
+
 import toast from "react-hot-toast";
+
+import useAxiosSecure from "../hooks/useAxiosSecure";
+
+import useAuth from "../hooks/useAuth";
+
+import useCart from "../hooks/useCart";
+
+import { getGuestCart } from "../utils/guestCart";
+
+// =====================================
+// Payment Configuration
+// =====================================
+
+// IMPORTANT:
+// Replace Nagad and Rocket numbers
+// with the client's actual numbers.
+
+const PAYMENT_METHODS = {
+  bkash: {
+    label: "bKash",
+
+    number: "01975777949",
+
+    description:
+      "Pay the full order amount using bKash and enter the Transaction ID below.",
+  },
+
+  nagad: {
+    label: "Nagad",
+
+    number: "ADD_NAGAD_NUMBER",
+
+    description:
+      "Pay the full order amount using Nagad and enter the Transaction ID below.",
+  },
+
+  rocket: {
+    label: "Rocket",
+
+    number: "ADD_ROCKET_NUMBER",
+
+    description:
+      "Pay the full order amount using Rocket and enter the Transaction ID below.",
+  },
+};
 
 const Checkout = () => {
   const axiosSecure = useAxiosSecure();
-  const navigate = useNavigate();
 
-  const [cart, setCart] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const location = useLocation();
+
+  const { user, loading: authLoading } = useAuth();
+
+  const { refetch: refetchCart, clearCart } = useCart();
+
+  const buyNowItem = location.state?.buyNowItem || null;
+
+  const [items, setItems] = useState([]);
+
+  const [pageLoading, setPageLoading] = useState(true);
+
+  const [placingOrder, setPlacingOrder] = useState(false);
+
+  const [placedOrderId, setPlacedOrderId] = useState("");
+
+  // =====================================
+  // Customer Information
+  // =====================================
 
   const [name, setName] = useState("");
+
   const [phone, setPhone] = useState("");
+
+  const [email, setEmail] = useState("");
+
   const [address, setAddress] = useState("");
+
+  const [city, setCity] = useState("");
+
+  const [postalCode, setPostalCode] = useState("");
+
+  // =====================================
+  // Payment
+  // =====================================
+
+  const [paymentMethod, setPaymentMethod] = useState("bkash");
+
   const [transactionId, setTransactionId] = useState("");
 
+  // =====================================
+  // Store Settings
+  // =====================================
+
+  const [settings, setSettings] = useState({
+    shippingFee: 120,
+
+    freeShipping: 3000,
+  });
+
+  // =====================================
+  // Load Settings
+  // =====================================
+
   useEffect(() => {
-    axiosSecure.get("/cart").then((res) => {
-        console.log("Cart API: ", res.data)
-      setCart(res.data);
-    });
+    axiosSecure
+      .get("/settings")
+      .then((res) => {
+        setSettings(res.data);
+      })
+      .catch((error) => {
+        console.error("Settings error:", error);
+      });
   }, [axiosSecure]);
 
-  const subtotal = cart.reduce(
-    (sum, item) =>
-      sum + Number(item.offerPrice ?? item.price ?? 0) * Number(item.quantity),
-    0,
+  // =====================================
+  // Load Checkout Data
+  // =====================================
+
+  useEffect(() => {
+    if (authLoading) return;
+
+    const loadCheckout = async () => {
+      setPageLoading(true);
+
+      try {
+        // =================================
+        // Buy Now
+        // =================================
+
+        if (buyNowItem) {
+          setItems([buyNowItem]);
+        }
+
+        // =================================
+        // Registered Customer
+        // =================================
+
+        if (user?.email) {
+          setEmail(user.email || "");
+
+          setName(user.displayName || "");
+
+          // Normal cart checkout
+          if (!buyNowItem) {
+            const cartRes = await axiosSecure.get("/cart");
+
+            setItems(cartRes.data);
+          }
+
+          // Get MongoDB profile/address
+          try {
+            const userRes = await axiosSecure.get(`/users/${user.email}`);
+
+            const userData = userRes.data;
+
+            if (userData?.name) {
+              setName(userData.name);
+            }
+
+            if (userData?.phone) {
+              setPhone(userData.phone === "Not Provided" ? "" : userData.phone);
+            }
+
+            const defaultAddress =
+              userData?.addresses?.find((item) => item.isDefault) ||
+              userData?.addresses?.[0];
+
+            if (defaultAddress) {
+              setAddress(defaultAddress.address || "");
+
+              setCity(defaultAddress.city || "");
+
+              setPostalCode(defaultAddress.postalCode || "");
+
+              if (defaultAddress.receiver) {
+                setName(defaultAddress.receiver);
+              }
+
+              if (defaultAddress.phone) {
+                setPhone(defaultAddress.phone);
+              }
+            }
+          } catch (error) {
+            console.error("Profile load error:", error);
+          }
+        }
+
+        // =================================
+        // Guest Customer
+        // =================================
+
+        if (!user) {
+          if (!buyNowItem) {
+            setItems(getGuestCart());
+          }
+        }
+      } catch (error) {
+        console.error("Checkout load error:", error);
+
+        toast.error("Failed to load checkout");
+      } finally {
+        setPageLoading(false);
+      }
+    };
+
+    loadCheckout();
+  }, [user, authLoading, buyNowItem, axiosSecure]);
+
+  // =====================================
+  // Totals shown to customer
+  // Backend recalculates these again.
+  // =====================================
+
+  const subtotal = useMemo(
+    () =>
+      items.reduce(
+        (sum, item) =>
+          sum +
+          Number(item.offerPrice ?? item.price ?? 0) *
+            Number(item.quantity || 1),
+        0,
+      ),
+    [items],
   );
 
-  const shipping = subtotal > 0 ? 120 : 0;
-  const total = subtotal + shipping;
-
-  const handlePlaceOrder = async () => {
-    if (!name || !phone || !address || !transactionId) {
-      return toast.error("Please complete all fields");
+  const shipping = useMemo(() => {
+    if (subtotal <= 0) {
+      return 0;
     }
 
-    setLoading(true);
+    const freeShipping = Number(settings?.freeShipping ?? 3000);
+
+    if (freeShipping > 0 && subtotal >= freeShipping) {
+      return 0;
+    }
+
+    return Number(settings?.shippingFee ?? 120);
+  }, [subtotal, settings]);
+
+  const total = subtotal + shipping;
+
+  const selectedPayment = PAYMENT_METHODS[paymentMethod];
+
+  // =====================================
+  // Place Order
+  // =====================================
+
+  const handlePlaceOrder = async () => {
+    if (!name.trim()) {
+      return toast.error("Please enter your name");
+    }
+
+    const cleanPhone = phone.replace(/\s+/g, "");
+
+    if (!cleanPhone) {
+      return toast.error("Please enter your phone number");
+    }
+
+    if (!/^01[3-9]\d{8}$/.test(cleanPhone)) {
+      return toast.error("Enter a valid Bangladesh phone number");
+    }
+
+    if (!address.trim()) {
+      return toast.error("Please enter your delivery address");
+    }
+
+    if (!city.trim()) {
+      return toast.error("Please enter your city");
+    }
+
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return toast.error("Enter a valid email address");
+    }
+
+    if (!transactionId.trim()) {
+      return toast.error("Please enter the Transaction ID");
+    }
+
+    if (!items.length) {
+      return toast.error("No products selected");
+    }
+
+    setPlacingOrder(true);
 
     try {
-      await axiosSecure.post("/payments", {
-        customerName: name,
-        phone,
-        address,
-        transactionId,
-        subtotal,
-        shipping,
-        total,
-        products: cart,
-      });
+      const commonData = {
+        customerName: name.trim(),
 
-      // Clear the cart on successful order creation
-      await axiosSecure.delete("/cart");
+        phone: cleanPhone,
+
+        address: address.trim(),
+
+        city: city.trim(),
+
+        postalCode: postalCode.trim(),
+
+        transactionId: transactionId.trim(),
+
+        paymentMethod,
+      };
+
+      let res;
+
+      // =================================
+      // Registered Customer
+      // =================================
+
+      if (user) {
+        const orderData = {
+          ...commonData,
+        };
+
+        // Buy Now sends only the selected
+        // product. Normal cart checkout
+        // lets backend read MongoDB cart.
+        if (buyNowItem) {
+          orderData.products = items.map((item) => ({
+            productId: item.productId,
+
+            size: item.size,
+
+            quantity: item.quantity,
+          }));
+        }
+
+        res = await axiosSecure.post("/orders", orderData);
+
+        if (!buyNowItem) {
+          await refetchCart();
+        }
+      }
+
+      // =================================
+      // Guest Customer
+      // =================================
+      else {
+        const orderData = {
+          ...commonData,
+
+          email: email.trim(),
+
+          products: items.map((item) => ({
+            productId: item.productId,
+
+            size: item.size,
+
+            quantity: item.quantity,
+          })),
+        };
+
+        res = await axiosSecure.post("/orders/guest", orderData);
+
+        // Normal guest-cart checkout
+        // should clear localStorage.
+        // Buy Now should leave their
+        // existing cart untouched.
+        if (!buyNowItem) {
+          await clearCart();
+        }
+      }
+
+      const orderId = res.data?.insertedId;
+
+      setPlacedOrderId(orderId?.toString() || "");
+
+      setItems([]);
 
       toast.success("Order placed successfully");
-      navigate("/dashboard");
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to place order");
+    } catch (error) {
+      console.error("Order error:", error);
+
+      toast.error(error.response?.data?.message || "Failed to place order");
     } finally {
-      setLoading(false);
+      setPlacingOrder(false);
     }
   };
 
-  return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      <h1 className="text-4xl font-bold mb-10">Checkout</h1>
+  // =====================================
+  // Loading
+  // =====================================
 
-      <div className="grid lg:grid-cols-3 gap-10 items-start">
-        {/* LEFT SIDE: 2 Columns Wide */}
+  if (authLoading || pageLoading) {
+    return (
+      <div className="min-h-[60vh] flex justify-center items-center">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
+  }
+
+  // =====================================
+  // Successful Guest/User Order
+  // =====================================
+
+  if (placedOrderId) {
+    return (
+      <div className="max-w-2xl mx-auto px-6 py-20">
+        <div className="card bg-base-100 border border-base-300 shadow-xl">
+          <div className="card-body text-center items-center">
+            <div className="text-6xl">✓</div>
+
+            <h1 className="text-3xl font-bold">Order Confirmed</h1>
+
+            <p className="text-base-content/70">
+              Your order has been submitted successfully.
+            </p>
+
+            <div className="bg-base-200 rounded-xl p-4 w-full mt-3">
+              <p className="text-sm text-base-content/60">Order ID</p>
+
+              <p className="font-mono break-all font-semibold">
+                {placedOrderId}
+              </p>
+            </div>
+
+            <p className="text-sm text-base-content/60">
+              Payment verification is pending. RedFlint can confirm the order
+              after checking your transaction.
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-3 mt-5">
+              <Link to="/products" className="btn btn-primary">
+                Continue Shopping
+              </Link>
+
+              {user && (
+                <Link to="/dashboard/recent-orders" className="btn btn-outline">
+                  My Orders
+                </Link>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // =====================================
+  // Empty Checkout
+  // =====================================
+
+  if (!items.length) {
+    return (
+      <div className="max-w-2xl mx-auto px-6 py-20 text-center">
+        <h1 className="text-3xl font-bold mb-4">Nothing to checkout</h1>
+
+        <p className="text-base-content/60 mb-6">Your cart is empty.</p>
+
+        <Link to="/products" className="btn btn-primary">
+          Browse Products
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 md:px-6 py-10">
+      <div className="mb-10">
+        <h1 className="text-4xl font-bold">Checkout</h1>
+
+        {!user && (
+          <p className="text-base-content/60 mt-2">
+            Checking out as guest. No account is required.
+          </p>
+        )}
+
+        {buyNowItem && <div className="badge badge-primary mt-3">Buy Now</div>}
+      </div>
+
+      <div className="grid lg:grid-cols-3 gap-8 items-start">
+        {/* ================================= */}
+        {/* LEFT */}
+        {/* ================================= */}
+
         <div className="lg:col-span-2 space-y-6">
-          {/* 1. Customer Information Card */}
-          <div className="card bg-base-100 shadow border">
+          {/* Customer Information */}
+
+          <div className="card bg-base-100 shadow border border-base-300">
             <div className="card-body">
-              <h2 className="card-title mb-4">Customer Information</h2>
-              <div className="space-y-4">
-                <input
-                  className="input input-bordered w-full"
-                  placeholder="Full Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-                <input
-                  className="input input-bordered w-full"
-                  placeholder="Phone Number"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-                <textarea
-                  className="textarea textarea-bordered w-full"
-                  placeholder="Delivery Address"
-                  rows="3"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                />
+              <h2 className="card-title">Customer Information</h2>
+
+              <div className="grid md:grid-cols-2 gap-4 mt-3">
+                <label className="form-control">
+                  <span className="label-text mb-2">Full Name *</span>
+
+                  <input
+                    className="input input-bordered w-full"
+                    placeholder="Full Name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </label>
+
+                <label className="form-control">
+                  <span className="label-text mb-2">Phone Number *</span>
+
+                  <input
+                    className="input input-bordered w-full"
+                    placeholder="01XXXXXXXXX"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                </label>
+
+                <label className="form-control md:col-span-2">
+                  <span className="label-text mb-2">
+                    Email {!user && "(Optional)"}
+                  </span>
+
+                  <input
+                    type="email"
+                    className="input input-bordered w-full"
+                    placeholder="example@email.com"
+                    value={email}
+                    disabled={!!user}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </label>
               </div>
             </div>
           </div>
 
-          {/* 2. Payment Details Card */}
-          <div className="card bg-base-100 shadow border">
+          {/* Delivery */}
+
+          <div className="card bg-base-100 shadow border border-base-300">
             <div className="card-body">
-              <h2 className="card-title mb-4">Payment Method (bKash)</h2>
-              <div className="text-center space-y-3">
-                <img
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSy6ZqvuL9Uzt9JX4X3UaYr-eOJGVjOg-eEmJsGA37Ib_SWBTHkcBYv981G&s=10"
-                  className="w-48 rounded-xl mx-auto"
-                  alt="bKash QR"
+              <h2 className="card-title">Delivery Address</h2>
+
+              <div className="space-y-4 mt-3">
+                <textarea
+                  className="textarea textarea-bordered w-full"
+                  placeholder="House, road, area, landmark"
+                  rows="3"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
                 />
-                <div>
-                  <p className="font-bold text-gray-500 text-sm">
-                    Merchant Number
-                  </p>
-                  <p className="text-primary text-2xl font-black tracking-wider">
-                    01975777949
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <input
+                    className="input input-bordered w-full"
+                    placeholder="City *"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                  />
+
+                  <input
+                    className="input input-bordered w-full"
+                    placeholder="Postal Code (Optional)"
+                    value={postalCode}
+                    onChange={(e) => setPostalCode(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ================================= */}
+          {/* Payment */}
+          {/* ================================= */}
+
+          <div className="card bg-base-100 shadow border border-base-300">
+            <div className="card-body">
+              <h2 className="card-title">Payment Method</h2>
+
+              <div className="grid grid-cols-3 gap-3 mt-4">
+                {Object.entries(PAYMENT_METHODS).map(([key, method]) => (
+                  <button
+                    type="button"
+                    key={key}
+                    onClick={() => {
+                      setPaymentMethod(key);
+
+                      setTransactionId("");
+                    }}
+                    className={`btn ${
+                      paymentMethod === key
+                        ? "btn-primary text-white"
+                        : "btn-outline"
+                    }`}
+                  >
+                    {method.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="bg-base-200 rounded-xl p-5 mt-5">
+                <p className="text-sm text-base-content/60">Pay with</p>
+
+                <h3 className="text-xl font-bold mt-1">
+                  {selectedPayment.label}
+                </h3>
+
+                <p className="mt-4 text-sm">Payment Number</p>
+
+                <p className="text-2xl font-black text-primary tracking-wide mt-1">
+                  {selectedPayment.number}
+                </p>
+
+                <p className="text-sm text-base-content/70 mt-4">
+                  {selectedPayment.description}
+                </p>
+
+                <div className="mt-4 p-3 rounded-lg bg-base-100">
+                  <p className="text-sm">Amount to pay</p>
+
+                  <p className="text-2xl font-bold">
+                    ৳{total.toLocaleString("en-BD")}
                   </p>
                 </div>
               </div>
 
-              <div className="mt-4">
+              <label className="form-control mt-5">
+                <span className="label-text mb-2">
+                  {selectedPayment.label} Transaction ID *
+                </span>
+
                 <input
                   className="input input-bordered w-full"
                   placeholder="Enter Transaction ID"
                   value={transactionId}
                   onChange={(e) => setTransactionId(e.target.value)}
                 />
-              </div>
+              </label>
 
               <div className="alert mt-4 bg-base-200 border-none">
-                <ul className="space-y-1 text-sm list-decimal list-inside">
-                  <li>Scan the QR code above or dial *247#</li>
-                  <li>Send the full payment amount</li>
-                  <li>Copy your Transaction ID (TrxID)</li>
-                  <li>Paste the ID into the input field above</li>
-                </ul>
+                <ol className="list-decimal list-inside text-sm space-y-1">
+                  <li>Select your payment method.</li>
+
+                  <li>Pay the full amount shown above.</li>
+
+                  <li>Copy the transaction ID.</li>
+
+                  <li>Enter the transaction ID above.</li>
+
+                  <li>Submit your order.</li>
+                </ol>
               </div>
             </div>
           </div>
         </div>
 
-        {/* RIGHT SIDE: 1 Column Wide (Order Summary Card) */}
-        <div className="card bg-base-100 shadow border sticky top-6">
+        {/* ================================= */}
+        {/* ORDER SUMMARY */}
+        {/* ================================= */}
+
+        <div className="card bg-base-100 shadow border border-base-300 lg:sticky lg:top-6">
           <div className="card-body">
-            <h2 className="card-title border-b pb-3 mb-4">Order Summary</h2>
+            <h2 className="card-title border-b border-base-300 pb-3">
+              Order Summary
+            </h2>
 
-            {/* Cart Items List */}
-            <div className="max-h-60 overflow-y-auto divide-y mb-4">
-              {cart.map((item) => (
-                <div
-                  key={item._id}
-                  className="flex justify-between py-3 text-sm"
-                >
-                  <span className="font-medium text-base-content/80">
-                    {item.title}{" "}
-                    <span className="text-xs font-bold text-primary">
-                      × {item.quantity}
-                    </span>
-                  </span>
-                  <span className="font-semibold">
-                    ৳
-                    {Number(item.offerPrice ?? item.price ?? 0) *
-                      Number(item.quantity)}
-                  </span>
-                </div>
-              ))}
-              {cart.length === 0 && (
-                <p className="text-center text-gray-400 py-4">
-                  Your cart is empty
-                </p>
-              )}
+            <div className="max-h-72 overflow-y-auto divide-y divide-base-300">
+              {items.map((item) => {
+                const price = Number(item.offerPrice ?? item.price ?? 0);
+
+                return (
+                  <div
+                    key={item._id || `${item.productId}-${item.size}`}
+                    className="flex gap-3 py-4"
+                  >
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-16 h-16 object-cover rounded-lg"
+                    />
+
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold line-clamp-1">{item.title}</p>
+
+                      <p className="text-xs text-base-content/60 mt-1">
+                        {item.size && `Size: ${item.size} • `}
+                        Qty: {item.quantity}
+                      </p>
+
+                      <p className="font-semibold mt-1">
+                        ৳
+                        {(price * Number(item.quantity)).toLocaleString(
+                          "en-BD",
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
-            {/* Calculations Breakdown */}
-            <div className="space-y-3 pt-2 text-sm border-t">
+            <div className="space-y-3 pt-4 border-t border-base-300">
               <div className="flex justify-between">
-                <span className="text-gray-500">Subtotal</span>
-                <span className="font-semibold">৳{subtotal}</span>
+                <span className="text-base-content/60">Subtotal</span>
+
+                <span>৳{subtotal.toLocaleString("en-BD")}</span>
               </div>
+
               <div className="flex justify-between">
-                <span className="text-gray-500">Shipping</span>
-                <span className="font-semibold">৳{shipping}</span>
+                <span className="text-base-content/60">Shipping</span>
+
+                <span>
+                  {shipping === 0
+                    ? "Free"
+                    : `৳${shipping.toLocaleString("en-BD")}`}
+                </span>
               </div>
-              <hr className="my-2" />
-              <div className="flex justify-between text-lg font-bold text-base-content">
+
+              <div className="flex justify-between text-xl font-bold pt-3 border-t border-base-300">
                 <span>Total</span>
-                <span className="text-primary">৳{total}</span>
+
+                <span className="text-primary">
+                  ৳{total.toLocaleString("en-BD")}
+                </span>
               </div>
             </div>
 
-            {/* Action Button */}
             <button
               onClick={handlePlaceOrder}
-              disabled={loading || cart.length === 0}
-              className="btn btn-primary w-full mt-6 text-white font-bold"
+              disabled={placingOrder || !items.length}
+              className="btn btn-primary w-full mt-5 text-white"
             >
-              {loading ? "Placing Order..." : "Place Order"}
+              {placingOrder ? (
+                <>
+                  <span className="loading loading-spinner loading-sm"></span>
+                  Placing Order...
+                </>
+              ) : (
+                `Place Order • ৳${total.toLocaleString("en-BD")}`
+              )}
             </button>
+
+            {!user && (
+              <p className="text-xs text-center text-base-content/50">
+                No account required.
+              </p>
+            )}
           </div>
         </div>
       </div>
