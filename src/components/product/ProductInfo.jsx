@@ -1,21 +1,35 @@
 import { useState } from "react";
+
 import toast from "react-hot-toast";
+
 import { FiHeart } from "react-icons/fi";
+
 import { FaHeart } from "react-icons/fa";
 
+import { useNavigate } from "react-router";
+
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+
 import useCart from "../../hooks/useCart";
+
 import useWishlist from "../../hooks/useWishlist";
 
+import useAuth from "../../hooks/useAuth";
+
 import SizeSelector from "./SizeSelector";
+
 import QuantitySelector from "./QuantitySelector";
 
 const ProductInfo = ({ product }) => {
   const axiosSecure = useAxiosSecure();
 
-  const { wishlist, refetch: refetchWishlist } = useWishlist();
+  const navigate = useNavigate();
 
-  const { refetch } = useCart();
+  const { user } = useAuth();
+
+  const { addItem } = useCart();
+
+  const { wishlist, refetch: refetchWishlist } = useWishlist();
 
   const wishlistItem = wishlist.find((item) => item.productId === product._id);
 
@@ -25,29 +39,101 @@ const ProductInfo = ({ product }) => {
 
   const [quantity, setQuantity] = useState(1);
 
-  const handleAddToCart = async () => {
-    try {
-      await axiosSecure.post("/cart", {
-        productId: product._id,
-        title: product.title,
-        image: product.images[0],
-        price: product.price,
-        offerPrice: product.offerPrice,
-        size: selectedSize.size,
-        quantity,
-      });
+  // =====================================
+  // Prepare selected product
+  // =====================================
 
-      await refetch();
+  const createSelectedItem = () => {
+    return {
+      productId: product._id,
+
+      title: product.title,
+
+      image: product.images?.[0] || "",
+
+      price: product.price,
+
+      offerPrice: product.offerPrice,
+
+      size: selectedSize?.size || "",
+
+      quantity,
+    };
+  };
+
+  // =====================================
+  // Validation
+  // =====================================
+
+  const validateSelection = () => {
+    if (product.sizes?.length > 0 && !selectedSize?.size) {
+      toast.error("Please select a size");
+
+      return false;
+    }
+
+    if (selectedSize?.stock === 0) {
+      toast.error("This size is out of stock");
+
+      return false;
+    }
+
+    if (selectedSize?.stock && quantity > selectedSize.stock) {
+      toast.error(`Only ${selectedSize.stock} pieces available`);
+
+      return false;
+    }
+
+    return true;
+  };
+
+  // =====================================
+  // Add To Cart
+  // =====================================
+
+  const handleAddToCart = async () => {
+    if (!validateSelection()) return;
+
+    try {
+      const item = createSelectedItem();
+
+      await addItem(item);
 
       toast.success("Added to cart");
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
 
       toast.error("Failed to add product");
     }
   };
 
+  // =====================================
+  // Buy Now
+  // =====================================
+
+  const handleBuyNow = () => {
+    if (!validateSelection()) return;
+
+    const item = createSelectedItem();
+
+    navigate("/checkout", {
+      state: {
+        buyNowItem: item,
+      },
+    });
+  };
+
+  // =====================================
+  // Wishlist
+  // =====================================
+
   const handleWishlist = async () => {
+    if (!user) {
+      toast.error("Please login to use wishlist");
+
+      return;
+    }
+
     try {
       if (isWishlisted) {
         await axiosSecure.delete(`/wishlist/${wishlistItem._id}`);
@@ -56,17 +142,21 @@ const ProductInfo = ({ product }) => {
       } else {
         await axiosSecure.post("/wishlist", {
           productId: product._id,
+
           title: product.title,
-          image: product.images[0],
-          price: product.offerPrice,
+
+          image: product.images?.[0] || "",
+
+          price: product.offerPrice ?? product.price,
         });
 
-        toast.success("Added to wishlist ❤️");
+        toast.success("Added to wishlist");
       }
 
       await refetchWishlist();
     } catch (error) {
       console.error(error);
+
       toast.error("Something went wrong");
     }
   };
@@ -78,10 +168,14 @@ const ProductInfo = ({ product }) => {
 
         <div className="flex items-center gap-4 mt-3">
           <p className="text-3xl font-bold text-primary">
-            ৳{product.offerPrice}
+            ৳{product.offerPrice ?? product.price}
           </p>
 
-          <p className="line-through text-base-content/50">৳{product.price}</p>
+          {product.offerPrice && (
+            <p className="line-through text-base-content/50">
+              ৳{product.price}
+            </p>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-2 mt-4">
@@ -102,18 +196,32 @@ const ProductInfo = ({ product }) => {
       />
 
       <p className="text-success font-semibold">
-        {selectedSize?.stock} pieces available
+        {selectedSize?.stock ?? 0} pieces available
       </p>
 
       <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
 
-      <button
-        disabled={selectedSize?.stock === 0}
-        onClick={handleAddToCart}
-        className="btn btn-primary w-full"
-      >
-        Add to Cart
-      </button>
+      {/* =============================== */}
+      {/* Purchase Buttons */}
+      {/* =============================== */}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <button
+          disabled={selectedSize?.stock === 0}
+          onClick={handleAddToCart}
+          className="btn btn-outline btn-primary w-full"
+        >
+          Add to Cart
+        </button>
+
+        <button
+          disabled={selectedSize?.stock === 0}
+          onClick={handleBuyNow}
+          className="btn btn-primary w-full text-white"
+        >
+          Buy Now
+        </button>
+      </div>
 
       <button
         onClick={handleWishlist}
