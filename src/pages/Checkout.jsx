@@ -321,9 +321,8 @@ const Checkout = () => {
         if (buyNowItem) {
           orderData.products = items.map((item) => ({
             productId: item.productId,
-
+            orderSource: buyNowItem ? "buy_now" : "cart",
             size: item.size,
-
             quantity: item.quantity,
           }));
         }
@@ -364,9 +363,10 @@ const Checkout = () => {
         }
       }
 
-      const orderId = res.data?.insertedId;
+      const orderReference =
+        res.data?.orderNumber || res.data?.insertedId?.toString() || "";
 
-      setPlacedOrderId(orderId?.toString() || "");
+      setPlacedOrderId(orderReference);
 
       setItems([]);
 
@@ -410,7 +410,7 @@ const Checkout = () => {
             </p>
 
             <div className="bg-base-200 rounded-xl p-4 w-full mt-3">
-              <p className="text-sm text-base-content/60">Order ID</p>
+              <p className="text-sm text-base-content/60">Order Number</p>
 
               <p className="font-mono break-all font-semibold">
                 {placedOrderId}
@@ -425,6 +425,16 @@ const Checkout = () => {
             <div className="flex flex-wrap justify-center gap-3 mt-5">
               <Link to="/products" className="btn btn-primary">
                 Continue Shopping
+              </Link>
+              <Link
+                to="/track-order"
+                state={{
+                  orderNumber: placedOrderId,
+                  phone,
+                }}
+                className="btn btn-outline"
+              >
+                Track Order
               </Link>
 
               {user && (

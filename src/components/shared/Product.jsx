@@ -5,6 +5,7 @@ import { FaHeart } from "react-icons/fa";
 
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useWishlist from "../../hooks/useWishlist";
+import useAuth from "../../hooks/useAuth";
 
 const Product = ({ product }) => {
   const {
@@ -19,30 +20,28 @@ const Product = ({ product }) => {
   } = product;
 
   const navigate = useNavigate();
+
   const axiosSecure = useAxiosSecure();
 
-  const { wishlist = [], refetch: refetchWishlist } =
-    useWishlist();
+  const { user } = useAuth();
 
-  const wishlistItem = wishlist.find(
-    (item) => item.productId === _id,
-  );
+  const { wishlist = [], refetch: refetchWishlist } = useWishlist();
+
+  const wishlistItem = wishlist.find((item) => item.productId === _id);
 
   const isWishlisted = Boolean(wishlistItem);
 
   const currentPrice = offerPrice ?? price;
 
-  const hasDiscount =
-    Number(price) > 0 &&
-    Number(currentPrice) < Number(price);
+  const hasDiscount = Number(price) > 0 && Number(currentPrice) < Number(price);
 
   const discountPercentage = hasDiscount
-    ? Math.round(
-        ((Number(price) - Number(currentPrice)) /
-          Number(price)) *
-          100,
-      )
+    ? Math.round(((Number(price) - Number(currentPrice)) / Number(price)) * 100)
     : 0;
+
+  // =====================================
+  // Open Product Details
+  // =====================================
 
   const handleCardClick = () => {
     navigate(`/products/${_id}`);
@@ -51,26 +50,40 @@ const Product = ({ product }) => {
   const handleCardKeyDown = (event) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
+
       navigate(`/products/${_id}`);
     }
   };
 
+  // =====================================
+  // Wishlist
+  // =====================================
+
   const handleWishlist = async (event) => {
     event.preventDefault();
+
     event.stopPropagation();
+
+    // Guests cannot use wishlist
+    if (!user) {
+      toast.error("Please login to add products to wishlist");
+
+      return;
+    }
 
     try {
       if (isWishlisted) {
-        await axiosSecure.delete(
-          `/wishlist/${wishlistItem._id}`,
-        );
+        await axiosSecure.delete(`/wishlist/${wishlistItem._id}`);
 
         toast.success("Removed from wishlist");
       } else {
         await axiosSecure.post("/wishlist", {
           productId: _id,
+
           title,
-          image: images[0],
+
+          image: images[0] || "",
+
           price: currentPrice,
         });
 
@@ -80,7 +93,8 @@ const Product = ({ product }) => {
       await refetchWishlist();
     } catch (error) {
       console.error("Wishlist error:", error);
-      toast.error("Something went wrong");
+
+      toast.error("Failed to update wishlist");
     }
   };
 
@@ -92,7 +106,8 @@ const Product = ({ product }) => {
       onKeyDown={handleCardKeyDown}
       className="card bg-base-300 border border-base-content/10 shadow-md hover:shadow-xl transition-shadow duration-300 h-full overflow-hidden cursor-pointer"
     >
-      {/* Product image */}
+      {/* Product Image */}
+
       <figure className="relative h-44 sm:h-56 lg:h-90 bg-base-200">
         <img
           src={images[0]}
@@ -100,34 +115,32 @@ const Product = ({ product }) => {
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />
 
+        {/* Discount */}
+
         {hasDiscount && (
           <span className="absolute top-2 right-2 badge badge-error badge-sm text-white font-semibold">
             -{discountPercentage}%
           </span>
         )}
 
+        {/* Wishlist Button */}
+
         <button
           type="button"
           onClick={handleWishlist}
-          aria-label={
-            isWishlisted
-              ? "Remove from wishlist"
-              : "Add to wishlist"
-          }
+          aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
           className="absolute top-2 left-2 btn btn-circle btn-xs sm:btn-sm bg-white text-black border-0 hover:bg-primary hover:text-white"
         >
           {isWishlisted ? (
-            <FaHeart
-              className="text-red-500"
-              size={15}
-            />
+            <FaHeart className="text-red-500" size={15} />
           ) : (
             <FiHeart size={15} />
           )}
         </button>
       </figure>
 
-      {/* Card information */}
+      {/* Product Information */}
+
       <div className="card-body p-3 sm:p-4 gap-3">
         <div className="flex flex-wrap items-center gap-1.5">
           <h2 className="font-bold text-sm sm:text-lg line-clamp-1 hover:text-primary transition">
@@ -152,6 +165,8 @@ const Product = ({ product }) => {
             </span>
           )}
         </div>
+
+        {/* Price */}
 
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-base sm:text-xl font-bold text-primary">
