@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { FaCheckCircle, FaStar, FaTrash } from "react-icons/fa";
+import { FaStar, FaTrash } from "react-icons/fa";
 
 import toast from "react-hot-toast";
 
@@ -183,32 +183,66 @@ const AdminReviews = () => {
         </div>
       </div>
 
-      {/* Search + Filter */}
+      {/* Search */}
 
       <div className="flex flex-col md:flex-row gap-3">
         <input
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search customer, product or order..."
+          placeholder="Search customer or product..."
           className="input input-bordered flex-1"
         />
 
-        <select
-          value={filter}
-          onChange={(event) => setFilter(event.target.value)}
-          className="select select-bordered md:w-52"
-        >
-          <option value="all">All Reviews</option>
-
-          <option value="pending">Pending</option>
-
-          <option value="approved">Approved</option>
-
-          <option value="rejected">Rejected</option>
-        </select>
-
         <button onClick={fetchReviews} className="btn btn-primary">
           Refresh
+        </button>
+      </div>
+
+      {/* Filters */}
+
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => setFilter("all")}
+          className={`btn btn-sm ${
+            filter === "all" ? "btn-primary" : "btn-outline"
+          }`}
+        >
+          All
+          <span className="badge badge-sm ml-1">{reviews.length}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setFilter("pending")}
+          className={`btn btn-sm ${
+            filter === "pending" ? "btn-warning" : "btn-outline"
+          }`}
+        >
+          Pending
+          <span className="badge badge-sm ml-1">{pendingCount}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setFilter("approved")}
+          className={`btn btn-sm ${
+            filter === "approved" ? "btn-success" : "btn-outline"
+          }`}
+        >
+          Approved
+          <span className="badge badge-sm ml-1">{approvedCount}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setFilter("rejected")}
+          className={`btn btn-sm ${
+            filter === "rejected" ? "btn-error" : "btn-outline"
+          }`}
+        >
+          Rejected
+          <span className="badge badge-sm ml-1">{rejectedCount}</span>
         </button>
       </div>
 
@@ -234,13 +268,6 @@ const AdminReviews = () => {
                       <h2 className="font-bold text-lg">
                         {review.customerName || "Customer"}
                       </h2>
-
-                      {review.verifiedPurchase && (
-                        <span className="badge badge-success badge-sm gap-1">
-                          <FaCheckCircle />
-                          Verified
-                        </span>
-                      )}
 
                       <span
                         className={`badge badge-sm ${
@@ -270,8 +297,6 @@ const AdminReviews = () => {
 
                     <div className="mt-4 text-xs text-zinc-500 space-y-1">
                       <p>Product: {review.productTitle || review.productId}</p>
-
-                      <p>Order: {review.orderNumber}</p>
 
                       {review.createdAt && (
                         <p>

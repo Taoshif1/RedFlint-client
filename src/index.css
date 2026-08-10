@@ -24,11 +24,13 @@
   --color-base-content: #ffffff;
 
   /* Primary & Secondary set to matching Reds */
-  --color-primary: #e50000;   /* Red */
-  --color-primary-content: #ffffff;  /*white*/
+  --color-primary: #e50000;
+  /* Red */
+  --color-primary-content: #ffffff;
+  /*white*/
 
   --color-secondary: #990000;
-  --color-secondary-content: #ffffff; 
+  --color-secondary-content: #ffffff;
 
   --color-accent: #ffffff;
   --color-accent-content: #000000;
@@ -52,21 +54,17 @@
 GRADIENT COLORS
 --------------------------- */
 .bg-redflint-gradient {
-  background: linear-gradient(
-    135deg,
-    #000000 0%,
-    #0d0d0d 35%,
-    #4a0000 75%,
-    #e50000 100%
-  );
+  background: linear-gradient(135deg,
+      #000000 0%,
+      #0d0d0d 35%,
+      #4a0000 75%,
+      #e50000 100%);
 }
 
 .text-redflint-gradient {
-  background: linear-gradient(
-    90deg,
-    #ffffff,
-    #e50000
-  );
+  background: linear-gradient(90deg,
+      #ffffff,
+      #e50000);
 
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -77,4 +75,8 @@ GRADIENT COLORS
   background:
     linear-gradient(#000, #000) padding-box,
     linear-gradient(90deg, #990000, #e50000) border-box;
+}
+
+.customer-reviews-swiper .swiper-wrapper {
+  transition-timing-function: linear !important;
 }
