@@ -108,10 +108,6 @@ export const router = createBrowserRouter([
         path: "track-order",
         Component: TrackOrder,
       },
-      {
-        path: "reviews",
-        Component: AdminReviews,
-      },
     ],
   },
   {
@@ -191,6 +187,10 @@ export const router = createBrowserRouter([
       {
         path: "products/:id/edit",
         Component: EditProduct,
+      },
+      {
+        path: "reviews",
+        Component: AdminReviews,
       },
     ],
   },
