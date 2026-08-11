@@ -1,17 +1,19 @@
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import useOrder from "../hooks/useOrder";
 
 const badgeColor = (status) => {
   switch (status) {
     case "Delivered":
+    case "Verified":
       return "badge-success";
-
+    case "Processing":
+      return "badge-info";
+    case "Shipped":
+      return "badge-secondary";
     case "Pending":
       return "badge-warning";
-
     case "Cancelled":
       return "badge-error";
-
     default:
       return "badge-neutral";
   }
@@ -19,13 +21,12 @@ const badgeColor = (status) => {
 
 const OrderDetails = () => {
   const { id } = useParams();
-
   const { order, loading } = useOrder(id);
 
   if (loading) {
     return (
       <div className="flex justify-center py-20">
-        <span className="loading loading-spinner loading-lg"></span>
+        <span className="loading loading-spinner loading-lg" />
       </div>
     );
   }
@@ -34,33 +35,33 @@ const OrderDetails = () => {
     return (
       <div className="text-center py-20">
         <h2 className="text-3xl font-bold">Order Not Found</h2>
+        <Link to="/dashboard/recent-orders" className="btn btn-primary mt-5">
+          Back to Orders
+        </Link>
       </div>
     );
   }
 
   return (
-    <section className="max-w-7xl mx-auto py-10 space-y-8">
+    <section className="space-y-8">
       <div className="bg-base-200 rounded-box shadow border border-base-300 p-8">
         <div className="flex flex-col lg:flex-row justify-between gap-6">
           <div>
-            <h1 className="text-4xl font-bold">Order Details</h1>
-
-            <p className="opacity-70 mt-2">Order ID: {order._id}</p>
-
-            <p className="opacity-70">
-              {new Date(order.createdAt).toLocaleString()}
+            <p className="text-primary text-sm uppercase tracking-wider font-semibold">
+              {order.orderNumber || "Order"}
+            </p>
+            <h1 className="text-4xl font-bold mt-1">Order Details</h1>
+            <p className="opacity-70 mt-2">
+              Placed {new Date(order.createdAt).toLocaleString()}
             </p>
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 items-start lg:items-end">
             <span className={`badge ${badgeColor(order.orderStatus)} badge-lg`}>
-              {order.orderStatus}
+              {order.orderStatus || "Pending"}
             </span>
-
-            <span
-              className={`badge ${badgeColor(order.payment.status)} badge-lg`}
-            >
-              Payment : {order.payment.status}
+            <span className={`badge ${badgeColor(order.payment?.status)} badge-lg`}>
+              Payment: {order.payment?.status || "Pending"}
             </span>
           </div>
         </div>
@@ -74,23 +75,18 @@ const OrderDetails = () => {
             </div>
 
             <div className="divide-y divide-base-300">
-              {order.products.map((product) => (
-                <div key={product.productId} className="flex gap-5 p-6">
-                  <img
-                    src={product.image}
-                    alt={product.title}
-                    className="w-28 h-28 rounded-lg object-cover"
-                  />
+              {order.products?.map((product, index) => (
+                <div key={`${product.productId}-${product.size}-${index}`} className="flex gap-5 p-6">
+                  <img src={product.image} alt={product.title} className="w-28 h-28 rounded-lg object-cover" />
 
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold">{product.title}</h3>
-
-                    <p>Size : {product.size}</p>
-
-                    <p>Quantity : {product.quantity}</p>
-
+                    <Link to={`/products/${product.productId}`} className="text-xl font-semibold hover:text-primary">
+                      {product.title}
+                    </Link>
+                    {product.size && <p>Size: {product.size}</p>}
+                    <p>Quantity: {product.quantity}</p>
                     <p className="text-primary font-bold mt-2">
-                      ৳ {product.price}
+                      ৳{Number(product.lineTotal ?? product.unitPrice ?? product.price ?? 0).toLocaleString("en-BD")}
                     </p>
                   </div>
                 </div>
@@ -105,29 +101,27 @@ const OrderDetails = () => {
 
             <div>
               <p className="font-semibold">{order.customerName}</p>
-
               <p>{order.phone}</p>
-
               <p>{order.address}</p>
+              {(order.city || order.postalCode) && (
+                <p>{[order.city, order.postalCode].filter(Boolean).join(", ")}</p>
+              )}
             </div>
 
-            <div className="divider"></div>
+            <div className="divider" />
 
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>৳ {order.subtotal}</span>
+                <span>৳{Number(order.subtotal || 0).toLocaleString("en-BD")}</span>
               </div>
-
               <div className="flex justify-between">
                 <span>Shipping</span>
-                <span>৳ {order.shipping}</span>
+                <span>৳{Number(order.shipping || 0).toLocaleString("en-BD")}</span>
               </div>
-
               <div className="flex justify-between text-xl font-bold">
                 <span>Total</span>
-
-                <span className="text-primary">৳ {order.total}</span>
+                <span className="text-primary">৳{Number(order.total || 0).toLocaleString("en-BD")}</span>
               </div>
             </div>
           </div>
