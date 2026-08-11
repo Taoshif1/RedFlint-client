@@ -5,7 +5,7 @@ import Footer from "../components/shared/Footer";
 import ScrollToTop from "../components/shared/ScrollToTop";
 import WhatsAppSupport from "../components/shared/WhatsAppSupport";
 import MaintenanceGate from "../routes/MaintenanceGate";
-
+import MessengerSupport from "../components/shared/MessengerSupport";
 const MainLayout = () => {
   return (
     <MaintenanceGate>
@@ -17,6 +17,7 @@ const MainLayout = () => {
       </main>
 
       <Footer />
+      <MessengerSupport/>
       <WhatsAppSupport />
     </MaintenanceGate>
   );

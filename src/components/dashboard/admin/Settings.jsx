@@ -14,6 +14,7 @@ const Settings = () => {
     supportEmail: "",
     supportPhone: "",
     whatsappNumber: "",
+    messengerLink: "",
     currency: "BDT",
     shippingFee: 0,
     freeShipping: 0,
@@ -27,6 +28,7 @@ const Settings = () => {
         supportEmail: settings.supportEmail || "",
         supportPhone: settings.supportPhone || "",
         whatsappNumber: settings.whatsappNumber || "",
+        messengerLink: settings.messengerLink || "",
         currency: settings.currency || "BDT",
         shippingFee: settings.shippingFee || 0,
         freeShipping: settings.freeShipping || 0,
@@ -76,13 +78,16 @@ const Settings = () => {
     <section className="max-w-5xl mx-auto">
       <div className="card bg-base-200 border border-base-300 shadow-xl">
         <div className="card-body">
-          <h2 className="text-3xl font-bold mb-8">Store Settings</h2>
+          <h2 className="text-3xl font-bold mb-8">
+            Store Settings
+          </h2>
 
           <form onSubmit={handleSubmit} className="space-y-10">
-            {/* Store */}
-
+            {/* Store Information */}
             <div>
-              <h3 className="text-xl font-semibold mb-5">Store Information</h3>
+              <h3 className="text-xl font-semibold mb-5">
+                Store Information
+              </h3>
 
               <div className="grid md:grid-cols-2 gap-5">
                 <input
@@ -95,6 +100,7 @@ const Settings = () => {
                 />
 
                 <input
+                  type="email"
                   name="supportEmail"
                   value={formData.supportEmail}
                   onChange={handleChange}
@@ -104,6 +110,7 @@ const Settings = () => {
                 />
 
                 <input
+                  type="tel"
                   name="supportPhone"
                   value={formData.supportPhone}
                   onChange={handleChange}
@@ -120,6 +127,15 @@ const Settings = () => {
                   placeholder="WhatsApp Number"
                 />
 
+                <input
+                  type="url"
+                  name="messengerLink"
+                  value={formData.messengerLink}
+                  onChange={handleChange}
+                  className="input input-bordered"
+                  placeholder="Messenger Link"
+                />
+
                 <select
                   name="currency"
                   value={formData.currency}
@@ -130,12 +146,17 @@ const Settings = () => {
                   <option value="USD">USD</option>
                 </select>
               </div>
+
+              <p className="text-sm text-base-content/60 mt-3">
+                Messenger link example: https://m.me/redflintbd
+              </p>
             </div>
 
             {/* Shipping */}
-
             <div>
-              <h3 className="text-xl font-semibold mb-5">Shipping</h3>
+              <h3 className="text-xl font-semibold mb-5">
+                Shipping
+              </h3>
 
               <div className="grid md:grid-cols-2 gap-5">
                 <input
@@ -159,12 +180,15 @@ const Settings = () => {
             </div>
 
             {/* Maintenance */}
-
             <div>
-              <h3 className="text-xl font-semibold mb-5">System</h3>
+              <h3 className="text-xl font-semibold mb-5">
+                System
+              </h3>
 
               <label className="label cursor-pointer justify-start gap-4">
-                <span className="font-medium">Maintenance Mode</span>
+                <span className="font-medium">
+                  Maintenance Mode
+                </span>
 
                 <input
                   type="checkbox"
@@ -177,11 +201,14 @@ const Settings = () => {
 
               <div className="alert alert-warning py-3 px-4 mt-3">
                 <div>
-                  <h3 className="font-bold">Maintenance Mode</h3>
+                  <h3 className="font-bold">
+                    Maintenance Mode
+                  </h3>
 
                   <p className="text-sm">
-                    When enabled, customers should not be able to place new
-                    orders while you perform store maintenance.
+                    When enabled, customers should not be able
+                    to place new orders while you perform store
+                    maintenance.
                   </p>
                 </div>
               </div>

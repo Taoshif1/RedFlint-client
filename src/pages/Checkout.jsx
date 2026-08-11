@@ -23,29 +23,26 @@ import { getGuestCart } from "../utils/guestCart";
 const PAYMENT_METHODS = {
   bkash: {
     label: "bKash",
-
     number: "01975777949",
-
     description:
       "Pay the full order amount using bKash and enter the Transaction ID below.",
+    requiresTransactionId: true,
   },
 
   nagad: {
     label: "Nagad",
-
-    number: "ADD_NAGAD_NUMBER",
-
+    number: "01611110711",
     description:
       "Pay the full order amount using Nagad and enter the Transaction ID below.",
+    requiresTransactionId: true,
   },
 
-  rocket: {
-    label: "Rocket",
-
-    number: "ADD_ROCKET_NUMBER",
-
+  cod: {
+    label: "Cash on Delivery",
+    number: null,
     description:
-      "Pay the full order amount using Rocket and enter the Transaction ID below.",
+      "Pay the full order amount in cash when your order is delivered.",
+    requiresTransactionId: false,
   },
 };
 
@@ -277,9 +274,12 @@ const Checkout = () => {
       return toast.error("Enter a valid email address");
     }
 
-    if (!transactionId.trim()) {
-      return toast.error("Please enter the Transaction ID");
-    }
+    if (
+  selectedPayment.requiresTransactionId &&
+  !transactionId.trim()
+) {
+  return toast.error("Please enter the Transaction ID");
+}
 
     if (!items.length) {
       return toast.error("No products selected");
@@ -299,9 +299,10 @@ const Checkout = () => {
 
         postalCode: postalCode.trim(),
 
-        transactionId: transactionId.trim(),
-
-        paymentMethod,
+        transactionId: selectedPayment.requiresTransactionId
+  ? transactionId.trim()
+  : "",
+paymentMethod,
       };
 
       let res;
@@ -602,11 +603,17 @@ const Checkout = () => {
                   {selectedPayment.label}
                 </h3>
 
-                <p className="mt-4 text-sm">Payment Number</p>
+                {selectedPayment.number && (
+  <>
+    <p className="mt-4 text-sm">
+      Payment Number
+    </p>
 
-                <p className="text-2xl font-black text-primary tracking-wide mt-1">
-                  {selectedPayment.number}
-                </p>
+    <p className="text-2xl font-black text-primary tracking-wide mt-1">
+      {selectedPayment.number}
+    </p>
+  </>
+)}
 
                 <p className="text-sm text-base-content/70 mt-4">
                   {selectedPayment.description}
@@ -621,18 +628,22 @@ const Checkout = () => {
                 </div>
               </div>
 
-              <label className="form-control mt-5">
-                <span className="label-text mb-2">
-                  {selectedPayment.label} Transaction ID *
-                </span>
+              {selectedPayment.requiresTransactionId && (
+  <label className="form-control mt-5">
+    <span className="label-text mb-2">
+      {selectedPayment.label} Transaction ID *
+    </span>
 
-                <input
-                  className="input input-bordered w-full"
-                  placeholder="Enter Transaction ID"
-                  value={transactionId}
-                  onChange={(e) => setTransactionId(e.target.value)}
-                />
-              </label>
+    <input
+      className="input input-bordered w-full"
+      placeholder="Enter Transaction ID"
+      value={transactionId}
+      onChange={(e) =>
+        setTransactionId(e.target.value)
+      }
+    />
+  </label>
+)}
 
               <div className="alert mt-4 bg-base-200 border-none">
                 <ol className="list-decimal list-inside text-sm space-y-1">
