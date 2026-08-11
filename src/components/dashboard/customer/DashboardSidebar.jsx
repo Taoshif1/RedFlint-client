@@ -1,18 +1,27 @@
-import { LayoutDashboard, Heart, MapPin, User, LogOut } from "lucide-react";
-import { NavLink } from "react-router";
+import {
+  LayoutDashboard,
+  Heart,
+  MapPin,
+  User,
+  LogOut,
+  Package,
+} from "lucide-react";
+import { NavLink, useNavigate } from "react-router";
 import toast from "react-hot-toast";
 
 import useAuth from "../../../hooks/useAuth";
 
 const DashboardSidebar = () => {
   const { logOut } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       await logOut();
-      toast.success("Logged Out");
-    } catch (err) {
-      toast.error(err.message);
+      toast.success("Logged out");
+      navigate("/", { replace: true });
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
@@ -29,6 +38,11 @@ const DashboardSidebar = () => {
         <NavLink end to="/dashboard" className={navClass}>
           <LayoutDashboard size={20} />
           Overview
+        </NavLink>
+
+        <NavLink to="/dashboard/recent-orders" className={navClass}>
+          <Package size={20} />
+          Orders
         </NavLink>
 
         <NavLink to="/dashboard/wishlist" className={navClass}>
