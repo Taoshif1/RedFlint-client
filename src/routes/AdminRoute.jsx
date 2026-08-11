@@ -6,34 +6,21 @@ const AdminRoute = ({ children }) => {
   const { user, loading } = useAuth();
   const { user: dbUser, loading: userLoading } = useUser();
 
-  console.log({
-    firebaseUser: user,
-    dbUser,
-    loading,
-    userLoading,
-    role: dbUser?.role,
-  });
-
   if (loading || userLoading) {
-    return <h1>Loading...</h1>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-base-100">
+        <span className="loading loading-spinner loading-lg text-primary" />
+      </div>
+    );
   }
 
   if (!user) {
-    console.log("❌ Redirecting: No Firebase user");
     return <Navigate to="/login" replace />;
   }
 
-  if (!dbUser) {
-    console.log("❌ Redirecting: No DB user");
+  if (!dbUser || dbUser.role !== "admin") {
     return <Navigate to="/" replace />;
   }
-
-  if (dbUser.role !== "admin") {
-    console.log("❌ Redirecting: Role =", dbUser.role);
-    return <Navigate to="/" replace />;
-  }
-
-  console.log("✅ Admin Access Granted");
 
   return children;
 };

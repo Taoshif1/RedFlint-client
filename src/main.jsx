@@ -12,7 +12,7 @@ createRoot(document.getElementById("root")).render(
   <AuthProvider>
     <CartProvider>
       <RouterProvider router={router} />
-      <Toaster position="bottom-right" reverseOrder={false} />
+      <Toaster position="bottom-center" reverseOrder={false} />
     </CartProvider>
   </AuthProvider>,
 );
