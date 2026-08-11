@@ -1,183 +1,187 @@
-# REDFLINT
+# RedFlint Client
 
-## Premium Menswear E-Commerce Experience
+Premium menswear e-commerce frontend for RedFlint, built with React, Vite, Firebase Authentication, Tailwind CSS and DaisyUI.
 
-REDFLINT is a modern luxury fashion platform built to showcase premium menswear through a sophisticated, high-performance digital experience.
+## Features
 
-The project combines bold typography, premium imagery, elegant layouts & modern frontend technologies to create a shopping experience that reflects the REDFLINT brand identity.
+### Storefront
+- Responsive home page and navigation
+- Product listing, search and sorting
+- Featured and Special Edition collections
+- Product details, gallery, size selection and per-size stock display
+- Guest cart using localStorage
+- Registered-user cart stored through the backend
+- Buy Now and normal cart checkout
+- Manual bKash, Nagad and Rocket payment workflow
+- Public order tracking using order number + checkout phone number
+- Global WhatsApp support and order-specific WhatsApp support
+- Public customer review submission
+- Approved review display on product pages
+- Continuously moving, draggable/swipeable customer review carousel on Home
 
----
+### Authentication
+- Firebase email/password registration and login
+- Google sign-in
+- Firebase password-reset email
+- Firebase ID token exchanged for a backend-verified HttpOnly JWT session
+- Customer and Admin protected routes
 
-## Project Overview
+### Customer Dashboard
+- Overview and order-value statistics
+- Orders using customer-facing `RF-...` order numbers
+- Protected order details
+- Wishlist
+- Address Book with one deterministic default address
+- Account information and profile editing
 
-REDFLINT focuses on delivering a luxury-first shopping experience for modern gentlemen.
+### Admin Dashboard
+- Product create/edit/delete
+- Per-size inventory management
+- Order/payment management
+- Customer role/block management
+- Review moderation with All / Pending / Approved / Rejected filters
+- Store settings: shipping, free-shipping threshold, WhatsApp/support details and Maintenance Mode
 
-The website emphasizes:
+### Maintenance Mode
+When Maintenance Mode is enabled, customer-facing pages and the Customer Dashboard display the maintenance screen. The login page remains available so an administrator can sign in, and the Admin Dashboard remains usable. The backend independently rejects new order creation while maintenance is active.
 
-- Premium product presentation
-- Strong visual storytelling
-- Luxury brand aesthetics
-- Mobile-first responsiveness
-- Fast loading performance
-- Clean user experience
+## Tech Stack
 
----
-
-## Core Features
-
-- Firebase Authentication
-- Email & Password Registration
-- Google Authentication
-- JWT Authentication using HttpOnly Cookies
-- Protected Routes
-- Customer Dashboard
-- MongoDB User Management
-- Last Login Tracking
-- Responsive UI
-- DaisyUI + TailwindCSS
-- React Router Data API
-
----
-
-### Premium Navigation
-
-- Fully responsive navbar
-- Centered REDFLINT branding
-- Product navigation
-- Special Edition collection access
-- Search functionality
-- User authentication entry point
-- Shopping cart integration
-
-### Fashion Showcase Banner
-
-- Luxury product gallery
-- Featured collection highlight
-- Premium call-to-action section
-- Responsive image presentation
-- Brand storytelling section
-
-### Hero Carousel
-
-- Swiper powered slider
-- Promotional campaigns
-- Seasonal collections
-- Responsive design
-- Smooth transitions
-
-### Footer
-
-- Social media integration
-- Company information
-- Navigation shortcuts
-- Brand identity reinforcement
-
----
-
-## Technology Stack
-
-### Frontend
-
-- React
-- Vite
-- React Router
+- React 19
+- Vite 8
+- React Router 7
 - Firebase Authentication
 - Axios
+- Tailwind CSS 4
+- DaisyUI 5
+- Swiper
 - React Hot Toast
 - React Icons
+- Lucide React
+- Vitest + Testing Library
 
-### Backend
-
-- Node.js
-- Express.js
-- MongoDB
-- JWT
-- Cookie Parser
-- CORS
-- Dotenv
-
-### Styling
-
-- Tailwind CSS v4
-- DaisyUI v5
-- Custom REDFLINT Theme
-
-### Components
-
-- Swiper.js
-- Responsive UI Components
-
----
-
-## Design System
-
-### Brand Colors
-
-Primary Red:
-
-```css
-#E50000
-```
-
-Secondary Red:
-
-```css
-#990000
-```
-
-Background:
-
-```css
-#000000
-```
-
-Text:
-
-```css
-#FFFFFF
-```
-
-### Typography
-
-- Red Hat Display
-- Heavy Weight Headlines
-- Luxury Editorial Style
-
----
-
-## Responsive Design
-
-The website is optimized for:
-
-- Mobile Devices
-- Tablets
-- Laptops
-- Desktop Displays
-- Ultra-wide Screens
-
----
-
-## Installation
-
-Clone the repository:
+## Local Setup
 
 ```bash
-git clone <repository-url>
-```
-
-Install dependencies:
-
-```bash
+git clone https://github.com/Taoshif1/RedFlint-client.git
+cd RedFlint-client
 npm install
 ```
 
-Run development server:
+Create `.env` from `.env.example`, then run:
 
 ```bash
 npm run dev
 ```
 
----
+The default Vite development URL is normally `http://localhost:5173`.
+
+## Environment Variables
+
+```env
+VITE_API_URL=http://localhost:3000
+
+VITE_FIREBASE_API_KEY=
+VITE_FIREBASE_AUTH_DOMAIN=
+VITE_FIREBASE_PROJECT_ID=
+VITE_FIREBASE_STORAGE_BUCKET=
+VITE_FIREBASE_MESSAGING_SENDER_ID=
+VITE_FIREBASE_APP_ID=
+
+VITE_IMGBB_API_KEY=
+```
+
+`VITE_API_URL` must be the backend origin **without** `/api`. The Axios instance appends `/api` itself.
+
+> Vite exposes `VITE_*` variables to browser code. Do not place private server credentials, MongoDB passwords or JWT secrets in client environment variables.
+
+## Authentication Flow
+
+```text
+Firebase sign in/register
+        ↓
+Firebase ID token
+        ↓
+POST /api/auth/jwt
+        ↓
+Backend verifies Firebase identity
+        ↓
+RedFlint JWT stored in HttpOnly cookie
+        ↓
+Protected API requests use the cookie
+```
+
+The browser never chooses its own MongoDB role. User identity and role enforcement are handled server-side.
+
+## Inventory / Checkout Flow
+
+The browser shows current stock, but the backend is the final authority. Checkout can fail if another customer purchases the final unit first. The backend performs atomic inventory reservation inside a MongoDB transaction so concurrent checkouts cannot both purchase the same final stock.
+
+A cancelled order restores its reserved inventory on the backend.
+
+## Reviews
+
+Reviews are intentionally simple:
+
+```text
+Name + 1–5 stars + comment
+        ↓
+Pending
+        ↓
+Admin approves / rejects
+        ↓
+Approved reviews become public
+```
+
+Reviews are not labeled as verified-purchase reviews.
+
+## Main Routes
+
+### Public
+- `/`
+- `/products`
+- `/products/:id`
+- `/special-edition`
+- `/checkout`
+- `/track-order`
+- `/login`
+- `/register`
+- `/about`
+- `/delivery`
+- `/return`
+- `/motto`
+- `/contact`
+
+### Customer
+- `/dashboard`
+- `/dashboard/recent-orders`
+- `/dashboard/orders/:id`
+- `/dashboard/wishlist`
+- `/dashboard/address-book`
+- `/dashboard/account`
+
+### Admin
+- `/admin`
+- `/admin/orders`
+- `/admin/products`
+- `/admin/products/add`
+- `/admin/products/:id`
+- `/admin/products/:id/edit`
+- `/admin/customers`
+- `/admin/reviews`
+- `/admin/settings`
+- `/admin/profile`
+
+## Scripts
+
+```bash
+npm run dev
+npm run build
+npm run preview
+npm run lint
+npm test
+npm run coverage
+```
 
 ## Production Build
 
@@ -185,227 +189,56 @@ npm run dev
 npm run build
 ```
 
-Preview build:
+Vercel SPA routing is configured through `vercel.json`, which rewrites application routes to `index.html` so direct URL refreshes work with React Router.
 
-```bash
-npm run preview
+## Deployment Checklist
+
+Before production deployment:
+
+1. Configure all client environment variables in Vercel.
+2. Set `VITE_API_URL` to the production backend origin.
+3. Add the production frontend hostname to Firebase Authentication Authorized Domains.
+4. Confirm the backend CORS `LIVE_CLIENT_URL` exactly matches the frontend origin.
+5. Redeploy after changing Vite environment variables because they are injected at build time.
+6. Test email login, Google login, password reset, cart, checkout, tracking, customer dashboard and Admin Dashboard on the live domain.
+
+## Project Structure
+
+```text
+src/
+├── assets/
+├── components/
+│   ├── dashboard/
+│   │   ├── admin/
+│   │   └── customer/
+│   ├── product/
+│   └── shared/
+├── context/
+├── firebase/
+├── hooks/
+├── layouts/
+├── pages/
+├── routes/
+├── test/
+└── utils/
 ```
 
----
+## Backend
 
-## 📁 Folder Structure
+The API is maintained separately in:
 
+`Taoshif1/RedFlint-server`
 
-```bash
-client
-├─ coverage
-│  ├─ base.css
-│  ├─ block-navigation.js
-│  ├─ clover.xml
-│  ├─ coverage-final.json
-│  ├─ favicon.png
-│  ├─ index.html
-│  ├─ prettify.css
-│  ├─ prettify.js
-│  ├─ sort-arrow-sprite.png
-│  └─ sorter.js
-├─ eslint.config.js
-├─ index.html
-├─ package-lock.json
-├─ package.json
-├─ public
-│  ├─ favicon.svg
-│  └─ icons.svg
-├─ README.md
-├─ src
-│  ├─ assets
-│  │  ├─ hero.png
-│  │  ├─ hero1.webp
-│  │  ├─ hero2.png
-│  │  ├─ hero3.png
-│  │  ├─ react.svg
-│  │  ├─ size-guide.jpg
-│  │  └─ vite.svg
-│  ├─ components
-│  │  ├─ dashboard
-│  │  │  ├─ admin
-│  │  │  │  ├─ AddProduct.jsx
-│  │  │  │  ├─ AdminDashboardHeader.jsx
-│  │  │  │  ├─ AdminDashboardSidebar.jsx
-│  │  │  │  ├─ AdminOrders.jsx
-│  │  │  │  ├─ AdminProductDetails.jsx
-│  │  │  │  ├─ AdminProducts.jsx
-│  │  │  │  ├─ AdminProfile.jsx
-│  │  │  │  ├─ AdminStats.jsx
-│  │  │  │  ├─ Customers.jsx
-│  │  │  │  ├─ EditProduct.jsx
-│  │  │  │  ├─ LowStockAlert.jsx
-│  │  │  │  ├─ RecentOrders.jsx
-│  │  │  │  ├─ Settings.jsx
-│  │  │  │  ├─ TopProducts.jsx
-│  │  │  │  └─ WelcomeCard.jsx
-│  │  │  └─ customer
-│  │  │     ├─ Account.jsx
-│  │  │     ├─ AccountInfo.jsx
-│  │  │     ├─ AddressBook.jsx
-│  │  │     ├─ DashboardHeader.jsx
-│  │  │     ├─ DashboardSidebar.jsx
-│  │  │     ├─ DashboardStats.jsx
-│  │  │     ├─ Overview.jsx
-│  │  │     ├─ RecentOrders.jsx
-│  │  │     └─ Wishlist.jsx
-│  │  ├─ product
-│  │  │  ├─ ProductDescription.jsx
-│  │  │  ├─ ProductGallery.jsx
-│  │  │  ├─ ProductInfo.jsx
-│  │  │  ├─ QuantitySelector.jsx
-│  │  │  ├─ SizeGuide.jsx
-│  │  │  └─ SizeSelector.jsx
-│  │  └─ shared
-│  │     ├─ AboutSection.jsx
-│  │     ├─ Carousel.jsx
-│  │     ├─ FashionBanner.jsx
-│  │     ├─ FeaturedProducts.jsx
-│  │     ├─ Footer.jsx
-│  │     ├─ Logo.jsx
-│  │     ├─ Navbar.jsx
-│  │     ├─ Product.jsx
-│  │     ├─ ScrollToTop.jsx
-│  │     ├─ SearchBar.jsx
-│  │     └─ ShoppingCart.jsx
-│  ├─ context
-│  │  ├─ AuthContext.jsx
-│  │  ├─ AuthProvider.jsx
-│  │  ├─ CartContext.jsx
-│  │  └─ CartProvider.jsx
-│  ├─ firebase
-│  │  └─ firebase.config.js
-│  ├─ hooks
-│  │  ├─ useAddresses.js
-│  │  ├─ useAdminOrders.js
-│  │  ├─ useAuth.js
-│  │  ├─ useAxiosSecure.js
-│  │  ├─ useCart.js
-│  │  ├─ useFeaturedProducts.js
-│  │  ├─ useOrder.js
-│  │  ├─ useOrders.js
-│  │  ├─ useProducts.js
-│  │  ├─ useSettings.js
-│  │  ├─ useSpecialProducts.js
-│  │  ├─ useUser.js
-│  │  ├─ useUsers.js
-│  │  └─ useWishlist.js
-│  ├─ index.css
-│  ├─ layouts
-│  │  ├─ AdminDashboardLayout.jsx
-│  │  ├─ CustomerDashboardLayout.jsx
-│  │  └─ MainLayout.jsx
-│  ├─ main.jsx
-│  ├─ pages
-│  │  ├─ AboutUs.jsx
-│  │  ├─ AdminOverview.jsx
-│  │  ├─ Checkout.jsx
-│  │  ├─ ContactUs.jsx
-│  │  ├─ CustomerOverview.jsx
-│  │  ├─ Delivery.jsx
-│  │  ├─ ErrorPage.jsx
-│  │  ├─ Home.jsx
-│  │  ├─ Login.jsx
-│  │  ├─ OrderDetails.jsx
-│  │  ├─ OurMotto.jsx
-│  │  ├─ ProductDetails.jsx
-│  │  ├─ Products.jsx
-│  │  ├─ Register.jsx
-│  │  ├─ ReturnPolicy.jsx
-│  │  └─ SpecialEdition.jsx
-│  ├─ routes
-│  │  ├─ AdminRoute.jsx
-│  │  ├─ PrivateRoute.jsx
-│  │  └─ router.jsx
-│  ├─ test
-│  │  ├─ product
-│  │  │  ├─ QuantitySelector.test.jsx
-│  │  │  └─ SizeSelector.test.jsx
-│  │  ├─ setup.js
-│  │  └─ setup.test.js
-│  └─ utils
-│     ├─ guestCart.js
-│     └─ uploadImage.js
-├─ vercel.json
-└─ vite.config.js
+## Notes
 
-```
----
+- Product inventory uses `{ size, stock }` objects. Legacy product size data is normalized by the UI and migrates naturally when edited/saved.
+- Product prices and stock are re-read and validated by the backend during checkout.
+- Payment transaction IDs are not trusted from client state beyond the submitted identifier; duplicate protection is enforced on the backend.
 
-## Authentication Flow
+## Developers
 
-1. User registers using Firebase Authentication.
-2. User profile is stored in MongoDB.
-3. Firebase authentication state changes.
-4. Backend generates a JWT.
-5. JWT is stored as an HttpOnly Cookie.
-6. Protected API routes validate the JWT.
-7. User login updates the `lastLoginAt` timestamp.
+- Taoshif
+- Taufiqur
+- Pias
 
----
-
-## Environment Variables
-
-### Client
-
-```env
-VITE_apiKey=
-VITE_authDomain=
-VITE_projectId=
-VITE_storageBucket=
-VITE_messagingSenderId=
-VITE_appId=
-```
-
-### Server
-
-```env
-PORT=3000
-
-DB_USER=
-
-DB_PASS=
-
-JWT_SECRET=
-```
-
----
-
-## Current Progress
-
-- ✅ Firebase Authentication
-- ✅ JWT Authentication
-- ✅ MongoDB Integration
-- ✅ User Registration
-- ✅ Email Login
-- ✅ Google Login
-- ✅ Dashboard Authentication
-- ✅ Secure Axios Instance
-
----
-
-## Upcoming Features
-
-- Product Management
-- Shopping Cart
-- Wishlist
-- Checkout
-- Stripe Payment Gateway
-- Admin Dashboard
-- Order Management
-- Product Reviews
-- Search & Filtering
-- Address Management
-
----
-
-## Vision
-
-REDFLINT aims to establish a strong digital presence that reflects the quality, craftsmanship & sophistication of its fashion collections while providing customers with a seamless online shopping experience.
-
----
+Developed as the RedFlint e-commerce project.
