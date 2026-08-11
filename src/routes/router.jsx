@@ -13,6 +13,7 @@ import Login from "../pages/Login";
 import Register from "../pages/Register";
 import ErrorPage from "../pages/ErrorPage";
 import PrivateRoute from "./PrivateRoute";
+import MaintenanceGate from "./MaintenanceGate";
 import ProductDetails from "../pages/ProductDetails";
 
 import AboutUs from "../pages/AboutUs";
@@ -21,7 +22,6 @@ import OurMotto from "../pages/OurMotto";
 import ContactUs from "../pages/ContactUs";
 import Delivery from "../pages/Delivery";
 
-import CustomerDashboard from "../pages/CustomerOverview";
 import AdminOverview from "../pages/AdminOverview";
 import CustomerOverview from "../pages/CustomerOverview";
 
@@ -48,100 +48,37 @@ export const router = createBrowserRouter([
     Component: MainLayout,
     errorElement: <ErrorPage />,
     children: [
-      {
-        index: true,
-        Component: Home,
-      },
-      {
-        path: "products",
-        Component: Products,
-      },
-      {
-        path: "special-edition",
-        Component: SpecialEdition,
-      },
-      {
-        path: "login",
-        Component: Login,
-      },
-      {
-        path: "register",
-        Component: Register,
-      },
-      {
-        path: "about",
-        Component: AboutUs,
-      },
-      {
-        path: "return",
-        Component: ReturnPolicy,
-      },
-      {
-        path: "motto",
-        Component: OurMotto,
-      },
-      {
-        path: "contact",
-        Component: ContactUs,
-      },
-      {
-        path: "delivery",
-        Component: Delivery,
-      },
-      {
-        path: "dashboard",
-        element: (
-          <PrivateRoute>
-            <CustomerDashboard />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "products/:id",
-        Component: ProductDetails,
-      },
-      {
-        path: "checkout",
-        Component: Checkout,
-      },
-      {
-        path: "track-order",
-        Component: TrackOrder,
-      },
+      { index: true, Component: Home },
+      { path: "products", Component: Products },
+      { path: "special-edition", Component: SpecialEdition },
+      { path: "login", Component: Login },
+      { path: "register", Component: Register },
+      { path: "about", Component: AboutUs },
+      { path: "return", Component: ReturnPolicy },
+      { path: "motto", Component: OurMotto },
+      { path: "contact", Component: ContactUs },
+      { path: "delivery", Component: Delivery },
+      { path: "products/:id", Component: ProductDetails },
+      { path: "checkout", Component: Checkout },
+      { path: "track-order", Component: TrackOrder },
     ],
   },
   {
     path: "dashboard",
     element: (
-      <PrivateRoute>
-        <CustomerDashboardLayout />
-      </PrivateRoute>
+      <MaintenanceGate>
+        <PrivateRoute>
+          <CustomerDashboardLayout />
+        </PrivateRoute>
+      </MaintenanceGate>
     ),
     children: [
-      {
-        index: true,
-        Component: CustomerOverview,
-      },
-      {
-        path: "wishlist",
-        Component: Wishlist,
-      },
-      {
-        path: "account",
-        Component: Account,
-      },
-      {
-        path: "address-book",
-        Component: AddressBook,
-      },
-      {
-        path: "recent-orders",
-        Component: RecentOrders,
-      },
-      {
-        path: "orders/:id",
-        Component: OrderDetails,
-      },
+      { index: true, Component: CustomerOverview },
+      { path: "wishlist", Component: Wishlist },
+      { path: "account", Component: Account },
+      { path: "address-book", Component: AddressBook },
+      { path: "recent-orders", Component: RecentOrders },
+      { path: "orders/:id", Component: OrderDetails },
     ],
   },
   {
@@ -152,46 +89,16 @@ export const router = createBrowserRouter([
       </AdminRoute>
     ),
     children: [
-      {
-        index: true,
-        Component: AdminOverview,
-      },
-      {
-        path: "orders",
-        Component: AdminOrders,
-      },
-      {
-        path: "products",
-        Component: AdminProducts,
-      },
-      {
-        path: "products/add",
-        Component: AddProduct,
-      },
-      {
-        path: "customers",
-        Component: Customers,
-      },
-      {
-        path: "settings",
-        Component: Settings,
-      },
-      {
-        path: "profile",
-        Component: AdminProfile,
-      },
-      {
-        path: "products/:id",
-        Component: AdminProductDetails,
-      },
-      {
-        path: "products/:id/edit",
-        Component: EditProduct,
-      },
-      {
-        path: "reviews",
-        Component: AdminReviews,
-      },
+      { index: true, Component: AdminOverview },
+      { path: "orders", Component: AdminOrders },
+      { path: "products", Component: AdminProducts },
+      { path: "products/add", Component: AddProduct },
+      { path: "customers", Component: Customers },
+      { path: "settings", Component: Settings },
+      { path: "profile", Component: AdminProfile },
+      { path: "products/:id", Component: AdminProductDetails },
+      { path: "products/:id/edit", Component: EditProduct },
+      { path: "reviews", Component: AdminReviews },
     ],
   },
 ]);
