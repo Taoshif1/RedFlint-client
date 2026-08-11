@@ -1,8 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router";
 import {
   Search,
-  ExternalLink,
   RefreshCw,
   ShoppingBag,
   CheckCircle,
@@ -12,6 +10,7 @@ import {
   Truck,
 } from "lucide-react";
 import toast from "react-hot-toast";
+
 import useAdminOrders from "../../../hooks/useAdminOrders";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
@@ -53,6 +52,7 @@ const getStatusBadge = (status) => {
 const getPaymentBadge = (status) => {
   switch (status?.toLowerCase()) {
     case "verified":
+      return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
     case "pending":
       return "bg-amber-500/10 text-amber-400 border-amber-500/20";
     default:
@@ -62,196 +62,180 @@ const getPaymentBadge = (status) => {
 
 const AdminOrders = () => {
   const { orders = [], loading, refetch } = useAdminOrders();
-  const [search, setSearch] = useState("");
   const axiosSecure = useAxiosSecure();
-  const keyword = search.toLowerCase();
-  const [updatingId, setUpdatingId] = useState(null);
 
-  const filteredOrders = orders.filter(
-    (order) =>
-      (order.customerName || "").toLowerCase().includes(keyword) ||
-      (order.userEmail || "").toLowerCase().includes(keyword) ||
-      String(order._id).toLowerCase().includes(keyword),
+  const [search, setSearch] = useState("");
+  const [updatingId, setUpdatingId] = useState(null);
+  const keyword = search.trim().toLowerCase();
+
+  const filteredOrders = orders.filter((order) =>
+    [
+      order.orderNumber,
+      order.customerName,
+      order.userEmail,
+      order.email,
+      order.phone,
+      String(order._id || ""),
+    ].some((value) => String(value || "").toLowerCase().includes(keyword)),
   );
 
   const handleStatus = async (id, status) => {
     setUpdatingId(id);
+
     try {
-      await axiosSecure.patch(`/admin/orders/${id}/status`, { status });
-      toast.success("Order status updated");
-      if (refetch) refetch();
-    } catch {
-      toast.error("Failed to update status");
+      const res = await axiosSecure.patch(`/admin/orders/${id}/status`, { status });
+      toast.success(res.data?.message || "Order status updated");
+      await refetch?.();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update status");
     } finally {
       setUpdatingId(null);
     }
   };
 
   const handlePayment = async (id, status) => {
+    setUpdatingId(id);
+
     try {
-      await axiosSecure.patch(`/admin/orders/${id}/payment`, { status });
-      toast.success("Payment status updated");
-      if (refetch) refetch();
-    } catch {
-      toast.error("Failed to update payment");
+      const res = await axiosSecure.patch(`/admin/orders/${id}/payment`, { status });
+      toast.success(res.data?.message || "Payment status updated");
+      await refetch?.();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update payment");
+    } finally {
+      setUpdatingId(null);
     }
   };
 
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[300px] gap-3">
-        <span className="loading loading-spinner loading-lg text-primary"></span>
-        <p className="text-sm text-base-content/60 animate-pulse">
-          Loading orders...
-        </p>
+        <span className="loading loading-spinner loading-lg text-primary" />
+        <p className="text-sm text-base-content/60 animate-pulse">Loading orders...</p>
       </div>
     );
   }
 
   return (
     <section className="bg-base-200/50 rounded-2xl border border-base-300/60 backdrop-blur-sm overflow-hidden shadow-2xl">
-      {/* Header Bar */}
       <div className="p-5 sm:p-6 flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center border-b border-base-300/60 bg-base-100/40">
         <div className="flex items-center gap-3">
           <div className="p-2.5 rounded-xl bg-primary/10 text-primary border border-primary/20">
             <ShoppingBag className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl font-bold tracking-wide">
-              Order Management
-            </h2>
+            <h2 className="text-xl font-bold tracking-wide">Order Management</h2>
             <p className="text-xs text-base-content/60">
-              Manage order details and dispatch statuses
+              Manage payments, fulfillment and cancellations
             </p>
           </div>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center gap-3">
-          {/* Search Box */}
-          <div className="relative w-full sm:w-64">
+          <div className="relative w-full sm:w-72">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-base-content/40" />
             <input
               type="text"
-              placeholder="Search customer, email..."
+              placeholder="Search order, customer, phone..."
               className="input input-sm input-bordered w-full pl-9 bg-base-100/80 focus:border-primary/50 transition-all text-xs"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(event) => setSearch(event.target.value)}
             />
           </div>
 
-          <Link to="/admin/orders" className="w-full sm:w-auto">
-            <button onClick={refetch} className="btn btn-primary btn-sm">
-              Refresh
-            </button>
-          </Link>
+          <button onClick={refetch} className="btn btn-primary btn-sm w-full sm:w-auto">
+            Refresh
+          </button>
         </div>
       </div>
 
-      {/* Orders Table */}
       <div className="overflow-x-auto">
         <table className="table w-full">
           <thead>
             <tr className="border-b border-base-300/60 bg-base-200/80 text-xs font-semibold uppercase tracking-wider text-base-content/70">
-              <th className="py-4 pl-6">Customer</th>
-              <th>Email</th>
+              <th className="py-4 pl-6">Order</th>
+              <th>Customer</th>
+              <th>Contact</th>
               <th>Order Status</th>
               <th>Total</th>
               <th>Payment</th>
               <th>Date</th>
-              <th className="pr-6 text-right">Actions</th>
             </tr>
           </thead>
 
           <tbody className="divide-y divide-base-300/40 text-xs">
             {filteredOrders.length === 0 ? (
               <tr>
-                <td
-                  colSpan="7"
-                  className="text-center py-10 text-base-content/50"
-                >
+                <td colSpan="7" className="text-center py-10 text-base-content/50">
                   <div className="py-12 flex flex-col items-center gap-3">
                     <ShoppingBag className="w-10 h-10 opacity-30" />
-
                     <h3 className="font-semibold">No Orders Found</h3>
-
-                    <p className="text-base-content/60">
-                      Try changing the search keyword.
-                    </p>
+                    <p className="text-base-content/60">Try changing the search keyword.</p>
                   </div>
                 </td>
               </tr>
             ) : (
               filteredOrders.map((order) => {
                 const statusMeta = getStatusBadge(order.orderStatus);
-                const paymentBadgeClass = getPaymentBadge(
-                  order.payment?.status,
-                );
+                const paymentBadgeClass = getPaymentBadge(order.payment?.status);
+                const cancelled = order.orderStatus === "Cancelled";
+                const delivered = order.orderStatus === "Delivered";
 
                 return (
-                  <tr
-                    key={order._id}
-                    className="hover:bg-base-100/50 transition-colors"
-                  >
-                    {/* Customer */}
-                    <td className="pl-6 font-semibold text-base-content">
-                      {order.customerName || "N/A"}
+                  <tr key={order._id} className="hover:bg-base-100/50 transition-colors">
+                    <td className="pl-6 font-mono font-semibold text-primary whitespace-nowrap">
+                      {order.orderNumber || String(order._id).slice(-8).toUpperCase()}
                     </td>
 
-                    {/* Email */}
-                    <td className="text-base-content/70 font-mono">
-                      {order.userEmail || "N/A"}
+                    <td>
+                      <p className="font-semibold text-base-content">{order.customerName || "N/A"}</p>
+                      <p className="text-[10px] text-base-content/50 capitalize">
+                        {order.customerType || "registered"} · {order.orderSource || "cart"}
+                      </p>
                     </td>
 
-                    {/* Order Status Select */}
+                    <td className="text-base-content/70">
+                      <p>{order.phone || "N/A"}</p>
+                      <p className="font-mono text-[10px]">{order.userEmail || order.email || "Guest"}</p>
+                    </td>
+
                     <td>
                       <div className="flex items-center gap-2">
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${statusMeta.badge}`}
-                        >
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${statusMeta.badge}`}>
                           {statusMeta.icon}
                           {order.orderStatus || "Pending"}
                         </span>
+
                         <select
-                          disabled={updatingId === order._id}
+                          disabled={updatingId === order._id || cancelled}
                           className="select select-bordered select-xs bg-base-100 text-[11px] focus:border-primary focus:outline-none"
                           value={order.orderStatus || "Pending"}
-                          onChange={(e) =>
-                            handleStatus(order._id, e.target.value)
-                          }
+                          onChange={(event) => handleStatus(order._id, event.target.value)}
                         >
                           <option value="Pending">Pending</option>
-
                           <option value="Processing">Processing</option>
-
                           <option value="Shipped">Shipped</option>
-
                           <option value="Delivered">Delivered</option>
-
-                          <option value="Cancelled">Cancelled</option>
+                          {!delivered && <option value="Cancelled">Cancelled</option>}
                         </select>
                       </div>
                     </td>
 
-                    {/* Total */}
-                    <td className="font-semibold text-primary font-mono">
-                      ৳{order.total ?? 0}
+                    <td className="font-semibold text-primary font-mono whitespace-nowrap">
+                      ৳{Number(order.total || 0).toLocaleString("en-BD")}
                     </td>
 
-                    {/* Payment Status Select */}
                     <td>
                       <div className="flex items-center gap-2">
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${paymentBadgeClass}`}
-                        >
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border ${paymentBadgeClass}`}>
                           {order.payment?.status || "Pending"}
                         </span>
+
                         <select
                           disabled={updatingId === order._id}
                           className="select select-bordered select-xs bg-base-100 text-[11px] focus:border-primary focus:outline-none"
                           value={order.payment?.status || "Pending"}
-                          onChange={(e) =>
-                            handlePayment(order._id, e.target.value)
-                          }
+                          onChange={(event) => handlePayment(order._id, event.target.value)}
                         >
                           <option value="Pending">Pending</option>
                           <option value="Verified">Verified</option>
@@ -259,24 +243,14 @@ const AdminOrders = () => {
                       </div>
                     </td>
 
-                    {/* Date */}
-                    <td className="text-base-content/60 font-mono">
+                    <td className="text-base-content/60 font-mono whitespace-nowrap">
                       {order.createdAt
-                        ? new Date(order.createdAt).toLocaleDateString(
-                            "en-GB",
-                            { day: "2-digit", month: "short", year: "numeric" },
-                          )
+                        ? new Date(order.createdAt).toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })
                         : "N/A"}
-                    </td>
-
-                    {/* Action */}
-                    <td className="pr-6 text-right">
-                      <Link
-                        to="/admin/orders"
-                        className="btn btn-ghost btn-xs text-primary hover:bg-primary/10 gap-1 border border-primary/20"
-                      >
-                        Manage <ExternalLink className="w-3 h-3" />
-                      </Link>
                     </td>
                   </tr>
                 );
