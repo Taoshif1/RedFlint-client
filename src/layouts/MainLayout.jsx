@@ -4,12 +4,12 @@ import Navbar from "../components/shared/Navbar";
 import Footer from "../components/shared/Footer";
 import ScrollToTop from "../components/shared/ScrollToTop";
 import WhatsAppSupport from "../components/shared/WhatsAppSupport";
+import MaintenanceGate from "../routes/MaintenanceGate";
 
 const MainLayout = () => {
   return (
-    <>
+    <MaintenanceGate>
       <ScrollToTop />
-
       <Navbar />
 
       <main>
@@ -17,9 +17,8 @@ const MainLayout = () => {
       </main>
 
       <Footer />
-
       <WhatsAppSupport />
-    </>
+    </MaintenanceGate>
   );
 };
 
