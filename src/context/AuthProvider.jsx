@@ -58,8 +58,14 @@ const AuthProvider = ({ children }) => {
     setLoading(true);
 
     try {
+      try {
+        await axiosSecure.post("/auth/logout");
+      } catch (error) {
+        console.error("Server logout error:", error);
+      }
+
       await signOut(auth);
-      await axiosSecure.post("/auth/logout");
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -67,12 +73,19 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
+      setLoading(true);
 
       try {
-        await syncSession(currentUser);
+        if (currentUser) {
+          // Finish the backend session before exposing the authenticated user
+          // to hooks/components that immediately call protected APIs.
+          await syncSession(currentUser);
+        }
+
+        setUser(currentUser);
       } catch (error) {
         console.error("Session sync error:", error);
+        setUser(currentUser);
       } finally {
         setLoading(false);
       }

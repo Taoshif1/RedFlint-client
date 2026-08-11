@@ -4,7 +4,7 @@ import useAuth from "./useAuth";
 import useAxiosSecure from "./useAxiosSecure";
 
 const useUser = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const axiosSecure = useAxiosSecure();
 
   const [dbUser, setDbUser] = useState(null);
@@ -31,8 +31,10 @@ const useUser = () => {
   }, [user?.email, axiosSecure]);
 
   useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+    if (!authLoading) {
+      fetchUser();
+    }
+  }, [authLoading, fetchUser]);
 
   return {
     user: dbUser,
