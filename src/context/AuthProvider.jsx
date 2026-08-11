@@ -2,6 +2,7 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
@@ -18,57 +19,63 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Register
+  const syncSession = async (firebaseUser) => {
+    if (!firebaseUser) {
+      return axiosSecure.post("/auth/logout");
+    }
+
+    const idToken = await firebaseUser.getIdToken();
+
+    return axiosSecure.post("/auth/jwt", {
+      idToken,
+    });
+  };
+
   const createUser = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
-  // Login
   const signIn = (email, password) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  // Google Login
   const googleSignIn = () => {
     setLoading(true);
     return signInWithPopup(auth, googleProvider);
   };
 
-  // Update Profile
+  const resetPassword = (email) => {
+    return sendPasswordResetEmail(auth, email);
+  };
+
   const updateUser = (profile) => {
     return updateProfile(auth.currentUser, profile);
   };
 
-  // Logout
-  const logOut = () => {
+  const logOut = async () => {
     setLoading(true);
-    return signOut(auth);
+
+    try {
+      await signOut(auth);
+      await axiosSecure.post("/auth/logout");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
 
-      if (currentUser) {
-        try {
-          await axiosSecure.post("/auth/jwt", {
-            email: currentUser.email,
-            uid: currentUser.uid,
-          });
-        } catch (error) {
-          console.error("JWT creation error:", error);
-        }
-      } else {
-        try {
-          await axiosSecure.post("/auth/logout");
-        } catch (error) {
-          console.error("Logout error:", error);
-        }
+      try {
+        await syncSession(currentUser);
+      } catch (error) {
+        console.error("Session sync error:", error);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     });
 
     return unsubscribe;
@@ -80,8 +87,10 @@ const AuthProvider = ({ children }) => {
     createUser,
     signIn,
     googleSignIn,
+    resetPassword,
     updateUser,
     logOut,
+    syncSession,
   };
 
   return (

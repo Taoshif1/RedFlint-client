@@ -7,25 +7,30 @@ import { FcGoogle } from "react-icons/fc";
 
 import useAuth from "../hooks/useAuth";
 import useAxiosSecure from "../hooks/useAxiosSecure";
-// import { auth } from "../firebase/firebase.config";
 
 const Login = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { signIn, googleSignIn } = useAuth();
+  const { signIn, googleSignIn, resetPassword, syncSession } = useAuth();
   const axiosSecure = useAxiosSecure();
 
   const [loading, setLoading] = useState(false);
+  const [resetting, setResetting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
 
   const from = location.state?.from?.pathname;
-  // const [googleLoading, setGoogleLoading] = useState(false);
 
-  const redirectUser = async (email) => {
-    const res = await axiosSecure.get(`/users/${email}`);
+  const redirectUser = async (userEmail) => {
+    const res = await axiosSecure.get(`/users/${userEmail}`);
 
-    if (res.data.role === "admin") {
+    if (res.data?.isBlocked) {
+      toast.error("This account is blocked. Contact RedFlint support.");
+      return;
+    }
+
+    if (res.data?.role === "admin") {
       navigate("/admin", { replace: true });
       return;
     }
@@ -33,42 +38,35 @@ const Login = () => {
     navigate(from || "/dashboard", { replace: true });
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
+  const handleLogin = async (event) => {
+    event.preventDefault();
     setLoading(true);
 
-    const form = e.target;
-
-    const email = form.email.value;
+    const form = event.target;
     const password = form.password.value;
 
     try {
-      const result = await signIn(email, password);
-
+      const result = await signIn(email.trim(), password);
       const firebaseUser = result.user;
 
+      await syncSession(firebaseUser);
       await axiosSecure.patch(`/users/login/${firebaseUser.email}`);
 
-      toast.success("Login Successful!");
-
+      toast.success("Login successful!");
       await redirectUser(firebaseUser.email);
     } catch (error) {
       switch (error.code) {
         case "auth/invalid-credential":
           toast.error("Invalid email or password.");
           break;
-
         case "auth/user-disabled":
           toast.error("This account has been disabled.");
           break;
-
         case "auth/too-many-requests":
           toast.error("Too many attempts. Please try again later.");
           break;
-
         default:
-          toast.error(error.message);
+          toast.error(error.response?.data?.message || error.message);
       }
     } finally {
       setLoading(false);
@@ -80,26 +78,43 @@ const Login = () => {
 
     try {
       const result = await googleSignIn();
-
       const firebaseUser = result.user;
 
+      await syncSession(firebaseUser);
+
       await axiosSecure.post("/users", {
-        uid: firebaseUser.uid,
-        name: firebaseUser.displayName,
-        phone: firebaseUser.phoneNumber || "Not Provided",
-        email: firebaseUser.email,
-        photoURL: firebaseUser.photoURL,
+        name: firebaseUser.displayName || "",
+        phone: firebaseUser.phoneNumber || "",
+        photoURL: firebaseUser.photoURL || "",
       });
 
       await axiosSecure.patch(`/users/login/${firebaseUser.email}`);
 
       toast.success("Logged in with Google!");
-
       await redirectUser(firebaseUser.email);
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    const cleanEmail = email.trim();
+
+    if (!cleanEmail) {
+      return toast.error("Enter your email address first.");
+    }
+
+    setResetting(true);
+
+    try {
+      await resetPassword(cleanEmail);
+      toast.success("Password reset email sent. Check your inbox.");
     } catch (error) {
       toast.error(error.message);
     } finally {
-      setLoading(false);
+      setResetting(false);
     }
   };
 
@@ -121,6 +136,8 @@ const Login = () => {
               type="email"
               placeholder="Email Address"
               className="input input-bordered w-full"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
               required
             />
 
@@ -137,6 +154,7 @@ const Login = () => {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-4 top-1/2 -translate-y-1/2"
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
               </button>
@@ -145,10 +163,11 @@ const Login = () => {
             <div className="text-right">
               <button
                 type="button"
-                href="#"
-                className="text-sm text-primary hover:underline"
+                onClick={handleForgotPassword}
+                disabled={resetting}
+                className="text-sm text-primary hover:underline disabled:opacity-50"
               >
-                Forgot Password?
+                {resetting ? "Sending reset email..." : "Forgot Password?"}
               </button>
             </div>
 

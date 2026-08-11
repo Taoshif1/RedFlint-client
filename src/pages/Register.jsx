@@ -3,13 +3,12 @@ import { Link, useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import useAuth from "../hooks/useAuth";
 import useAxiosSecure from "../hooks/useAxiosSecure";
-// import { auth } from "../firebase/firebase.config";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
 
 const Register = () => {
   const navigate = useNavigate();
-  const { createUser, updateUser, googleSignIn } = useAuth();
+  const { createUser, updateUser, googleSignIn, syncSession } = useAuth();
 
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -17,14 +16,14 @@ const Register = () => {
 
   const axiosSecure = useAxiosSecure();
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
+  const handleRegister = async (event) => {
+    event.preventDefault();
     setLoading(true);
 
-    const form = e.target;
-    const name = form.name.value;
-    const phone = form.phone.value;
-    const email = form.email.value;
+    const form = event.target;
+    const name = form.name.value.trim();
+    const phone = form.phone.value.trim();
+    const email = form.email.value.trim();
     const password = form.password.value;
     const confirm = form.confirm.value;
 
@@ -60,7 +59,6 @@ const Register = () => {
 
     try {
       const result = await createUser(email, password);
-
       const firebaseUser = result.user;
 
       const photoURL =
@@ -70,22 +68,21 @@ const Register = () => {
 
       await updateUser({
         displayName: name,
-        photoURL: photoURL,
-      });
-
-      // Save email/password user to DB
-      await axiosSecure.post("/users", {
-        uid: firebaseUser.uid,
-        name,
-        phone,
-        email,
         photoURL,
       });
 
-      toast.success("Registration Successful!");
-      navigate("/login");
+      await syncSession(firebaseUser);
+
+      await axiosSecure.post("/users", {
+        name,
+        phone,
+        photoURL,
+      });
+
+      toast.success("Registration successful!");
+      navigate("/dashboard", { replace: true });
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     } finally {
       setLoading(false);
     }
@@ -93,23 +90,23 @@ const Register = () => {
 
   const handleGoogle = async () => {
     setLoading(true);
+
     try {
       const result = await googleSignIn();
       const firebaseUser = result.user;
 
-      // Sync Google user profile data securely with backend database
+      await syncSession(firebaseUser);
+
       await axiosSecure.post("/users", {
-        uid: firebaseUser.uid,
-        name: firebaseUser.displayName,
-        phone: firebaseUser.phoneNumber || "Not Provided",
-        email: firebaseUser.email,
-        photoURL: firebaseUser.photoURL,
+        name: firebaseUser.displayName || "",
+        phone: firebaseUser.phoneNumber || "",
+        photoURL: firebaseUser.photoURL || "",
       });
 
       toast.success("Logged in with Google!");
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.response?.data?.message || error.message);
     } finally {
       setLoading(false);
     }
@@ -124,68 +121,20 @@ const Register = () => {
           </h2>
 
           <form onSubmit={handleRegister} className="space-y-4 mt-6">
-            <input
-              name="name"
-              type="text"
-              placeholder="Full Name"
-              className="input input-bordered w-full"
-              required
-            />
+            <input name="name" type="text" placeholder="Full Name" className="input input-bordered w-full" required />
+            <input name="phone" type="tel" placeholder="Phone Number" className="input input-bordered w-full" required />
+            <input name="email" type="email" placeholder="Email Address" className="input input-bordered w-full" required />
 
-            <input
-              name="phone"
-              type="tel"
-              placeholder="Phone Number"
-              className="input input-bordered w-full"
-              required
-            />
-
-            <input
-              name="email"
-              type="email"
-              placeholder="Email Address"
-              className="input input-bordered w-full"
-              required
-            />
-
-            {/* Password Field */}
             <div className="relative w-full">
-              <input
-                name="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                className="input input-bordered w-full pr-10"
-                required
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
+              <input name="password" type={showPassword ? "text" : "password"} placeholder="Password" className="input input-bordered w-full pr-10" required />
+              <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Hide password" : "Show password"}>
                 {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
               </button>
             </div>
 
-            {/* Confirm Password Field */}
             <div className="relative w-full">
-              <input
-                name="confirm"
-                type={showConfirm ? "text" : "password"}
-                placeholder="Confirm Password"
-                className="input input-bordered w-full pr-10"
-                required
-              />
-              <button
-                type="button"
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-                onClick={() => setShowConfirm(!showConfirm)}
-                aria-label={
-                  showConfirm
-                    ? "Hide confirm password"
-                    : "Show confirm password"
-                }
-              >
+              <input name="confirm" type={showConfirm ? "text" : "password"} placeholder="Confirm Password" className="input input-bordered w-full pr-10" required />
+              <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none" onClick={() => setShowConfirm(!showConfirm)} aria-label={showConfirm ? "Hide confirm password" : "Show confirm password"}>
                 {showConfirm ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
               </button>
             </div>
@@ -197,20 +146,14 @@ const Register = () => {
 
           <div className="divider">OR</div>
 
-          <button
-            onClick={handleGoogle}
-            className="btn btn-outline w-full flex items-center justify-center gap-2"
-            disabled={loading}
-          >
+          <button onClick={handleGoogle} className="btn btn-outline w-full flex items-center justify-center gap-2" disabled={loading}>
             <FcGoogle size={22} />
             Continue with Google
           </button>
 
           <p className="text-center mt-5">
             Already have an account?
-            <Link to="/login" className="text-primary ml-2 hover:underline">
-              Login
-            </Link>
+            <Link to="/login" className="text-primary ml-2 hover:underline">Login</Link>
           </p>
         </div>
       </div>
