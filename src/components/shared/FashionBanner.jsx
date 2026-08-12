@@ -25,19 +25,19 @@ const shirts = [
 
 const FashionBanner = () => {
   return (
-    <section className="bg-base-100 border-b border-base-300 py-20 overflow-hidden">
+    <section className="overflow-hidden border-b border-base-300 bg-base-100 py-12 sm:py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4">
         {/* Header */}
-        <div className="text-center mb-14">
+        <div className="mb-9 text-center sm:mb-14">
           <div className="badge badge-primary badge-outline mb-4">
             A Fashion Statement
           </div>
 
-          <h1 className="red-hat text-4xl md:text-6xl lg:text-7xl italic">
+          <h1 className="red-hat text-3xl italic leading-tight sm:text-4xl md:text-6xl lg:text-7xl">
             Crafted For Modern Gentlemen
           </h1>
 
-          <p className="max-w-3xl mx-auto mt-6 text-base-content/70 text-lg">
+          <p className="mx-auto mt-4 max-w-3xl text-sm leading-6 text-base-content/70 sm:mt-6 sm:text-lg sm:leading-7">
             Precision tailoring, premium fabrics, timeless silhouettes.
             Discover the newest REDFLINT collection designed for men who value
             confidence, elegance and craftsmanship.
@@ -51,12 +51,12 @@ const FashionBanner = () => {
         </div>
 
         {/* Product Images */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-5 items-center">
+        <div className="hide-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 lg:grid lg:grid-cols-5 lg:items-center lg:gap-5 lg:overflow-visible lg:pb-0">
           {shirts.map((shirt, index) => (
             <div
               key={shirt.name}
               className={`
-                overflow-hidden rounded-box group
+                group min-w-[74%] snap-center overflow-hidden rounded-box sm:min-w-[44%] lg:min-w-0
                 ${
                   index === 2
                     ? "lg:scale-110 border-2 border-primary shadow-2xl shadow-primary/30"
@@ -67,10 +67,18 @@ const FashionBanner = () => {
               <img
                 src={shirt.image}
                 alt={shirt.name}
+                loading="lazy"
+                decoding="async"
+                width="640"
+                height="800"
                 className={`
                   w-full object-cover transition duration-500
                   group-hover:scale-110
-                  ${index === 2 ? "h-[450px]" : "h-[380px]"}
+                  ${
+                    index === 2
+                      ? "h-[21rem] sm:h-96 lg:h-[450px]"
+                      : "h-[21rem] sm:h-96 lg:h-[380px]"
+                  }
                 `}
               />
             </div>

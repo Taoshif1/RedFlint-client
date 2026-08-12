@@ -78,11 +78,11 @@ const TrackOrder = () => {
       : "";
 
   return (
-    <div className="max-w-5xl mx-auto px-4 md:px-6 py-12">
-      <div className="max-w-xl mx-auto text-center mb-10">
+    <div className="mx-auto max-w-5xl px-4 py-8 md:px-6 md:py-12">
+      <div className="mx-auto mb-8 max-w-xl text-center sm:mb-10">
         <Package size={45} className="mx-auto text-primary mb-4" />
 
-        <h1 className="text-4xl font-bold">Track Your Order</h1>
+        <h1 className="text-3xl font-bold sm:text-4xl">Track Your Order</h1>
 
         <p className="text-base-content/60 mt-3">
           Enter your order number and the phone number used during checkout.
@@ -95,7 +95,7 @@ const TrackOrder = () => {
         onSubmit={handleTrack}
         className="card bg-base-100 border border-base-300 shadow-xl max-w-2xl mx-auto"
       >
-        <div className="card-body">
+        <div className="card-body p-4 sm:p-6">
           <div className="grid md:grid-cols-2 gap-4">
             <label className="form-control">
               <span className="label-text mb-2">Order Number</span>
@@ -147,7 +147,7 @@ const TrackOrder = () => {
           {/* Header */}
 
           <div className="card bg-base-100 border border-base-300 shadow">
-            <div className="card-body">
+            <div className="card-body p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <p className="text-sm text-base-content/60">Order Number</p>
@@ -192,7 +192,7 @@ const TrackOrder = () => {
           {/* Tracking */}
 
           <div className="card bg-base-100 border border-base-300 shadow">
-            <div className="card-body">
+            <div className="card-body p-4 sm:p-6">
               <h2 className="card-title">Delivery Progress</h2>
 
               {cancelled ? (
@@ -202,7 +202,8 @@ const TrackOrder = () => {
                   <span>This order has been cancelled.</span>
                 </div>
               ) : (
-                <div className="grid grid-cols-4 mt-8">
+                <div className="hide-scrollbar overflow-x-auto pb-2">
+                  <div className="mt-8 grid min-w-72 grid-cols-4">
                   {TRACKING_STEPS.map((step, index) => {
                     const completed = index <= currentIndex;
 
@@ -243,6 +244,7 @@ const TrackOrder = () => {
                       </div>
                     );
                   })}
+                  </div>
                 </div>
               )}
             </div>
@@ -251,22 +253,24 @@ const TrackOrder = () => {
           {/* Products */}
 
           <div className="card bg-base-100 border border-base-300 shadow">
-            <div className="card-body">
+            <div className="card-body p-4 sm:p-6">
               <h2 className="card-title">Products</h2>
 
               <div className="divide-y divide-base-300">
                 {order.products?.map((item, index) => (
                   <div
                     key={`${item.productId}-${item.size}-${index}`}
-                    className="py-4 flex gap-4 items-center"
+                    className="flex min-w-0 flex-wrap items-center gap-3 py-4 sm:flex-nowrap sm:gap-4"
                   >
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="w-20 h-20 object-cover rounded-xl"
+                      loading="lazy"
+                      decoding="async"
+                      className="h-16 w-16 shrink-0 rounded-xl object-cover sm:h-20 sm:w-20"
                     />
 
-                    <div className="flex-1">
+                    <div className="min-w-0 flex-1">
                       <h3 className="font-semibold">{item.title}</h3>
 
                       <p className="text-sm text-base-content/60 mt-1">
@@ -275,7 +279,7 @@ const TrackOrder = () => {
                       </p>
                     </div>
 
-                    <p className="font-semibold">
+                    <p className="ml-auto font-semibold">
                       ৳{Number(item.lineTotal ?? 0).toLocaleString("en-BD")}
                     </p>
                   </div>
@@ -287,7 +291,7 @@ const TrackOrder = () => {
           {/* Payment + Total */}
 
           <div className="card bg-base-100 border border-base-300 shadow">
-            <div className="card-body">
+            <div className="card-body p-4 sm:p-6">
               <div className="flex justify-between">
                 <span>Payment Method</span>
 

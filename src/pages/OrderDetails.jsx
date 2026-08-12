@@ -43,14 +43,14 @@ const OrderDetails = () => {
   }
 
   return (
-    <section className="space-y-8">
-      <div className="bg-base-200 rounded-box shadow border border-base-300 p-8">
+    <section className="space-y-5 sm:space-y-8">
+      <div className="rounded-box border border-base-300 bg-base-200 p-4 shadow sm:p-8">
         <div className="flex flex-col lg:flex-row justify-between gap-6">
           <div>
             <p className="text-primary text-sm uppercase tracking-wider font-semibold">
               {order.orderNumber || "Order"}
             </p>
-            <h1 className="text-4xl font-bold mt-1">Order Details</h1>
+            <h1 className="mt-1 text-3xl font-bold sm:text-4xl">Order Details</h1>
             <p className="opacity-70 mt-2">
               Placed {new Date(order.createdAt).toLocaleString()}
             </p>
@@ -70,17 +70,17 @@ const OrderDetails = () => {
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2">
           <div className="bg-base-200 rounded-box shadow border border-base-300">
-            <div className="p-6 border-b border-base-300">
-              <h2 className="text-2xl font-bold">Ordered Products</h2>
+            <div className="border-b border-base-300 p-4 sm:p-6">
+              <h2 className="text-xl font-bold sm:text-2xl">Ordered Products</h2>
             </div>
 
             <div className="divide-y divide-base-300">
               {order.products?.map((product, index) => (
-                <div key={`${product.productId}-${product.size}-${index}`} className="flex gap-5 p-6">
-                  <img src={product.image} alt={product.title} className="w-28 h-28 rounded-lg object-cover" />
+                <div key={`${product.productId}-${product.size}-${index}`} className="flex min-w-0 gap-3 p-4 sm:gap-5 sm:p-6">
+                  <img src={product.image} alt={product.title} loading="lazy" decoding="async" className="h-20 w-20 shrink-0 rounded-lg object-cover sm:h-28 sm:w-28" />
 
-                  <div className="flex-1">
-                    <Link to={`/products/${product.productId}`} className="text-xl font-semibold hover:text-primary">
+                  <div className="min-w-0 flex-1">
+                    <Link to={`/products/${product.productId}`} className="line-clamp-2 text-base font-semibold hover:text-primary sm:text-xl">
                       {product.title}
                     </Link>
                     {product.size && <p>Size: {product.size}</p>}
@@ -96,7 +96,7 @@ const OrderDetails = () => {
         </div>
 
         <div>
-          <div className="bg-base-200 rounded-box shadow border border-base-300 p-6 space-y-5">
+          <div className="rounded-box space-y-5 border border-base-300 bg-base-200 p-4 shadow sm:p-6">
             <h2 className="text-2xl font-bold">Shipping</h2>
 
             <div>

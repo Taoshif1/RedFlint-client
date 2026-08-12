@@ -10,7 +10,7 @@ const MessengerSupport = () => {
       rel="noopener noreferrer"
       aria-label="Contact RedFlint on Messenger"
       title="Chat with us on Messenger"
-      className="fixed right-5 bottom-20 z-[9990] btn btn-circle bg-blue-600 text-white border-0 hover:bg-blue-700 shadow-2xl"
+      className="btn btn-circle fixed bottom-[calc(4.5rem+env(safe-area-inset-bottom))] right-3 z-[90] min-h-12 min-w-12 border-0 bg-blue-600 text-white shadow-2xl hover:bg-blue-700 sm:right-5 sm:min-h-14 sm:min-w-14"
     >
       <FaFacebookMessenger size={28} />
     </a>

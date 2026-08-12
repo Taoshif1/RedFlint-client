@@ -50,12 +50,11 @@ const menus = [
   },
 ];
 
-const AdminDashboardSidebar = ({ sidebarOpen }) => {
+const AdminDashboardSidebar = ({ sidebarOpen, onNavigate }) => {
   return (
     <aside
-      className={`bg-[#151515] border-r border-zinc-800 transition-all duration-300 overflow-hidden ${
-        sidebarOpen ? "w-64" : "w-0"
-      }`}
+      aria-hidden={!sidebarOpen}
+      className="h-full w-64 overflow-hidden border-r border-zinc-800 bg-[#151515]"
     >
       <div className="w-64 p-4">
         <div className="mb-6 px-3">
@@ -73,6 +72,7 @@ const AdminDashboardSidebar = ({ sidebarOpen }) => {
                 <NavLink
                   to={menu.path}
                   end={menu.end}
+                  onClick={onNavigate}
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-4 py-3 rounded-lg transition ${
                       isActive

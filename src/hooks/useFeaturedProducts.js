@@ -14,9 +14,9 @@ const useFeaturedProducts = () => {
         setLoading(true);
         setError("");
 
-        const { data } = await axiosSecure.get(
-          "/products/featured",
-        );
+        const { data } = await axiosSecure.get("/products/featured", {
+          params: { view: "card", limit: 4 },
+        });
 
         setProducts(Array.isArray(data) ? data : []);
       } catch (error) {

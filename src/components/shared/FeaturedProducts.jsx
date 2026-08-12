@@ -12,13 +12,13 @@ const FeaturedProducts = () => {
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-      <div className="flex items-end justify-between gap-4 mb-8">
+      <div className="mb-8 flex items-end justify-between gap-3">
         <div>
           <p className="text-primary text-sm font-semibold uppercase tracking-widest">
             Handpicked for you
           </p>
 
-          <h2 className="text-3xl md:text-4xl font-bold mt-2">
+          <h2 className="mt-2 text-2xl font-bold sm:text-3xl md:text-4xl">
             Featured Products
           </h2>
         </div>
@@ -50,7 +50,7 @@ const FeaturedProducts = () => {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3 sm:gap-6">
+        <div className="grid grid-cols-1 gap-4 min-[390px]:grid-cols-2 sm:gap-6">
           {products.map((product) => (
             <Product
               key={product._id}

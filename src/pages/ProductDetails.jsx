@@ -30,7 +30,7 @@ const ProductDetails = () => {
 
   if (!product) {
     return (
-      <div className="max-w-7xl mx-auto px-6 py-20 text-center">
+      <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 sm:py-20">
         <span className="loading loading-spinner loading-lg" />
 
         <h2 className="text-xl font-semibold mt-4">Loading product...</h2>
@@ -39,10 +39,10 @@ const ProductDetails = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-10">
       {/* Breadcrumb */}
 
-      <div className="breadcrumbs text-sm mb-8">
+      <div className="breadcrumbs mb-6 max-w-full overflow-hidden text-xs sm:mb-8 sm:text-sm">
         <ul>
           <li>
             <Link to="/">Home</Link>
@@ -52,13 +52,13 @@ const ProductDetails = () => {
             <Link to="/products">Products</Link>
           </li>
 
-          <li>{product.title}</li>
+          <li className="max-w-40 truncate sm:max-w-80">{product.title}</li>
         </ul>
       </div>
 
       {/* Product */}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+      <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-16">
         <ProductGallery
           images={product.images}
           title={product.title}

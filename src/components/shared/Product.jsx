@@ -108,10 +108,14 @@ const Product = ({ product }) => {
     >
       {/* Product Image */}
 
-      <figure className="relative h-44 sm:h-56 lg:h-90 bg-base-200">
+      <figure className="relative aspect-[4/5] bg-base-200">
         <img
           src={images[0]}
           alt={title}
+          loading="lazy"
+          decoding="async"
+          width="640"
+          height="800"
           className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
         />
 
@@ -129,7 +133,7 @@ const Product = ({ product }) => {
           type="button"
           onClick={handleWishlist}
           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          className="absolute top-2 left-2 btn btn-circle btn-xs sm:btn-sm bg-white text-black border-0 hover:bg-primary hover:text-white"
+          className="btn btn-circle absolute left-2 top-2 z-10 h-11 min-h-11 w-11 min-w-11 border-0 bg-white text-black hover:bg-primary hover:text-white"
         >
           {isWishlisted ? (
             <FaHeart className="text-red-500" size={15} />
@@ -141,9 +145,9 @@ const Product = ({ product }) => {
 
       {/* Product Information */}
 
-      <div className="card-body p-3 sm:p-4 gap-3">
+      <div className="card-body gap-2 p-3 sm:gap-3 sm:p-4">
         <div className="flex flex-wrap items-center gap-1.5">
-          <h2 className="font-bold text-sm sm:text-lg line-clamp-1 hover:text-primary transition">
+          <h2 className="line-clamp-2 min-h-10 text-sm font-bold leading-5 transition hover:text-primary sm:min-h-0 sm:text-lg">
             {title}
           </h2>
 

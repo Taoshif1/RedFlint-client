@@ -10,7 +10,9 @@ const useSpecialProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const { data } = await axiosSecure.get("/products/special-edition");
+        const { data } = await axiosSecure.get("/products/special-edition", {
+          params: { view: "card" },
+        });
         setProducts(data);
       } catch (error) {
         console.error(error);
@@ -20,7 +22,7 @@ const useSpecialProducts = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [axiosSecure]);
 
   return { products, loading };
 };

@@ -4,6 +4,31 @@
   themes: redflint --default, dark;
 }
 
+html {
+  min-width: 320px;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100dvh;
+  overflow-x: clip;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+img {
+  max-width: 100%;
+}
+
 /* Short font utility class */
 .red-hat {
   font-family: "Red Hat Display", sans-serif;
@@ -79,4 +104,33 @@ GRADIENT COLORS
 
 .customer-reviews-swiper .swiper-wrapper {
   transition-timing-function: linear !important;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.safe-area-bottom {
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+}
+
+@media (max-width: 639px) {
+  .redflint-hero .swiper-button-next,
+  .redflint-hero .swiper-button-prev {
+    display: none;
+  }
+
+  .redflint-hero .swiper-pagination {
+    bottom: 0.75rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .customer-reviews-swiper .swiper-wrapper {
+    transition-duration: 0.01ms !important;
+  }
 }

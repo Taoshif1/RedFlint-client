@@ -135,12 +135,14 @@ const ProductInfo = ({ product }) => {
     : Number(product.totalStock) <= 0;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div>
-        <h1 className="text-4xl font-bold">{product.title}</h1>
+        <h1 className="text-3xl font-bold leading-tight sm:text-4xl">
+          {product.title}
+        </h1>
 
-        <div className="flex items-center gap-4 mt-3">
-          <p className="text-3xl font-bold text-primary">
+        <div className="mt-3 flex flex-wrap items-center gap-3 sm:gap-4">
+          <p className="text-2xl font-bold text-primary sm:text-3xl">
             ৳{product.offerPrice ?? product.price}
           </p>
 
@@ -177,17 +179,17 @@ const ProductInfo = ({ product }) => {
 
       <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <button disabled={outOfStock} onClick={handleAddToCart} className="btn btn-outline btn-primary w-full">
+      <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
+        <button disabled={outOfStock} onClick={handleAddToCart} className="btn btn-outline btn-primary min-h-12 w-full">
           {outOfStock ? "Out of Stock" : "Add to Cart"}
         </button>
 
-        <button disabled={outOfStock} onClick={handleBuyNow} className="btn btn-primary w-full text-white">
+        <button disabled={outOfStock} onClick={handleBuyNow} className="btn btn-primary min-h-12 w-full text-white">
           {outOfStock ? "Out of Stock" : "Buy Now"}
         </button>
       </div>
 
-      <button onClick={handleWishlist} className={`btn w-full ${isWishlisted ? "btn-error" : "btn-outline"}`}>
+      <button onClick={handleWishlist} className={`btn min-h-12 w-full ${isWishlisted ? "btn-error" : "btn-outline"}`}>
         {isWishlisted ? (
           <><FaHeart /> Remove from Wishlist</>
         ) : (

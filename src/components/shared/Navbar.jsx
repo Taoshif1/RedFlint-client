@@ -11,7 +11,7 @@ import { FiMenu, FiX, FiUser, FiShoppingCart, FiSearch } from "react-icons/fi";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
-  const { user: dbUser, loading: userLoading } = useUser();
+  const { user: dbUser } = useUser();
   const { cart, refetch } = useCart();
   const navigate = useNavigate();
 
@@ -22,11 +22,8 @@ const Navbar = () => {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   const [isDesktopProfileOpen, setIsDesktopProfileOpen] = useState(false);
-  const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
-
   const desktopProfileRef = useRef(null);
-  const mobileProfileRef = useRef(null);
-  const mobileMenuRef = useRef(null); // Ref for mobile menu
+  const mobileMenuRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -35,12 +32,6 @@ const Navbar = () => {
         !desktopProfileRef.current.contains(event.target)
       ) {
         setIsDesktopProfileOpen(false);
-      }
-      if (
-        mobileProfileRef.current &&
-        !mobileProfileRef.current.contains(event.target)
-      ) {
-        setIsMobileProfileOpen(false);
       }
       if (
         mobileMenuRef.current &&
@@ -58,7 +49,6 @@ const Navbar = () => {
     try {
       await logOut();
       setIsDesktopProfileOpen(false);
-      setIsMobileProfileOpen(false);
       setIsMenuOpen(false);
       navigate("/login");
     } catch (error) {
@@ -69,7 +59,6 @@ const Navbar = () => {
   const closeMenu = () => {
     setIsMenuOpen(false);
     setIsDesktopProfileOpen(false);
-    setIsMobileProfileOpen(false);
   };
 
   // Helper for Standard NavLinks Active Styling
@@ -83,15 +72,15 @@ const Navbar = () => {
     isActive ? "text-primary font-bold bg-base-300" : "hover:text-primary";
 
   return (
-    <div className="sticky top-0 z-100 bg-base-100/90 backdrop-blur-md border-b border-base-300">
-      <div className="navbar max-w-7xl mx-auto px-4 min-h-20">
+    <div className="sticky top-0 z-[100] border-b border-base-300 bg-base-100/90 backdrop-blur-md">
+      <div className="navbar mx-auto min-h-16 max-w-7xl px-2 sm:min-h-20 sm:px-4">
         {/* ----------------- MOBILE MENU START ----------------- */}
         <div className="navbar-start lg:hidden">
           <div className="dropdown" ref={mobileMenuRef}>
             <button
               onClick={() => setIsMenuOpen((prev) => !prev)}
               type="button"
-              className="btn btn-ghost btn-circle p-0"
+              className="btn btn-ghost btn-circle min-h-11 min-w-11 p-0"
               aria-label="Toggle Menu"
             >
               {isMenuOpen ? (
@@ -104,7 +93,7 @@ const Navbar = () => {
             </button>
 
             {isMenuOpen && (
-              <ul className="menu menu-sm dropdown-content mt-3 z-[100] w-64 rounded-box bg-base-200 p-3 shadow-xl space-y-2 border border-base-300 absolute left-0">
+              <ul className="menu menu-sm dropdown-content absolute left-0 z-[100] mt-3 w-[min(18rem,calc(100vw-1rem))] space-y-2 rounded-box border border-base-300 bg-base-200 p-3 shadow-xl">
                 <li>
                   <NavLink
                     to="/products"
@@ -207,7 +196,7 @@ const Navbar = () => {
               isActive ? "opacity-100" : "opacity-90 hover:opacity-100"
             }
           >
-            <Logo />
+            <Logo compact />
           </NavLink>
         </div>
 
@@ -287,64 +276,20 @@ const Navbar = () => {
         </div>
 
         {/* ----------------- MOBILE RIGHT ----------------- */}
-        <div className="navbar-end lg:hidden items-center gap-3">
+        <div className="navbar-end items-center gap-0 lg:hidden">
           <button
-            onClick={() => setIsMobileSearchOpen((prev) => !prev)}
-            className="btn btn-ghost btn-circle btn-sm"
+            type="button"
+            onClick={() => {
+              setIsMobileSearchOpen((prev) => !prev);
+              setIsMenuOpen(false);
+            }}
+            className="btn btn-ghost btn-circle min-h-11 min-w-11"
+            aria-label={isMobileSearchOpen ? "Close search" : "Open search"}
           >
-            <FiSearch size={18} />
+            <FiSearch size={20} />
           </button>
 
-          {user ? (
-            <div className="relative" ref={mobileProfileRef}>
-              <button
-                type="button"
-                onClick={() => setIsMobileProfileOpen((prev) => !prev)}
-                className="btn btn-ghost btn-circle avatar border-0 focus:outline-none"
-              >
-                <div className="w-8 rounded-full ring-2 ring-primary">
-                  <img
-                    alt={user?.displayName || "User avatar"}
-                    src={
-                      user?.photoURL ||
-                      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                    }
-                  />
-                </div>
-              </button>
-
-              {isMobileProfileOpen && (
-                <ul className="menu menu-sm absolute right-0 mt-3 z-[100] p-2 shadow-xl bg-base-200 rounded-box w-48 space-y-1 border border-base-300">
-                  <li className="px-2 py-1 font-bold border-b border-base-300 truncate">
-                    {user?.displayName || "User"}
-                  </li>
-                  <li>
-                    <NavLink
-                      to={dashboardPath}
-                      onClick={closeMenu}
-                      className={dropdownLinkClass}
-                    >
-                      Dashboard
-                    </NavLink>
-                  </li>
-                  <li>
-                    <button
-                      onClick={handleLogOut}
-                      className="text-error font-semibold hover:bg-error/10 w-full text-left"
-                    >
-                      Logout
-                    </button>
-                  </li>
-                </ul>
-              )}
-            </div>
-          ) : (
-            <NavLink to="/login">
-              <FiUser size={22} className="hover:text-primary transition" />
-            </NavLink>
-          )}
-
-          <div className="indicator">
+          <div className="indicator mr-2">
             <span className="indicator-item badge badge-primary badge-sm">
               {cart.length}
             </span>
@@ -352,7 +297,8 @@ const Navbar = () => {
             <button
               type="button"
               onClick={() => setIsCartOpen(true)}
-              className="btn btn-ghost btn-circle hover:text-primary"
+              className="btn btn-ghost btn-circle min-h-11 min-w-11 hover:text-primary"
+              aria-label={`Open shopping cart with ${cart.length} items`}
             >
               <FiShoppingCart size={22} />
             </button>
@@ -362,8 +308,8 @@ const Navbar = () => {
 
       {/* ----------------- EXPANDABLE MOBILE SEARCH BAR ----------------- */}
       {isMobileSearchOpen && (
-        <div className="lg:hidden px-4 pb-3 pt-1 border-t border-base-300">
-          <SearchBar />
+        <div className="border-t border-base-300 px-3 pb-3 pt-2 lg:hidden">
+          <SearchBar alwaysOpen />
         </div>
       )}
       <ShoppingCart

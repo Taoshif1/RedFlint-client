@@ -467,9 +467,9 @@ paymentMethod,
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-10">
-      <div className="mb-10">
-        <h1 className="text-4xl font-bold">Checkout</h1>
+    <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-10">
+      <div className="mb-7 sm:mb-10">
+        <h1 className="text-3xl font-bold sm:text-4xl">Checkout</h1>
 
         {!user && (
           <p className="text-base-content/60 mt-2">
@@ -489,7 +489,7 @@ paymentMethod,
           {/* Customer Information */}
 
           <div className="card bg-base-100 shadow border border-base-300">
-            <div className="card-body">
+            <div className="card-body p-4 sm:p-6">
               <h2 className="card-title">Customer Information</h2>
 
               <div className="grid md:grid-cols-2 gap-4 mt-3">
@@ -536,7 +536,7 @@ paymentMethod,
           {/* Delivery */}
 
           <div className="card bg-base-100 shadow border border-base-300">
-            <div className="card-body">
+            <div className="card-body p-4 sm:p-6">
               <h2 className="card-title">Delivery Address</h2>
 
               <div className="space-y-4 mt-3">
@@ -572,10 +572,10 @@ paymentMethod,
           {/* ================================= */}
 
           <div className="card bg-base-100 shadow border border-base-300">
-            <div className="card-body">
+            <div className="card-body p-4 sm:p-6">
               <h2 className="card-title">Payment Method</h2>
 
-              <div className="grid grid-cols-3 gap-3 mt-4">
+              <div className="mt-4 grid grid-cols-1 gap-3 min-[420px]:grid-cols-3">
                 {Object.entries(PAYMENT_METHODS).map(([key, method]) => (
                   <button
                     type="button"
@@ -585,7 +585,7 @@ paymentMethod,
 
                       setTransactionId("");
                     }}
-                    className={`btn ${
+                    className={`btn min-h-12 w-full ${
                       paymentMethod === key
                         ? "btn-primary text-white"
                         : "btn-outline"
@@ -596,7 +596,7 @@ paymentMethod,
                 ))}
               </div>
 
-              <div className="bg-base-200 rounded-xl p-5 mt-5">
+              <div className="mt-5 rounded-xl bg-base-200 p-4 sm:p-5">
                 <p className="text-sm text-base-content/60">Pay with</p>
 
                 <h3 className="text-xl font-bold mt-1">
@@ -609,7 +609,7 @@ paymentMethod,
       Payment Number
     </p>
 
-    <p className="text-2xl font-black text-primary tracking-wide mt-1">
+    <p className="mt-1 break-all text-xl font-black tracking-wide text-primary sm:text-2xl">
       {selectedPayment.number}
     </p>
   </>
@@ -666,8 +666,8 @@ paymentMethod,
         {/* ORDER SUMMARY */}
         {/* ================================= */}
 
-        <div className="card bg-base-100 shadow border border-base-300 lg:sticky lg:top-6">
-          <div className="card-body">
+        <div className="card border border-base-300 bg-base-100 shadow lg:sticky lg:top-6">
+          <div className="card-body p-4 sm:p-6">
             <h2 className="card-title border-b border-base-300 pb-3">
               Order Summary
             </h2>
@@ -679,12 +679,14 @@ paymentMethod,
                 return (
                   <div
                     key={item._id || `${item.productId}-${item.size}`}
-                    className="flex gap-3 py-4"
+                    className="flex min-w-0 gap-3 py-4"
                   >
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="w-16 h-16 object-cover rounded-lg"
+                      loading="lazy"
+                      decoding="async"
+                      className="h-14 w-14 shrink-0 rounded-lg object-cover sm:h-16 sm:w-16"
                     />
 
                     <div className="flex-1 min-w-0">

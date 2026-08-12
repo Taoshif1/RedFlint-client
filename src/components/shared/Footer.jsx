@@ -1,12 +1,11 @@
-import React from "react";
 import RedFlintLogo from "../shared/Logo";
 import { Link } from "react-router";
 
 const Footer = () => {
   return (
     <div>
-      <footer className="grid grid-cols-1 md:grid-cols-3 gap-10 justify-items-center w-full text-primary p-10 max-w-7xl mx-auto">
-        <nav className="flex flex-col items-center text-center gap-2">
+      <footer className="mx-auto grid w-full max-w-7xl grid-cols-2 justify-items-start gap-8 px-5 py-10 text-primary sm:px-8 md:grid-cols-3 md:justify-items-center md:gap-10 md:p-10">
+        <nav className="flex flex-col items-start gap-2 text-left md:items-center md:text-center">
           <h6 className="footer-title text-lg font-bold">Services</h6>
 
           <Link
@@ -31,7 +30,7 @@ const Footer = () => {
           </Link>
         </nav>
 
-        <nav className="flex flex-col items-center text-center gap-2">
+        <nav className="flex flex-col items-start gap-2 text-left md:items-center md:text-center">
           <h6 className="footer-title text-lg font-bold">Company</h6>
 
           <Link
@@ -56,7 +55,7 @@ const Footer = () => {
           </Link>
         </nav>
 
-        <nav className="flex flex-col items-center text-center gap-2">
+        <nav className="col-span-2 flex w-full flex-col items-center gap-2 text-center md:col-span-1">
           <h1 className="footer-title text-lg font-bold">Social</h1>
 
           <div className="grid grid-flow-col gap-6">
