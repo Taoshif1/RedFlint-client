@@ -5,6 +5,7 @@ import CustomerDashboardLayout from "../layouts/CustomerDashboardLayout";
 import AdminDashboardLayout from "../layouts/AdminDashboardLayout";
 
 import ErrorPage from "../pages/ErrorPage";
+<<<<<<< Updated upstream
 import PrivateRoute from "./PrivateRoute";
 import MaintenanceGate from "./MaintenanceGate";
 import AdminRoute from "./AdminRoute";
@@ -13,6 +14,9 @@ const lazyRoute = (loader) => async () => {
   const module = await loader();
   return { Component: module.default };
 };
+=======
+import CustomerDashboard from "../pages/CustomerDashboard";
+>>>>>>> Stashed changes
 
 export const router = createBrowserRouter([
   {
@@ -150,6 +154,10 @@ export const router = createBrowserRouter([
         lazy: lazyRoute(
           () => import("../components/dashboard/admin/AdminReviews"),
         ),
+      },
+      {
+        path: "dashboard",
+        Component: CustomerDashboard,
       },
     ],
   },
