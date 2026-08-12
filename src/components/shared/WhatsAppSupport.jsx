@@ -33,7 +33,7 @@ const WhatsAppSupport = () => {
       rel="noopener noreferrer"
       aria-label="Contact RedFlint on WhatsApp"
       title="Chat with us on WhatsApp"
-      className="fixed right-5 bottom-5 z-[9990] btn btn-success btn-circle shadow-2xl"
+      className="btn btn-success btn-circle fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom))] right-3 z-[90] min-h-12 min-w-12 shadow-2xl sm:right-5 sm:min-h-14 sm:min-w-14"
     >
       <FaWhatsapp size={28} />
     </a>

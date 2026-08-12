@@ -13,34 +13,51 @@ const Products = () => {
 
   const axiosSecure = useAxiosSecure();
 
-  const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const requestKey = `${search}\u0000${sort}`;
+
+  const [result, setResult] = useState({
+    requestKey: "",
+    products: [],
+    error: "",
+  });
+
+  const isLoading = result.requestKey !== requestKey;
+  const products = isLoading ? [] : result.products;
+  const error = isLoading ? "" : result.error;
 
   useEffect(() => {
-    setIsLoading(true);
-    setError("");
+    const controller = new AbortController();
 
     axiosSecure
       .get("/products", {
+        signal: controller.signal,
         params: {
           search,
           sort,
+          view: "card",
         },
       })
       .then((response) => {
-        setProducts(Array.isArray(response.data) ? response.data : []);
+        setResult({
+          requestKey,
+          products: Array.isArray(response.data) ? response.data : [],
+          error: "",
+        });
       })
       .catch((error) => {
+        if (controller.signal.aborted) return;
+
         console.error("Products loading error:", error);
 
-        setProducts([]);
-        setError("Failed to load products.");
-      })
-      .finally(() => {
-        setIsLoading(false);
+        setResult({
+          requestKey,
+          products: [],
+          error: "Failed to load products.",
+        });
       });
-  }, [axiosSecure, search, sort]);
+
+    return () => controller.abort();
+  }, [axiosSecure, requestKey, search, sort]);
 
   const handleSortChange = (event) => {
     const selectedSort = event.target.value;
@@ -57,7 +74,7 @@ const Products = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
       {/* Breadcrumb */}
       <div className="breadcrumbs text-sm mb-8">
         <ul>
@@ -72,7 +89,7 @@ const Products = () => {
       {/* Heading and sorting */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-8">
         <div>
-          <h1 className="text-3xl font-bold">
+          <h1 className="break-words text-2xl font-bold sm:text-3xl">
             {search ? `Search results for "${search}"` : "All Products"}
           </h1>
 
@@ -84,8 +101,8 @@ const Products = () => {
           )}
         </div>
 
-        <label className="flex w-full sm:w-72 flex-col items-center gap-3">
-          <span className="w-full text-center text-lg font-semibold">
+        <label className="flex w-full flex-col items-start gap-2 sm:w-72">
+          <span className="w-full text-left text-sm font-semibold sm:text-center sm:text-base">
             Sort Products
           </span>
 
@@ -125,7 +142,7 @@ const Products = () => {
         </div>
       ) : (
         /* Product grid */
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
+        <div className="grid grid-cols-1 gap-4 min-[390px]:grid-cols-2 sm:gap-6 lg:grid-cols-3">
           {products.map((product) => (
             <Product key={product._id} product={product} />
           ))}

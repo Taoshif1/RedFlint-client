@@ -76,12 +76,12 @@ const AdminDashboardHeader = ({ sidebarOpen, setSidebarOpen }) => {
   }, []);
 
   return (
-    <header className="h-16 bg-[#151515] border-b border-zinc-800 flex items-center justify-between px-4 md:px-6 sticky top-0 z-50">
+    <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between border-b border-zinc-800 bg-[#151515] px-2 sm:px-4 md:px-6">
       {/* Left: Sidebar Toggle */}
       <button
         type="button"
         onClick={() => setSidebarOpen((prev) => !prev)}
-        className="text-2xl text-white hover:text-red-500 transition duration-300 cursor-pointer"
+        className="btn btn-ghost btn-circle min-h-11 min-w-11 cursor-pointer text-xl text-white transition duration-300 hover:text-red-500 sm:text-2xl"
         aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
       >
         {sidebarOpen ? <FaTimes /> : <FaBars />}
@@ -90,12 +90,12 @@ const AdminDashboardHeader = ({ sidebarOpen, setSidebarOpen }) => {
       {/* Center: Logo */}
       <div className="absolute left-1/2 -translate-x-1/2">
         <Link to="/" className="cursor-pointer">
-          <Logo />
+          <Logo compact />
         </Link>
       </div>
 
       {/* Right */}
-      <div className="ml-auto flex items-center gap-4 md:gap-5">
+      <div className="ml-auto flex items-center gap-1.5 sm:gap-4 md:gap-5">
         {/* Search */}
         <div className="hidden md:flex items-center w-[220px] lg:w-[280px] bg-[#202020] border border-zinc-700 rounded-full px-4 py-2">
           <FaSearch className="text-gray-400 mr-3 text-sm shrink-0" />
@@ -112,7 +112,7 @@ const AdminDashboardHeader = ({ sidebarOpen, setSidebarOpen }) => {
           <button
             type="button"
             onClick={() => setNotificationOpen((prev) => !prev)}
-            className="relative text-xl text-white hover:text-red-500 transition duration-300 cursor-pointer"
+            className="btn btn-ghost btn-circle relative min-h-11 min-w-11 cursor-pointer text-lg text-white transition duration-300 hover:text-red-500 sm:text-xl"
             aria-label="Notifications"
           >
             <FaBell />
@@ -126,7 +126,7 @@ const AdminDashboardHeader = ({ sidebarOpen, setSidebarOpen }) => {
 
           {/* Notification Dropdown */}
           {notificationOpen && (
-            <div className="absolute right-0 top-12 w-[340px] max-w-[calc(100vw-2rem)] bg-[#181818] border border-zinc-700 rounded-xl shadow-2xl overflow-hidden">
+            <div className="fixed left-3 right-3 top-16 overflow-hidden rounded-xl border border-zinc-700 bg-[#181818] shadow-2xl sm:absolute sm:left-auto sm:right-0 sm:top-12 sm:w-[340px]">
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-700">
                 <div>
@@ -215,7 +215,7 @@ const AdminDashboardHeader = ({ sidebarOpen, setSidebarOpen }) => {
           aria-label="Admin profile"
         >
           <div className="avatar">
-            <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+            <div className="w-8 rounded-full ring ring-primary ring-offset-1 ring-offset-base-100 sm:w-10 sm:ring-offset-2">
               <img src={avatar} alt={user?.name || "Admin"} />
             </div>
           </div>

@@ -1,46 +1,18 @@
 import { createBrowserRouter } from "react-router";
 
-import TrackOrder from "../pages/TrackOrder";
-
 import MainLayout from "../layouts/MainLayout";
 import CustomerDashboardLayout from "../layouts/CustomerDashboardLayout";
 import AdminDashboardLayout from "../layouts/AdminDashboardLayout";
 
-import Home from "../pages/Home";
-import Products from "../pages/Products";
-import SpecialEdition from "../pages/SpecialEdition";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
 import ErrorPage from "../pages/ErrorPage";
 import PrivateRoute from "./PrivateRoute";
 import MaintenanceGate from "./MaintenanceGate";
-import ProductDetails from "../pages/ProductDetails";
-
-import AboutUs from "../pages/AboutUs";
-import ReturnPolicy from "../pages/ReturnPolicy";
-import OurMotto from "../pages/OurMotto";
-import ContactUs from "../pages/ContactUs";
-import Delivery from "../pages/Delivery";
-
-import AdminOverview from "../pages/AdminOverview";
-import CustomerOverview from "../pages/CustomerOverview";
-
-import Checkout from "../pages/Checkout";
-import Wishlist from "../components/dashboard/customer/Wishlist";
-import Account from "../components/dashboard/customer/Account";
-import AddressBook from "../components/dashboard/customer/AddressBook";
-import RecentOrders from "../components/dashboard/customer/RecentOrders";
 import AdminRoute from "./AdminRoute";
-import OrderDetails from "../pages/OrderDetails";
-import AdminOrders from "../components/dashboard/admin/AdminOrders";
-import AdminProducts from "../components/dashboard/admin/AdminProducts";
-import AddProduct from "../components/dashboard/admin/AddProduct";
-import Customers from "../components/dashboard/admin/Customers";
-import Settings from "../components/dashboard/admin/Settings";
-import AdminProfile from "../components/dashboard/admin/AdminProfile";
-import EditProduct from "../components/dashboard/admin/EditProduct";
-import AdminProductDetails from "../components/dashboard/admin/AdminProductDetails";
-import AdminReviews from "../components/dashboard/admin/AdminReviews";
+
+const lazyRoute = (loader) => async () => {
+  const module = await loader();
+  return { Component: module.default };
+};
 
 export const router = createBrowserRouter([
   {
@@ -48,19 +20,28 @@ export const router = createBrowserRouter([
     Component: MainLayout,
     errorElement: <ErrorPage />,
     children: [
-      { index: true, Component: Home },
-      { path: "products", Component: Products },
-      { path: "special-edition", Component: SpecialEdition },
-      { path: "login", Component: Login },
-      { path: "register", Component: Register },
-      { path: "about", Component: AboutUs },
-      { path: "return", Component: ReturnPolicy },
-      { path: "motto", Component: OurMotto },
-      { path: "contact", Component: ContactUs },
-      { path: "delivery", Component: Delivery },
-      { path: "products/:id", Component: ProductDetails },
-      { path: "checkout", Component: Checkout },
-      { path: "track-order", Component: TrackOrder },
+      { index: true, lazy: lazyRoute(() => import("../pages/Home")) },
+      { path: "products", lazy: lazyRoute(() => import("../pages/Products")) },
+      {
+        path: "special-edition",
+        lazy: lazyRoute(() => import("../pages/SpecialEdition")),
+      },
+      { path: "login", lazy: lazyRoute(() => import("../pages/Login")) },
+      { path: "register", lazy: lazyRoute(() => import("../pages/Register")) },
+      { path: "about", lazy: lazyRoute(() => import("../pages/AboutUs")) },
+      { path: "return", lazy: lazyRoute(() => import("../pages/ReturnPolicy")) },
+      { path: "motto", lazy: lazyRoute(() => import("../pages/OurMotto")) },
+      { path: "contact", lazy: lazyRoute(() => import("../pages/ContactUs")) },
+      { path: "delivery", lazy: lazyRoute(() => import("../pages/Delivery")) },
+      {
+        path: "products/:id",
+        lazy: lazyRoute(() => import("../pages/ProductDetails")),
+      },
+      { path: "checkout", lazy: lazyRoute(() => import("../pages/Checkout")) },
+      {
+        path: "track-order",
+        lazy: lazyRoute(() => import("../pages/TrackOrder")),
+      },
     ],
   },
   {
@@ -73,12 +54,38 @@ export const router = createBrowserRouter([
       </MaintenanceGate>
     ),
     children: [
-      { index: true, Component: CustomerOverview },
-      { path: "wishlist", Component: Wishlist },
-      { path: "account", Component: Account },
-      { path: "address-book", Component: AddressBook },
-      { path: "recent-orders", Component: RecentOrders },
-      { path: "orders/:id", Component: OrderDetails },
+      {
+        index: true,
+        lazy: lazyRoute(() => import("../pages/CustomerOverview")),
+      },
+      {
+        path: "wishlist",
+        lazy: lazyRoute(
+          () => import("../components/dashboard/customer/Wishlist"),
+        ),
+      },
+      {
+        path: "account",
+        lazy: lazyRoute(
+          () => import("../components/dashboard/customer/Account"),
+        ),
+      },
+      {
+        path: "address-book",
+        lazy: lazyRoute(
+          () => import("../components/dashboard/customer/AddressBook"),
+        ),
+      },
+      {
+        path: "recent-orders",
+        lazy: lazyRoute(
+          () => import("../components/dashboard/customer/RecentOrders"),
+        ),
+      },
+      {
+        path: "orders/:id",
+        lazy: lazyRoute(() => import("../pages/OrderDetails")),
+      },
     ],
   },
   {
@@ -89,16 +96,61 @@ export const router = createBrowserRouter([
       </AdminRoute>
     ),
     children: [
-      { index: true, Component: AdminOverview },
-      { path: "orders", Component: AdminOrders },
-      { path: "products", Component: AdminProducts },
-      { path: "products/add", Component: AddProduct },
-      { path: "customers", Component: Customers },
-      { path: "settings", Component: Settings },
-      { path: "profile", Component: AdminProfile },
-      { path: "products/:id", Component: AdminProductDetails },
-      { path: "products/:id/edit", Component: EditProduct },
-      { path: "reviews", Component: AdminReviews },
+      { index: true, lazy: lazyRoute(() => import("../pages/AdminOverview")) },
+      {
+        path: "orders",
+        lazy: lazyRoute(
+          () => import("../components/dashboard/admin/AdminOrders"),
+        ),
+      },
+      {
+        path: "products",
+        lazy: lazyRoute(
+          () => import("../components/dashboard/admin/AdminProducts"),
+        ),
+      },
+      {
+        path: "products/add",
+        lazy: lazyRoute(
+          () => import("../components/dashboard/admin/AddProduct"),
+        ),
+      },
+      {
+        path: "customers",
+        lazy: lazyRoute(
+          () => import("../components/dashboard/admin/Customers"),
+        ),
+      },
+      {
+        path: "settings",
+        lazy: lazyRoute(
+          () => import("../components/dashboard/admin/Settings"),
+        ),
+      },
+      {
+        path: "profile",
+        lazy: lazyRoute(
+          () => import("../components/dashboard/admin/AdminProfile"),
+        ),
+      },
+      {
+        path: "products/:id",
+        lazy: lazyRoute(
+          () => import("../components/dashboard/admin/AdminProductDetails"),
+        ),
+      },
+      {
+        path: "products/:id/edit",
+        lazy: lazyRoute(
+          () => import("../components/dashboard/admin/EditProduct"),
+        ),
+      },
+      {
+        path: "reviews",
+        lazy: lazyRoute(
+          () => import("../components/dashboard/admin/AdminReviews"),
+        ),
+      },
     ],
   },
 ]);

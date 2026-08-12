@@ -9,13 +9,13 @@ const CustomerDashboardLayout = () => {
     <>
       <Navbar />
 
-      <div className="max-w-7xl mx-auto px-5 py-10">
-        <div className="grid lg:grid-cols-4 gap-8">
-          <div>
+      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-5 sm:py-8 lg:py-10">
+        <div className="grid gap-4 lg:grid-cols-4 lg:gap-8">
+          <div className="min-w-0">
             <DashboardSidebar />
           </div>
 
-          <div className="lg:col-span-3">
+          <div className="min-w-0 lg:col-span-3">
             <Outlet />
           </div>
         </div>

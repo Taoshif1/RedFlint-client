@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { FiShoppingCart, FiTrash2 } from "react-icons/fi";
 
 import toast from "react-hot-toast";
@@ -10,6 +11,17 @@ const ShoppingCart = ({ isOpen, onClose, cartItems }) => {
   const navigate = useNavigate();
 
   const { updateQuantity, removeItem, clearCart } = useCart();
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -59,21 +71,35 @@ const ShoppingCart = ({ isOpen, onClose, cartItems }) => {
 
   return (
     <div className="fixed inset-0 z-[9999]">
-      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
+      <button
+        type="button"
+        aria-label="Close shopping cart"
+        className="absolute inset-0 cursor-default bg-black/60"
+        onClick={onClose}
+      />
 
-      <div className="absolute right-0 top-0 h-screen w-full max-w-md bg-base-100 shadow-2xl flex flex-col">
-        <div className="border-b border-base-300 px-6 py-5 flex justify-between items-center">
-          <h2 className="text-2xl font-bold">Shopping Cart</h2>
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="shopping-cart-title"
+        className="absolute right-0 top-0 flex h-dvh w-full max-w-md flex-col overscroll-contain bg-base-100 shadow-2xl"
+      >
+        <div className="flex items-center justify-between border-b border-base-300 px-4 py-4 sm:px-6 sm:py-5">
+          <h2 id="shopping-cart-title" className="text-xl font-bold sm:text-2xl">
+            Shopping Cart
+          </h2>
 
           <button
+            type="button"
             onClick={onClose}
-            className="text-4xl hover:text-primary transition"
+            aria-label="Close cart"
+            className="btn btn-ghost btn-circle min-h-11 min-w-11 text-3xl transition hover:text-primary"
           >
             &times;
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-5 space-y-5">
+        <div className="flex-1 space-y-4 overflow-y-auto overscroll-contain p-4 sm:space-y-5 sm:p-5">
           {cartItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-5">
               <FiShoppingCart size={60} />
@@ -91,21 +117,23 @@ const ShoppingCart = ({ isOpen, onClose, cartItems }) => {
               return (
                 <div
                   key={item._id}
-                  className="flex items-center justify-between gap-4 border-b border-base-300 pb-4"
+                  className="flex min-w-0 items-center gap-3 border-b border-base-300 pb-4 sm:gap-4"
                 >
-                  <div className="flex gap-4 items-center">
+                  <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
                     <img
                       src={item.image}
                       alt={item.title}
-                      className="w-24 h-24 rounded-xl object-cover"
+                      loading="lazy"
+                      decoding="async"
+                      className="h-20 w-20 shrink-0 rounded-xl object-cover sm:h-24 sm:w-24"
                     />
 
-                    <div className="flex flex-col gap-1">
+                    <div className="flex min-w-0 flex-1 flex-col gap-1">
                       <h4 className="font-semibold text-base-content line-clamp-1">
                         {item.title}
                       </h4>
 
-                      <div className="flex items-center gap-2 text-sm text-base-content/70">
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-base-content/70 sm:text-sm">
                         <span>৳{itemPrice.toLocaleString("en-BD")}</span>
 
                         {item.size && (
@@ -121,7 +149,9 @@ const ShoppingCart = ({ isOpen, onClose, cartItems }) => {
 
                       <div className="flex items-center gap-2 mt-1">
                         <button
-                          className="btn btn-xs"
+                          type="button"
+                          aria-label={`Decrease ${item.title} quantity`}
+                          className="btn btn-sm min-h-9 min-w-9"
                           onClick={() =>
                             handleQuantity(item, item.quantity - 1)
                           }
@@ -134,7 +164,9 @@ const ShoppingCart = ({ isOpen, onClose, cartItems }) => {
                         </span>
 
                         <button
-                          className="btn btn-xs"
+                          type="button"
+                          aria-label={`Increase ${item.title} quantity`}
+                          className="btn btn-sm min-h-9 min-w-9"
                           onClick={() =>
                             handleQuantity(item, item.quantity + 1)
                           }
@@ -146,8 +178,10 @@ const ShoppingCart = ({ isOpen, onClose, cartItems }) => {
                   </div>
 
                   <button
+                    type="button"
                     onClick={() => handleDelete(item)}
-                    className="btn btn-ghost btn-circle text-error flex-shrink-0"
+                    aria-label={`Remove ${item.title} from cart`}
+                    className="btn btn-ghost btn-circle min-h-11 min-w-11 shrink-0 text-error"
                   >
                     <FiTrash2 size={20} />
                   </button>
@@ -157,7 +191,7 @@ const ShoppingCart = ({ isOpen, onClose, cartItems }) => {
           )}
         </div>
 
-        <div className="border-t border-base-300 p-5 space-y-4">
+        <div className="safe-area-bottom space-y-3 border-t border-base-300 p-4 sm:space-y-4 sm:p-5">
           <div className="flex justify-between text-lg font-bold">
             <span>Total</span>
 

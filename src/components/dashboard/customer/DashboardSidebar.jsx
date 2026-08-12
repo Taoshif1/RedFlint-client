@@ -26,15 +26,17 @@ const DashboardSidebar = () => {
   };
 
   const navClass = ({ isActive }) =>
-    `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
+    `flex shrink-0 items-center gap-2 whitespace-nowrap rounded-xl px-3 py-2.5 transition-all duration-300 lg:gap-3 lg:px-4 lg:py-3 ${
       isActive ? "bg-primary text-white" : "hover:bg-base-300 text-base-content"
     }`;
 
   return (
-    <aside className="bg-base-200 rounded-box border border-base-300 p-5 sticky top-24">
-      <h2 className="font-black text-2xl mb-6 red-hat">My Dashboard</h2>
+    <aside className="sticky top-16 z-30 -mx-4 border-y border-base-300 bg-base-200 p-2 sm:-mx-5 lg:top-24 lg:mx-0 lg:rounded-box lg:border lg:p-5">
+      <h2 className="mb-6 hidden text-2xl font-black red-hat lg:block">
+        My Dashboard
+      </h2>
 
-      <nav className="space-y-2">
+      <nav className="hide-scrollbar flex gap-2 overflow-x-auto lg:block lg:space-y-2">
         <NavLink end to="/dashboard" className={navClass}>
           <LayoutDashboard size={20} />
           Overview
@@ -61,8 +63,9 @@ const DashboardSidebar = () => {
         </NavLink>
 
         <button
+          type="button"
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-error hover:text-white transition-all w-full cursor-pointer"
+          className="flex shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap rounded-xl px-3 py-2.5 transition-all hover:bg-error hover:text-white lg:w-full lg:gap-3 lg:px-4 lg:py-3"
         >
           <LogOut size={20} />
           Logout

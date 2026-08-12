@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router";
 
-
-export default function ExpandableSearch({ onSearch }) {
+export default function SearchBar({ alwaysOpen = false }) {
   const navigate = useNavigate();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -10,13 +9,14 @@ export default function ExpandableSearch({ onSearch }) {
 
   const inputRef = useRef(null);
   const containerRef = useRef(null);
+  const expanded = alwaysOpen || isOpen;
 
   // Focus the input field automatically when it slides open
   useEffect(() => {
-    if (isOpen) {
+    if (expanded) {
       inputRef.current?.focus();
     }
-  }, [isOpen]);
+  }, [expanded]);
 
   // Collapse the bar if clicked outside while empty
   useEffect(() => {
@@ -25,20 +25,18 @@ export default function ExpandableSearch({ onSearch }) {
         containerRef.current &&
         !containerRef.current.contains(event.target)
       ) {
-        if (query === "") {
+        if (!alwaysOpen && query === "") {
           setIsOpen(false);
         }
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [query]);
+  }, [alwaysOpen, query]);
 
   // Send the search text up to the parent component whenever it changes
   const handleInputChange = (e) => {
-    const val = e.target.value;
-    setQuery(val);
-
+    setQuery(e.target.value);
   };
 
   const handleSubmit = (e) => {
@@ -53,13 +51,19 @@ export default function ExpandableSearch({ onSearch }) {
     <form
       ref={containerRef}
       onSubmit={handleSubmit}
-      className="flex items-center bg-base-100 rounded-full border border-base-300 p-2 overflow-hidden shadow-sm transition-all duration-300 ease-in-out"
-      style={{ width: isOpen ? "300px" : "48px" }}
+      role="search"
+      className={`flex h-11 items-center overflow-hidden rounded-full border border-base-300 bg-base-100 px-2 shadow-sm transition-[width] duration-300 ease-in-out ${
+        alwaysOpen
+          ? "w-full"
+          : expanded
+            ? "w-[min(18rem,calc(100vw-8rem))]"
+            : "w-11"
+      }`}
     >
       <button
         type="button"
         onClick={() => {
-          if (!isOpen) {
+          if (!expanded) {
             setIsOpen(true);
             return;
           }
@@ -68,7 +72,8 @@ export default function ExpandableSearch({ onSearch }) {
             navigate(`/products?search=${encodeURIComponent(query)}`);
           }
         }}
-        className="hover:text-primary transition shrink-0 p-1"
+        className="grid min-h-9 min-w-9 shrink-0 place-items-center rounded-full transition hover:text-primary"
+        aria-label={expanded ? "Search products" : "Open product search"}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -90,13 +95,16 @@ export default function ExpandableSearch({ onSearch }) {
       <input
         ref={inputRef}
         type="text"
+        name="search"
         value={query}
         onChange={handleInputChange}
         placeholder="Search"
-        className="outline-none bg-transparent w-full pl-3 pr-2 transition-opacity duration-200 placeholder:opacity-25 placeholder:text-neutral-content text-sm"
+        tabIndex={expanded ? 0 : -1}
+        aria-hidden={!expanded}
+        className="w-full bg-transparent py-2 pl-2 pr-2 text-base outline-none transition-opacity duration-200 placeholder:text-base-content/40 sm:text-sm"
         style={{
-          opacity: isOpen ? 1 : 0,
-          pointerEvents: isOpen ? "auto" : "none",
+          opacity: expanded ? 1 : 0,
+          pointerEvents: expanded ? "auto" : "none",
         }}
       />
     </form>
