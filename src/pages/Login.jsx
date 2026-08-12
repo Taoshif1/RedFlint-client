@@ -42,8 +42,8 @@ const Login = () => {
     event.preventDefault();
     setLoading(true);
 
-    const form = event.target;
-    const password = form.password.value;
+    const form = event.currentTarget;
+    const password = form.elements.namedItem("password").value;
 
     try {
       const result = await signIn(email.trim(), password);
