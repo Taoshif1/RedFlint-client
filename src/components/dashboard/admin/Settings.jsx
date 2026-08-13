@@ -3,47 +3,21 @@ import toast from "react-hot-toast";
 
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useSettings from "../../../hooks/useSettings";
-import { DEFAULT_PAYMENT_METHODS } from "../../../utils/paymentMethods";
-
-const EMPTY_SETTINGS = {
-  storeName: "",
-  supportEmail: "",
-  supportPhone: "",
-  whatsappNumber: "",
-  messengerLink: "",
-  currency: "BDT",
-  shippingFee: 120,
-  freeShipping: 3000,
-  maintenanceMode: false,
-  paymentMethods: DEFAULT_PAYMENT_METHODS,
-};
+import {
+  buildStoreSettingsPayload,
+  toEditableStoreSettings,
+} from "../../../utils/storeSettings";
 
 const Settings = () => {
   const axiosSecure = useAxiosSecure();
   const { settings, loading, refetch } = useSettings();
-  const [formData, setFormData] = useState(EMPTY_SETTINGS);
+  const [formData, setFormData] = useState(() => toEditableStoreSettings());
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     if (!settings) return;
 
-    setFormData({
-      ...EMPTY_SETTINGS,
-      ...settings,
-      currency: "BDT",
-      shippingFee: settings.shippingFee ?? 120,
-      freeShipping: settings.freeShipping ?? 3000,
-      maintenanceMode: Boolean(settings.maintenanceMode),
-      paymentMethods: Object.fromEntries(
-        Object.entries(DEFAULT_PAYMENT_METHODS).map(([key, defaults]) => [
-          key,
-          {
-            ...defaults,
-            ...(settings.paymentMethods?.[key] || {}),
-          },
-        ]),
-      ),
-    });
+    setFormData(toEditableStoreSettings(settings));
   }, [settings]);
 
   const handleChange = (event) => {
@@ -73,12 +47,10 @@ const Settings = () => {
     setSaving(true);
 
     try {
-      await axiosSecure.patch("/settings", {
-        ...formData,
-        currency: "BDT",
-        shippingFee: Number(formData.shippingFee),
-        freeShipping: Number(formData.freeShipping),
-      });
+      await axiosSecure.patch(
+        "/settings",
+        buildStoreSettingsPayload(formData),
+      );
 
       toast.success("Settings updated successfully.");
       await refetch();
@@ -212,6 +184,7 @@ const Settings = () => {
                           <input
                             type="checkbox"
                             className="toggle toggle-primary"
+                            aria-label={`${method.label} enabled`}
                             checked={method.enabled}
                             onChange={(event) =>
                               handlePaymentChange(
@@ -233,6 +206,7 @@ const Settings = () => {
                             <input
                               type="tel"
                               className="input input-bordered w-full"
+                              aria-label={`${method.label} account number`}
                               value={method.accountNumber}
                               maxLength={30}
                               required={method.enabled}
@@ -250,6 +224,7 @@ const Settings = () => {
                             <span className="label-text mb-2">Account type</span>
                             <input
                               className="input input-bordered w-full"
+                              aria-label={`${method.label} account type`}
                               value={method.accountType}
                               maxLength={30}
                               placeholder="Personal or Merchant"
@@ -271,6 +246,7 @@ const Settings = () => {
                         </span>
                         <textarea
                           className="textarea textarea-bordered w-full"
+                          aria-label={`${method.label} checkout instructions`}
                           value={method.instructions}
                           maxLength={240}
                           rows={2}
