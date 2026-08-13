@@ -9,15 +9,29 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { auth } from "../firebase/firebase.config";
+import {
+  auth,
+  firebaseInitializationError,
+} from "../firebase/firebase.config";
 import { AuthContext } from "./AuthContext";
 import { axiosSecure } from "../hooks/useAxiosSecure";
 
 const googleProvider = new GoogleAuthProvider();
 
+const requireFirebaseAuth = () => {
+  if (auth) return auth;
+
+  const error = new Error(
+    "Authentication is temporarily unavailable. Please try again later.",
+  );
+  error.code = "auth/configuration-error";
+  error.cause = firebaseInitializationError;
+  throw error;
+};
+
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(auth));
 
   const syncSession = async (firebaseUser) => {
     if (!firebaseUser) {
@@ -33,25 +47,29 @@ const AuthProvider = ({ children }) => {
 
   const createUser = (email, password) => {
     setLoading(true);
-    return createUserWithEmailAndPassword(auth, email, password);
+    return createUserWithEmailAndPassword(
+      requireFirebaseAuth(),
+      email,
+      password,
+    );
   };
 
   const signIn = (email, password) => {
     setLoading(true);
-    return signInWithEmailAndPassword(auth, email, password);
+    return signInWithEmailAndPassword(requireFirebaseAuth(), email, password);
   };
 
   const googleSignIn = () => {
     setLoading(true);
-    return signInWithPopup(auth, googleProvider);
+    return signInWithPopup(requireFirebaseAuth(), googleProvider);
   };
 
   const resetPassword = (email) => {
-    return sendPasswordResetEmail(auth, email);
+    return sendPasswordResetEmail(requireFirebaseAuth(), email);
   };
 
   const updateUser = (profile) => {
-    return updateProfile(auth.currentUser, profile);
+    return updateProfile(requireFirebaseAuth().currentUser, profile);
   };
 
   const logOut = async () => {
@@ -64,7 +82,9 @@ const AuthProvider = ({ children }) => {
         console.error("Server logout error:", error);
       }
 
-      await signOut(auth);
+      if (auth) {
+        await signOut(auth);
+      }
       setUser(null);
     } finally {
       setLoading(false);
@@ -72,6 +92,10 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    if (!auth) {
+      return undefined;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setLoading(true);
 
