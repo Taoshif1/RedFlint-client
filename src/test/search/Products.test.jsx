@@ -1,9 +1,10 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 
 import Products from '../../pages/Products'
 import useAxiosSecure from '../../hooks/useAxiosSecure'
+import { invalidateInventory } from '../../utils/inventoryStore'
 
 
 vi.mock('../../hooks/useAxiosSecure', () => ({
@@ -14,7 +15,8 @@ vi.mock('../../hooks/useAxiosSecure', () => ({
 vi.mock('../../components/shared/Product', () => ({
   default: ({ product }) => (
     <div data-testid="product-card">
-      {product.title}
+      <span>{product.title}</span>
+      <span>stock {product.totalStock}</span>
     </div>
   ),
 }))
@@ -236,4 +238,27 @@ test('keeps the search query when the sorting option is changed', async () => {
   })
 
   expect(sortSelect).toHaveValue('price-asc')
+})
+
+
+// TC-SEARCH-014
+test('refetches current product stock after checkout invalidates inventory', async () => {
+  mockAxios.get
+    .mockResolvedValueOnce({
+      data: [{ _id: 'product-1', title: 'Stone Gray', totalStock: 2 }],
+    })
+    .mockResolvedValueOnce({
+      data: [{ _id: 'product-1', title: 'Stone Gray', totalStock: 1 }],
+    })
+
+  renderProducts()
+
+  expect(await screen.findByText('stock 2')).toBeInTheDocument()
+
+  act(() => {
+    invalidateInventory()
+  })
+
+  expect(await screen.findByText('stock 1')).toBeInTheDocument()
+  expect(mockAxios.get).toHaveBeenCalledTimes(2)
 })

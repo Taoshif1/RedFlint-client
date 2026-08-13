@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 
 import useAxiosSecure from "../hooks/useAxiosSecure";
+import useInventoryVersion from "../hooks/useInventoryVersion";
 
 import ProductGallery from "../components/product/ProductGallery";
 import ProductInfo from "../components/product/ProductInfo";
@@ -14,6 +15,7 @@ const ProductDetails = () => {
   const { id } = useParams();
 
   const axiosSecure = useAxiosSecure();
+  const inventoryVersion = useInventoryVersion();
 
   const [product, setProduct] = useState(null);
 
@@ -26,7 +28,7 @@ const ProductDetails = () => {
       .catch((err) => {
         console.error(err);
       });
-  }, [axiosSecure, id]);
+  }, [axiosSecure, id, inventoryVersion]);
 
   if (!product) {
     return (

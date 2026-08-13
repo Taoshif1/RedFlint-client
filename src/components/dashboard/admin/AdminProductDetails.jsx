@@ -15,11 +15,13 @@ import {
 } from "react-icons/fa";
 
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useInventoryVersion from "../../../hooks/useInventoryVersion";
 
 const AdminProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
+  const inventoryVersion = useInventoryVersion();
 
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -41,7 +43,7 @@ const AdminProductDetails = () => {
     };
 
     fetchProduct();
-  }, [id, axiosSecure]);
+  }, [id, axiosSecure, inventoryVersion]);
 
   const handleDelete = async () => {
     const result = await Swal.fire({

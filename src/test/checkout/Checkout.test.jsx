@@ -20,6 +20,9 @@ import useCart from '../../hooks/useCart'
 import {
   getGuestCart,
 } from '../../utils/guestCart'
+import {
+  invalidateInventory,
+} from '../../utils/inventoryStore'
 
 import toast from 'react-hot-toast'
 
@@ -45,6 +48,11 @@ vi.mock('../../hooks/useCart', () => ({
 
 vi.mock('../../utils/guestCart', () => ({
   getGuestCart: vi.fn(),
+}))
+
+
+vi.mock('../../utils/inventoryStore', () => ({
+  invalidateInventory: vi.fn(),
 }))
 
 
@@ -852,7 +860,7 @@ test('shows configured bKash and Nagad details while COD needs no transaction ID
   ).toBeInTheDocument()
 
   expect(
-    screen.getByText(
+    await screen.findByText(
       'TEST-BKASH-MERCHANT'
     )
   ).toBeInTheDocument()
@@ -1125,6 +1133,10 @@ test('places guest cart order with correct order information and clears cart', a
   ).toHaveBeenCalledTimes(1)
 
   expect(
+    invalidateInventory
+  ).toHaveBeenCalledTimes(1)
+
+  expect(
     toast.success
   ).toHaveBeenCalledWith(
     'Order placed successfully'
@@ -1353,6 +1365,10 @@ test('places registered customer cart order and refreshes cart', async () => {
   ).toHaveBeenCalledTimes(1)
 
   expect(
+    invalidateInventory
+  ).toHaveBeenCalledTimes(1)
+
+  expect(
     mockClearCart
   ).not.toHaveBeenCalled()
 })
@@ -1545,4 +1561,8 @@ test('shows server error when order placement fails', async () => {
       'Order Confirmed'
     )
   ).not.toBeInTheDocument()
+
+  expect(
+    invalidateInventory
+  ).not.toHaveBeenCalled()
 })
