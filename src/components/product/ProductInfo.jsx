@@ -45,8 +45,14 @@ const ProductInfo = ({ product }) => {
   const wishlistItem = wishlist.find((item) => item.productId === product._id);
   const isWishlisted = Boolean(wishlistItem);
 
-  const [selectedSize, setSelectedSize] = useState(normalizedSizes[0] || null);
+  const [selectedSizeName, setSelectedSizeName] = useState(
+    normalizedSizes[0]?.size || "",
+  );
   const [quantity, setQuantity] = useState(1);
+  const selectedSize =
+    normalizedSizes.find((item) => item.size === selectedSizeName) ||
+    normalizedSizes[0] ||
+    null;
 
   const createSelectedItem = () => ({
     productId: product._id,
@@ -166,7 +172,7 @@ const ProductInfo = ({ product }) => {
             sizes={normalizedSizes}
             selectedSize={selectedSize}
             setSelectedSize={(size) => {
-              setSelectedSize(size);
+              setSelectedSizeName(size.size);
               setQuantity(1);
             }}
           />

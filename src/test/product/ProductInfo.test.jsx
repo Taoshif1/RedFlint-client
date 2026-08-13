@@ -325,3 +325,34 @@ test('does not add quantity greater than available stock to cart', async () => {
 
   expect(mockAddItem).not.toHaveBeenCalled()
 })
+
+
+// TC-PROD-038
+test('uses refreshed size stock when a selected size sells out', () => {
+  const { rerender } = render(
+    <ProductInfo
+      product={{
+        ...baseProduct,
+        totalStock: 1,
+        sizes: [{ size: 'M', stock: 1 }],
+      }}
+    />
+  )
+
+  expect(screen.getByText('1 pieces available')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'M' })).toBeEnabled()
+
+  rerender(
+    <ProductInfo
+      product={{
+        ...baseProduct,
+        totalStock: 0,
+        sizes: [{ size: 'M', stock: 0 }],
+      }}
+    />
+  )
+
+  expect(screen.getByText('0 pieces available')).toBeInTheDocument()
+  expect(screen.getByRole('button', { name: 'M' })).toBeDisabled()
+  expect(screen.getAllByRole('button', { name: 'Out of Stock' })).toHaveLength(2)
+})

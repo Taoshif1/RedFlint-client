@@ -15,6 +15,7 @@ import {
   DEFAULT_PAYMENT_METHODS,
   getEnabledPaymentMethods,
 } from "../utils/paymentMethods";
+import { invalidateInventory } from "../utils/inventoryStore";
 
 const Checkout = () => {
   const axiosSecure = useAxiosSecure();
@@ -317,6 +318,7 @@ const Checkout = () => {
         }
 
         res = await axiosSecure.post("/orders", orderData);
+        invalidateInventory();
 
         if (!buyNowItem) {
           await refetchCart();
@@ -341,6 +343,7 @@ const Checkout = () => {
         };
 
         res = await axiosSecure.post("/orders/guest", orderData);
+        invalidateInventory();
 
         // Normal guest-cart checkout
         // should clear localStorage.

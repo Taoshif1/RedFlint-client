@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import useAxiosSecure from "./useAxiosSecure";
+import useInventoryVersion from "./useInventoryVersion";
 
 const useProducts = () => {
   const axiosSecure = useAxiosSecure();
+  const inventoryVersion = useInventoryVersion();
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,7 +22,7 @@ const useProducts = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]);
+  }, [fetchProducts, inventoryVersion]);
 
   return {
     products,
