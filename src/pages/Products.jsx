@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 
 import useAxiosSecure from "../hooks/useAxiosSecure";
 import useInventoryVersion from "../hooks/useInventoryVersion";
 import Product from "../components/shared/Product";
+
+const EMPTY_PRODUCTS = [];
 
 const Products = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -11,6 +13,8 @@ const Products = () => {
   const search = searchParams.get("search") || "";
 
   const sort = searchParams.get("sort") || "newest";
+
+  const category = searchParams.get("category") || "";
 
   const axiosSecure = useAxiosSecure();
   const inventoryVersion = useInventoryVersion();
@@ -24,8 +28,23 @@ const Products = () => {
   });
 
   const isLoading = result.requestKey !== requestKey;
-  const products = isLoading ? [] : result.products;
+  const products = isLoading ? EMPTY_PRODUCTS : result.products;
   const error = isLoading ? "" : result.error;
+
+  const categories = useMemo(
+    () =>
+      [...new Set(products.map((product) => product.category?.trim()).filter(Boolean))]
+        .sort((first, second) => first.localeCompare(second)),
+    [products],
+  );
+
+  const filteredProducts = useMemo(
+    () =>
+      category
+        ? products.filter((product) => product.category?.trim() === category)
+        : products,
+    [category, products],
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -75,6 +94,20 @@ const Products = () => {
     setSearchParams(updatedParams);
   };
 
+  const handleCategoryChange = (event) => {
+    const selectedCategory = event.target.value;
+
+    const updatedParams = new URLSearchParams(searchParams);
+
+    if (selectedCategory) {
+      updatedParams.set("category", selectedCategory);
+    } else {
+      updatedParams.delete("category");
+    }
+
+    setSearchParams(updatedParams);
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
       {/* Breadcrumb */}
@@ -88,7 +121,7 @@ const Products = () => {
         </ul>
       </div>
 
-      {/* Heading and sorting */}
+      {/* Heading, filtering, and sorting */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-8">
         <div>
           <h1 className="break-words text-2xl font-bold sm:text-3xl">
@@ -97,30 +130,51 @@ const Products = () => {
 
           {!isLoading && !error && (
             <p className="mt-2 text-sm text-base-content/60">
-              {products.length} product
-              {products.length !== 1 ? "s" : ""} found
+              {filteredProducts.length} product
+              {filteredProducts.length !== 1 ? "s" : ""} found
             </p>
           )}
         </div>
 
-        <label className="flex w-full flex-col items-start gap-2 sm:w-72">
-          <span className="w-full text-left text-sm font-semibold sm:text-center sm:text-base">
-            Sort Products
-          </span>
+        <div className="grid w-full gap-4 sm:w-auto sm:grid-cols-2">
+          <label className="flex w-full flex-col items-start gap-2 sm:w-60">
+            <span className="w-full text-left text-sm font-semibold sm:text-base">
+              Filter by Category
+            </span>
 
-          <select
-            value={sort}
-            onChange={handleSortChange}
-            className="select select-bordered w-full"
-          >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="name-asc">Name: A to Z</option>
-            <option value="name-desc">Name: Z to A</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-          </select>
-        </label>
+            <select
+              value={category}
+              onChange={handleCategoryChange}
+              className="select select-bordered w-full"
+            >
+              <option value="">All Categories</option>
+              {categories.map((availableCategory) => (
+                <option key={availableCategory} value={availableCategory}>
+                  {availableCategory}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="flex w-full flex-col items-start gap-2 sm:w-60">
+            <span className="w-full text-left text-sm font-semibold sm:text-base">
+              Sort Products
+            </span>
+
+            <select
+              value={sort}
+              onChange={handleSortChange}
+              className="select select-bordered w-full"
+            >
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+              <option value="name-asc">Name: A to Z</option>
+              <option value="name-desc">Name: Z to A</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
+          </label>
+        </div>
       </div>
 
       {/* Loading */}
@@ -135,17 +189,19 @@ const Products = () => {
         <div className="py-20 text-center">
           <h2 className="text-2xl font-bold text-error">{error}</h2>
         </div>
-      ) : products.length === 0 ? (
+      ) : filteredProducts.length === 0 ? (
         /* Empty results */
         <div className="text-center py-20">
           <h2 className="text-3xl font-bold">No products found</h2>
 
-          <p className="text-base-content/60 mt-3">Try another search term.</p>
+          <p className="text-base-content/60 mt-3">
+            Try another search term or category.
+          </p>
         </div>
       ) : (
         /* Product grid */
         <div className="grid grid-cols-1 gap-4 min-[390px]:grid-cols-2 sm:gap-6 lg:grid-cols-3">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <Product key={product._id} product={product} />
           ))}
         </div>

@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router'
 
@@ -43,6 +43,35 @@ const renderProducts = (url = '/products') => {
     </MemoryRouter>
   )
 }
+
+
+const categoryProducts = [
+  {
+    _id: 'cuban-low',
+    title: 'Silver Stride Shirt',
+    category: 'Cuban',
+  },
+  {
+    _id: 'formal-low',
+    title: 'Formal White Shirt',
+    category: 'Formal',
+  },
+  {
+    _id: 'cuban-high',
+    title: 'Desert Sand Shirt',
+    category: 'Cuban',
+  },
+  {
+    _id: 'full-sleeve',
+    title: 'Stone Gray Shirt',
+    category: ' Full Sleeve ',
+  },
+  {
+    _id: 'uncategorized',
+    title: 'Uncategorized Shirt',
+    category: '',
+  },
+]
 
 
 // TC-SEARCH-004
@@ -138,7 +167,9 @@ test('changes the product sorting option correctly', async () => {
 
   await screen.findByText('Premium Shirt')
 
-  const sortSelect = screen.getByRole('combobox')
+  const sortSelect = screen.getByRole('combobox', {
+    name: 'Sort Products',
+  })
 
   await userEvent.selectOptions(
     sortSelect,
@@ -176,7 +207,7 @@ test('shows an empty result message when no products are found', async () => {
   ).toBeInTheDocument()
 
   expect(
-    screen.getByText('Try another search term.')
+    screen.getByText('Try another search term or category.')
   ).toBeInTheDocument()
 
   expect(
@@ -216,7 +247,9 @@ test('keeps the search query when the sorting option is changed', async () => {
 
   await screen.findByText('Premium Shirt')
 
-  const sortSelect = screen.getByRole('combobox')
+  const sortSelect = screen.getByRole('combobox', {
+    name: 'Sort Products',
+  })
 
   await userEvent.selectOptions(
     sortSelect,
@@ -261,4 +294,99 @@ test('refetches current product stock after checkout invalidates inventory', asy
 
   expect(await screen.findByText('stock 1')).toBeInTheDocument()
   expect(mockAxios.get).toHaveBeenCalledTimes(2)
+})
+
+
+// TC-SEARCH-015
+test('builds unique category options from backend product data', async () => {
+  mockAxios.get.mockResolvedValueOnce({ data: categoryProducts })
+
+  renderProducts()
+
+  const categoryFilter = await screen.findByRole('combobox', {
+    name: 'Filter by Category',
+  })
+  const options = within(categoryFilter).getAllByRole('option')
+
+  expect(options.map((option) => option.textContent)).toEqual([
+    'All Categories',
+    'Cuban',
+    'Formal',
+    'Full Sleeve',
+  ])
+
+  expect(mockAxios.get).toHaveBeenCalledWith('/products', {
+    signal: expect.any(AbortSignal),
+    params: {
+      search: '',
+      sort: 'newest',
+      view: 'card',
+    },
+  })
+})
+
+
+// TC-SEARCH-016
+test('filters the server-sorted products by category without another request', async () => {
+  const user = userEvent.setup()
+  mockAxios.get.mockResolvedValueOnce({ data: categoryProducts })
+
+  renderProducts('/products?sort=price-asc')
+
+  const categoryFilter = await screen.findByRole('combobox', {
+    name: 'Filter by Category',
+  })
+
+  await user.selectOptions(categoryFilter, 'Cuban')
+
+  const visibleProducts = screen.getAllByTestId('product-card')
+
+  expect(visibleProducts.map((product) => product.firstChild.textContent)).toEqual([
+    'Silver Stride Shirt',
+    'Desert Sand Shirt',
+  ])
+  expect(screen.getByText('2 products found')).toBeInTheDocument()
+  expect(screen.queryByText('Formal White Shirt')).not.toBeInTheDocument()
+  expect(mockAxios.get).toHaveBeenCalledTimes(1)
+  expect(mockAxios.get).toHaveBeenCalledWith('/products', {
+    signal: expect.any(AbortSignal),
+    params: {
+      search: '',
+      sort: 'price-asc',
+      view: 'card',
+    },
+  })
+})
+
+
+// TC-SEARCH-017
+test('keeps the selected category when the sort changes', async () => {
+  const user = userEvent.setup()
+  mockAxios.get.mockResolvedValue({ data: categoryProducts })
+
+  renderProducts('/products?category=Cuban')
+
+  const categoryFilter = await screen.findByRole('combobox', {
+    name: 'Filter by Category',
+  })
+  const sortSelect = screen.getByRole('combobox', {
+    name: 'Sort Products',
+  })
+
+  expect(categoryFilter).toHaveValue('Cuban')
+
+  await user.selectOptions(sortSelect, 'price-desc')
+
+  await waitFor(() => {
+    expect(mockAxios.get).toHaveBeenLastCalledWith('/products', {
+      signal: expect.any(AbortSignal),
+      params: {
+        search: '',
+        sort: 'price-desc',
+        view: 'card',
+      },
+    })
+  })
+
+  expect(categoryFilter).toHaveValue('Cuban')
 })
