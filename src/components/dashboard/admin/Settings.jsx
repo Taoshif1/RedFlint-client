@@ -1,226 +1,335 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useSettings from "../../../hooks/useSettings";
+import {
+  buildStoreSettingsPayload,
+  toEditableStoreSettings,
+} from "../../../utils/storeSettings";
 
 const Settings = () => {
   const axiosSecure = useAxiosSecure();
-
   const { settings, loading, refetch } = useSettings();
-
-  const [formData, setFormData] = useState({
-    storeName: "",
-    supportEmail: "",
-    supportPhone: "",
-    whatsappNumber: "",
-    messengerLink: "",
-    currency: "BDT",
-    shippingFee: 0,
-    freeShipping: 0,
-    maintenanceMode: false,
-  });
+  const [formData, setFormData] = useState(() => toEditableStoreSettings());
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (settings) {
-      setFormData({
-        storeName: settings.storeName || "",
-        supportEmail: settings.supportEmail || "",
-        supportPhone: settings.supportPhone || "",
-        whatsappNumber: settings.whatsappNumber || "",
-        messengerLink: settings.messengerLink || "",
-        currency: settings.currency || "BDT",
-        shippingFee: settings.shippingFee || 0,
-        freeShipping: settings.freeShipping || 0,
-        maintenanceMode: settings.maintenanceMode || false,
-      });
-    }
+    if (!settings) return;
+
+    setFormData(toEditableStoreSettings(settings));
   }, [settings]);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
 
-    setFormData((prev) => ({
-      ...prev,
+    setFormData((current) => ({
+      ...current,
       [name]: type === "checkbox" ? checked : value,
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handlePaymentChange = (method, field, value) => {
+    setFormData((current) => ({
+      ...current,
+      paymentMethods: {
+        ...current.paymentMethods,
+        [method]: {
+          ...current.paymentMethods[method],
+          [field]: value,
+        },
+      },
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setSaving(true);
 
     try {
-      await axiosSecure.patch("/settings", {
-        ...formData,
-        shippingFee: Number(formData.shippingFee),
-        freeShipping: Number(formData.freeShipping),
-      });
+      await axiosSecure.patch(
+        "/settings",
+        buildStoreSettingsPayload(formData),
+      );
 
       toast.success("Settings updated successfully.");
-
-      refetch();
+      await refetch();
     } catch (error) {
       console.error(error);
-
-      toast.error("Failed to update settings.");
+      toast.error(
+        error.response?.data?.message || "Failed to update settings.",
+      );
+    } finally {
+      setSaving(false);
     }
   };
 
   if (loading) {
     return (
       <div className="flex justify-center py-20">
-        <span className="loading loading-spinner loading-lg"></span>
+        <span className="loading loading-spinner loading-lg" />
       </div>
     );
   }
 
   return (
-    <section className="max-w-5xl mx-auto">
-      <div className="card bg-base-200 border border-base-300 shadow-xl">
-        <div className="card-body">
-          <h2 className="text-3xl font-bold mb-8">
-            Store Settings
-          </h2>
+    <section className="mx-auto max-w-5xl">
+      <div className="card border border-base-300 bg-base-200 shadow-xl">
+        <div className="card-body p-4 sm:p-8">
+          <div>
+            <h2 className="text-2xl font-bold sm:text-3xl">Store Settings</h2>
+            <p className="mt-2 text-sm text-base-content/60">
+              These values control the live checkout and customer support links.
+            </p>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-10">
-            {/* Store Information */}
-            <div>
-              <h3 className="text-xl font-semibold mb-5">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-10">
+            <fieldset>
+              <legend className="mb-5 text-xl font-semibold">
                 Store Information
-              </h3>
+              </legend>
 
-              <div className="grid md:grid-cols-2 gap-5">
-                <input
-                  name="storeName"
-                  value={formData.storeName}
-                  onChange={handleChange}
-                  className="input input-bordered"
-                  placeholder="Store Name"
-                  required
-                />
+              <div className="grid gap-5 md:grid-cols-2">
+                <label className="form-control">
+                  <span className="label-text mb-2">Store name</span>
+                  <input
+                    name="storeName"
+                    value={formData.storeName}
+                    onChange={handleChange}
+                    className="input input-bordered w-full"
+                    maxLength={100}
+                    required
+                  />
+                </label>
 
-                <input
-                  type="email"
-                  name="supportEmail"
-                  value={formData.supportEmail}
-                  onChange={handleChange}
-                  className="input input-bordered"
-                  placeholder="Support Email"
-                  required
-                />
+                <label className="form-control">
+                  <span className="label-text mb-2">Support email</span>
+                  <input
+                    type="email"
+                    name="supportEmail"
+                    value={formData.supportEmail}
+                    onChange={handleChange}
+                    className="input input-bordered w-full"
+                    maxLength={254}
+                    required
+                  />
+                </label>
 
-                <input
-                  type="tel"
-                  name="supportPhone"
-                  value={formData.supportPhone}
-                  onChange={handleChange}
-                  className="input input-bordered"
-                  placeholder="Support Phone"
-                />
+                <label className="form-control">
+                  <span className="label-text mb-2">Support phone</span>
+                  <input
+                    type="tel"
+                    name="supportPhone"
+                    value={formData.supportPhone}
+                    onChange={handleChange}
+                    className="input input-bordered w-full"
+                    maxLength={30}
+                  />
+                </label>
 
-                <input
-                  type="tel"
-                  name="whatsappNumber"
-                  value={formData.whatsappNumber}
-                  onChange={handleChange}
-                  className="input input-bordered"
-                  placeholder="WhatsApp Number"
-                />
+                <label className="form-control">
+                  <span className="label-text mb-2">WhatsApp number</span>
+                  <input
+                    type="tel"
+                    name="whatsappNumber"
+                    value={formData.whatsappNumber}
+                    onChange={handleChange}
+                    className="input input-bordered w-full"
+                    maxLength={30}
+                  />
+                </label>
 
-                <input
-                  type="url"
-                  name="messengerLink"
-                  value={formData.messengerLink}
-                  onChange={handleChange}
-                  className="input input-bordered"
-                  placeholder="Messenger Link"
-                />
-
-                <select
-                  name="currency"
-                  value={formData.currency}
-                  onChange={handleChange}
-                  className="select select-bordered"
-                >
-                  <option value="BDT">BDT</option>
-                  <option value="USD">USD</option>
-                </select>
+                <label className="form-control md:col-span-2">
+                  <span className="label-text mb-2">Messenger link</span>
+                  <input
+                    type="url"
+                    name="messengerLink"
+                    value={formData.messengerLink}
+                    onChange={handleChange}
+                    className="input input-bordered w-full"
+                    placeholder="https://m.me/redflintbd"
+                    maxLength={300}
+                  />
+                </label>
               </div>
+            </fieldset>
 
-              <p className="text-sm text-base-content/60 mt-3">
-                Messenger link example: https://m.me/redflintbd
+            <fieldset>
+              <legend className="mb-2 text-xl font-semibold">
+                Payment Methods
+              </legend>
+              <p className="mb-5 text-sm text-base-content/60">
+                Disabled methods disappear from checkout immediately after saving.
               </p>
-            </div>
 
-            {/* Shipping */}
-            <div>
-              <h3 className="text-xl font-semibold mb-5">
-                Shipping
-              </h3>
+              <div className="space-y-5">
+                {Object.entries(formData.paymentMethods).map(
+                  ([key, method]) => (
+                    <div
+                      key={key}
+                      className="rounded-2xl border border-base-300 bg-base-100 p-4 sm:p-5"
+                    >
+                      <div className="flex items-center justify-between gap-4">
+                        <div>
+                          <h3 className="font-bold">{method.label}</h3>
+                          <p className="text-xs text-base-content/60">
+                            {method.requiresTransactionId
+                              ? "Transaction ID required"
+                              : "No transaction ID required"}
+                          </p>
+                        </div>
 
-              <div className="grid md:grid-cols-2 gap-5">
-                <input
-                  type="number"
-                  name="shippingFee"
-                  value={formData.shippingFee}
-                  onChange={handleChange}
-                  className="input input-bordered"
-                  placeholder="Shipping Fee"
-                />
+                        <label className="label cursor-pointer gap-3">
+                          <span className="label-text">Enabled</span>
+                          <input
+                            type="checkbox"
+                            className="toggle toggle-primary"
+                            aria-label={`${method.label} enabled`}
+                            checked={method.enabled}
+                            onChange={(event) =>
+                              handlePaymentChange(
+                                key,
+                                "enabled",
+                                event.target.checked,
+                              )
+                            }
+                          />
+                        </label>
+                      </div>
 
-                <input
-                  type="number"
-                  name="freeShipping"
-                  value={formData.freeShipping}
-                  onChange={handleChange}
-                  className="input input-bordered"
-                  placeholder="Free Shipping Above"
-                />
+                      {key !== "cod" && (
+                        <div className="mt-4 grid gap-4 md:grid-cols-2">
+                          <label className="form-control">
+                            <span className="label-text mb-2">
+                              Account number
+                            </span>
+                            <input
+                              type="tel"
+                              className="input input-bordered w-full"
+                              aria-label={`${method.label} account number`}
+                              value={method.accountNumber}
+                              maxLength={30}
+                              required={method.enabled}
+                              onChange={(event) =>
+                                handlePaymentChange(
+                                  key,
+                                  "accountNumber",
+                                  event.target.value,
+                                )
+                              }
+                            />
+                          </label>
+
+                          <label className="form-control">
+                            <span className="label-text mb-2">Account type</span>
+                            <input
+                              className="input input-bordered w-full"
+                              aria-label={`${method.label} account type`}
+                              value={method.accountType}
+                              maxLength={30}
+                              placeholder="Personal or Merchant"
+                              onChange={(event) =>
+                                handlePaymentChange(
+                                  key,
+                                  "accountType",
+                                  event.target.value,
+                                )
+                              }
+                            />
+                          </label>
+                        </div>
+                      )}
+
+                      <label className="form-control mt-4">
+                        <span className="label-text mb-2">
+                          Checkout instructions
+                        </span>
+                        <textarea
+                          className="textarea textarea-bordered w-full"
+                          aria-label={`${method.label} checkout instructions`}
+                          value={method.instructions}
+                          maxLength={240}
+                          rows={2}
+                          required
+                          onChange={(event) =>
+                            handlePaymentChange(
+                              key,
+                              "instructions",
+                              event.target.value,
+                            )
+                          }
+                        />
+                      </label>
+                    </div>
+                  ),
+                )}
               </div>
-            </div>
+            </fieldset>
 
-            {/* Maintenance */}
-            <div>
-              <h3 className="text-xl font-semibold mb-5">
-                System
-              </h3>
+            <fieldset>
+              <legend className="mb-5 text-xl font-semibold">Shipping</legend>
 
-              <label className="label cursor-pointer justify-start gap-4">
-                <span className="font-medium">
-                  Maintenance Mode
-                </span>
+              <div className="grid gap-5 md:grid-cols-2">
+                <label className="form-control">
+                  <span className="label-text mb-2">Shipping fee (BDT)</span>
+                  <input
+                    type="number"
+                    name="shippingFee"
+                    value={formData.shippingFee}
+                    onChange={handleChange}
+                    className="input input-bordered w-full"
+                    min="0"
+                    max="1000000"
+                    required
+                  />
+                </label>
 
+                <label className="form-control">
+                  <span className="label-text mb-2">
+                    Free shipping from (BDT)
+                  </span>
+                  <input
+                    type="number"
+                    name="freeShipping"
+                    value={formData.freeShipping}
+                    onChange={handleChange}
+                    className="input input-bordered w-full"
+                    min="0"
+                    max="1000000"
+                    required
+                  />
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend className="mb-5 text-xl font-semibold">System</legend>
+
+              <div className="alert alert-warning items-start">
                 <input
                   type="checkbox"
                   name="maintenanceMode"
                   checked={formData.maintenanceMode}
                   onChange={handleChange}
-                  className="toggle toggle-primary"
+                  className="toggle toggle-primary mt-1"
+                  aria-label="Maintenance mode"
                 />
-              </label>
-
-              <div className="alert alert-warning py-3 px-4 mt-3">
                 <div>
-                  <h3 className="font-bold">
-                    Maintenance Mode
-                  </h3>
-
+                  <h3 className="font-bold">Maintenance Mode</h3>
                   <p className="text-sm">
-                    When enabled, customers should not be able
-                    to place new orders while you perform store
-                    maintenance.
+                    Blocks new orders while store maintenance is in progress.
                   </p>
                 </div>
               </div>
-            </div>
+            </fieldset>
 
             <div className="flex justify-end">
               <button
                 type="submit"
-                disabled={loading}
-                className="btn btn-primary min-w-32"
+                disabled={saving}
+                className="btn btn-primary min-w-40"
               >
-                {loading ? (
+                {saving ? (
                   <>
                     <span className="loading loading-spinner loading-sm" />
                     Saving...

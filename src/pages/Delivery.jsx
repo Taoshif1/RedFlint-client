@@ -1,5 +1,3 @@
-import React from "react";
-
 const Delivery = () => {
   return (
     <section className="min-h-screen bg-base-100 text-base-content">

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router";
 
 import useAxiosSecure from "../hooks/useAxiosSecure";
+import useInventoryVersion from "../hooks/useInventoryVersion";
 import Product from "../components/shared/Product";
 
 const EMPTY_PRODUCTS = [];
@@ -16,6 +17,7 @@ const Products = () => {
   const category = searchParams.get("category") || "";
 
   const axiosSecure = useAxiosSecure();
+  const inventoryVersion = useInventoryVersion();
 
   const requestKey = `${search}\u0000${sort}`;
 
@@ -76,7 +78,7 @@ const Products = () => {
       });
 
     return () => controller.abort();
-  }, [axiosSecure, requestKey, search, sort]);
+  }, [axiosSecure, inventoryVersion, requestKey, search, sort]);
 
   const handleSortChange = (event) => {
     const selectedSort = event.target.value;

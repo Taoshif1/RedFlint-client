@@ -1,25 +1,4 @@
 const OurMotto = () => {
-  const mottos = [
-    {
-      number: "01",
-      title: "Quality Without Compromise",
-      description:
-        "We choose clothing that feels good, looks sharp, and is made to remain part of your wardrobe beyond a single season.",
-    },
-    {
-      number: "02",
-      title: "Style With Confidence",
-      description:
-        "We believe the right clothing should help you express yourself naturally and confidently, without trying too hard.",
-    },
-    {
-      number: "03",
-      title: "Customers Come First",
-      description:
-        "From browsing to delivery and after-sales support, we aim to make every step simple, honest, and dependable.",
-    },
-  ];
-
   return (
     <main className="min-h-screen bg-base-100 text-base-content">
       {/* Hero Section */}

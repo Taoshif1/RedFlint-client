@@ -11,40 +11,11 @@ import useAuth from "../hooks/useAuth";
 import useCart from "../hooks/useCart";
 
 import { getGuestCart } from "../utils/guestCart";
-
-// =====================================
-// Payment Configuration
-// =====================================
-
-// IMPORTANT:
-// Replace Nagad and Rocket numbers
-// with the client's actual numbers.
-
-const PAYMENT_METHODS = {
-  bkash: {
-    label: "bKash",
-    number: "01975777949",
-    description:
-      "Pay the full order amount using bKash and enter the Transaction ID below.",
-    requiresTransactionId: true,
-  },
-
-  nagad: {
-    label: "Nagad",
-    number: "01611110711",
-    description:
-      "Pay the full order amount using Nagad and enter the Transaction ID below.",
-    requiresTransactionId: true,
-  },
-
-  cod: {
-    label: "Cash on Delivery",
-    number: null,
-    description:
-      "Pay the full order amount in cash when your order is delivered.",
-    requiresTransactionId: false,
-  },
-};
+import {
+  DEFAULT_PAYMENT_METHODS,
+  getEnabledPaymentMethods,
+} from "../utils/paymentMethods";
+import { invalidateInventory } from "../utils/inventoryStore";
 
 const Checkout = () => {
   const axiosSecure = useAxiosSecure();
@@ -64,6 +35,7 @@ const Checkout = () => {
   const [placingOrder, setPlacingOrder] = useState(false);
 
   const [placedOrderId, setPlacedOrderId] = useState("");
+  const [placedPaymentMethod, setPlacedPaymentMethod] = useState("");
 
   // =====================================
   // Customer Information
@@ -97,7 +69,9 @@ const Checkout = () => {
     shippingFee: 120,
 
     freeShipping: 3000,
+    paymentMethods: DEFAULT_PAYMENT_METHODS,
   });
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
 
   // =====================================
   // Load Settings
@@ -107,12 +81,27 @@ const Checkout = () => {
     axiosSecure
       .get("/settings")
       .then((res) => {
-        setSettings(res.data);
+        setSettings((current) => ({ ...current, ...res.data }));
       })
       .catch((error) => {
         console.error("Settings error:", error);
+      })
+      .finally(() => {
+        setSettingsLoaded(true);
       });
   }, [axiosSecure]);
+
+  const paymentMethods = useMemo(
+    () => (settingsLoaded ? getEnabledPaymentMethods(settings) : {}),
+    [settings, settingsLoaded],
+  );
+
+  useEffect(() => {
+    if (!paymentMethods[paymentMethod]) {
+      setPaymentMethod(Object.keys(paymentMethods)[0] || "");
+      setTransactionId("");
+    }
+  }, [paymentMethod, paymentMethods]);
 
   // =====================================
   // Load Checkout Data
@@ -241,13 +230,17 @@ const Checkout = () => {
 
   const total = subtotal + shipping;
 
-  const selectedPayment = PAYMENT_METHODS[paymentMethod];
+  const selectedPayment = paymentMethods[paymentMethod];
 
   // =====================================
   // Place Order
   // =====================================
 
   const handlePlaceOrder = async () => {
+    if (!selectedPayment) {
+      return toast.error("No payment method is currently available");
+    }
+
     if (!name.trim()) {
       return toast.error("Please enter your name");
     }
@@ -274,12 +267,9 @@ const Checkout = () => {
       return toast.error("Enter a valid email address");
     }
 
-    if (
-  selectedPayment.requiresTransactionId &&
-  !transactionId.trim()
-) {
-  return toast.error("Please enter the Transaction ID");
-}
+    if (selectedPayment.requiresTransactionId && !transactionId.trim()) {
+      return toast.error("Please enter the Transaction ID");
+    }
 
     if (!items.length) {
       return toast.error("No products selected");
@@ -299,10 +289,10 @@ const Checkout = () => {
 
         postalCode: postalCode.trim(),
 
-        transactionId: selectedPayment.requiresTransactionId
-  ? transactionId.trim()
-  : "",
-paymentMethod,
+        paymentMethod,
+        ...(selectedPayment.requiresTransactionId
+          ? { transactionId: transactionId.trim() }
+          : {}),
       };
 
       let res;
@@ -328,6 +318,7 @@ paymentMethod,
         }
 
         res = await axiosSecure.post("/orders", orderData);
+        invalidateInventory();
 
         if (!buyNowItem) {
           await refetchCart();
@@ -352,6 +343,7 @@ paymentMethod,
         };
 
         res = await axiosSecure.post("/orders/guest", orderData);
+        invalidateInventory();
 
         // Normal guest-cart checkout
         // should clear localStorage.
@@ -366,6 +358,7 @@ paymentMethod,
         res.data?.orderNumber || res.data?.insertedId?.toString() || "";
 
       setPlacedOrderId(orderReference);
+      setPlacedPaymentMethod(paymentMethod);
 
       setItems([]);
 
@@ -383,7 +376,7 @@ paymentMethod,
   // Loading
   // =====================================
 
-  if (authLoading || pageLoading) {
+  if (authLoading || pageLoading || !settingsLoaded) {
     return (
       <div className="min-h-[60vh] flex justify-center items-center">
         <span className="loading loading-spinner loading-lg"></span>
@@ -417,8 +410,9 @@ paymentMethod,
             </div>
 
             <p className="text-sm text-base-content/60">
-              Payment verification is pending. RedFlint can confirm the order
-              after checking your transaction.
+              {placedPaymentMethod === "cod"
+                ? "Payment will be collected when your order is delivered."
+                : "Payment verification is pending. RedFlint can confirm the order after checking your transaction."}
             </p>
 
             <div className="flex flex-wrap justify-center gap-3 mt-5">
@@ -576,7 +570,7 @@ paymentMethod,
               <h2 className="card-title">Payment Method</h2>
 
               <div className="mt-4 grid grid-cols-1 gap-3 min-[420px]:grid-cols-3">
-                {Object.entries(PAYMENT_METHODS).map(([key, method]) => (
+                {Object.entries(paymentMethods).map(([key, method]) => (
                   <button
                     type="button"
                     key={key}
@@ -585,6 +579,7 @@ paymentMethod,
 
                       setTransactionId("");
                     }}
+                    aria-pressed={paymentMethod === key}
                     className={`btn min-h-12 w-full ${
                       paymentMethod === key
                         ? "btn-primary text-white"
@@ -600,23 +595,28 @@ paymentMethod,
                 <p className="text-sm text-base-content/60">Pay with</p>
 
                 <h3 className="text-xl font-bold mt-1">
-                  {selectedPayment.label}
+                  {selectedPayment?.label || "No payment method available"}
                 </h3>
 
-                {selectedPayment.number && (
-  <>
-    <p className="mt-4 text-sm">
-      Payment Number
-    </p>
+                {selectedPayment?.accountNumber && (
+                  <>
+                    <p className="mt-4 text-sm">Payment Number</p>
 
-    <p className="mt-1 break-all text-xl font-black tracking-wide text-primary sm:text-2xl">
-      {selectedPayment.number}
-    </p>
-  </>
-)}
+                    <p className="mt-1 break-all text-xl font-black tracking-wide text-primary sm:text-2xl">
+                      {selectedPayment.accountNumber}
+                    </p>
+
+                    {selectedPayment.accountType && (
+                      <p className="mt-1 text-xs text-base-content/60">
+                        {selectedPayment.accountType} account
+                      </p>
+                    )}
+                  </>
+                )}
 
                 <p className="text-sm text-base-content/70 mt-4">
-                  {selectedPayment.description}
+                  {selectedPayment?.instructions ||
+                    "Please contact RedFlint support before placing an order."}
                 </p>
 
                 <div className="mt-4 p-3 rounded-lg bg-base-100">
@@ -628,33 +628,34 @@ paymentMethod,
                 </div>
               </div>
 
-              {selectedPayment.requiresTransactionId && (
-  <label className="form-control mt-5">
-    <span className="label-text mb-2">
-      {selectedPayment.label} Transaction ID *
-    </span>
+              {selectedPayment?.requiresTransactionId && (
+                <label className="form-control mt-5">
+                  <span className="label-text mb-2">
+                    {selectedPayment.label} Transaction ID *
+                  </span>
 
-    <input
-      className="input input-bordered w-full"
-      placeholder="Enter Transaction ID"
-      value={transactionId}
-      onChange={(e) =>
-        setTransactionId(e.target.value)
-      }
-    />
-  </label>
-)}
+                  <input
+                    className="input input-bordered w-full"
+                    placeholder="Enter Transaction ID"
+                    value={transactionId}
+                    maxLength={64}
+                    autoComplete="off"
+                    onChange={(e) => setTransactionId(e.target.value)}
+                  />
+                </label>
+              )}
 
               <div className="alert mt-4 bg-base-200 border-none">
                 <ol className="list-decimal list-inside text-sm space-y-1">
                   <li>Select your payment method.</li>
-
-                  <li>Pay the full amount shown above.</li>
-
-                  <li>Copy the transaction ID.</li>
-
-                  <li>Enter the transaction ID above.</li>
-
+                  {selectedPayment?.requiresTransactionId ? (
+                    <>
+                      <li>Pay the full amount shown above.</li>
+                      <li>Copy and enter the transaction ID.</li>
+                    </>
+                  ) : (
+                    <li>Keep the cash ready for delivery.</li>
+                  )}
                   <li>Submit your order.</li>
                 </ol>
               </div>
@@ -737,7 +738,7 @@ paymentMethod,
 
             <button
               onClick={handlePlaceOrder}
-              disabled={placingOrder || !items.length}
+              disabled={placingOrder || !items.length || !selectedPayment}
               className="btn btn-primary w-full mt-5 text-white"
             >
               {placingOrder ? (
@@ -749,6 +750,18 @@ paymentMethod,
                 `Place Order • ৳${total.toLocaleString("en-BD")}`
               )}
             </button>
+
+            <p className="text-xs text-center text-base-content/60">
+              By placing your order, you agree to our{" "}
+              <Link className="link link-primary" to="/terms">
+                Terms &amp; Conditions
+              </Link>{" "}
+              and acknowledge our{" "}
+              <Link className="link link-primary" to="/privacy">
+                Privacy Policy
+              </Link>
+              .
+            </p>
 
             {!user && (
               <p className="text-xs text-center text-base-content/50">
