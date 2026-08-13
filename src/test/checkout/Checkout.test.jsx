@@ -99,6 +99,12 @@ const testPaymentMethods = {
     accountType: 'Merchant',
     instructions: 'Use the test merchant account.',
   },
+  nagad: {
+    enabled: true,
+    accountNumber: 'TEST-NAGAD-MERCHANT',
+    accountType: 'Merchant',
+    instructions: 'Use the test Nagad merchant account.',
+  },
 }
 
 
@@ -832,11 +838,108 @@ test('rejects invalid optional email address', async () => {
 
 // TC-CHECKOUT-014
 
+test('shows configured bKash and Nagad details while COD needs no transaction ID', async () => {
+  renderCheckout()
+
+  await screen.findByText(
+    'Premium Shirt'
+  )
+
+  expect(
+    screen.getByRole('button', {
+      name: 'bKash',
+    })
+  ).toBeInTheDocument()
+
+  expect(
+    screen.getByText(
+      'TEST-BKASH-MERCHANT'
+    )
+  ).toBeInTheDocument()
+
+  expect(
+    screen.getByPlaceholderText(
+      'Enter Transaction ID'
+    )
+  ).toBeInTheDocument()
+
+  await userEvent.click(
+    screen.getByRole('button', {
+      name: 'Nagad',
+    })
+  )
+
+  expect(
+    screen.getByText(
+      'TEST-NAGAD-MERCHANT'
+    )
+  ).toBeInTheDocument()
+
+  expect(
+    screen.getByText(
+      'Nagad Transaction ID *'
+    )
+  ).toBeInTheDocument()
+
+  await userEvent.click(
+    screen.getByRole('button', {
+      name: 'Cash on Delivery',
+    })
+  )
+
+  expect(
+    screen.queryByPlaceholderText(
+      'Enter Transaction ID'
+    )
+  ).not.toBeInTheDocument()
+})
+
+
+// TC-CHECKOUT-014A
+
 test('requires transaction ID for bKash payment', async () => {
   renderCheckout()
 
   await screen.findByText(
     'Premium Shirt'
+  )
+
+  await fillGuestDetails()
+
+  await userEvent.click(
+    screen.getByRole(
+      'button',
+      {
+        name: /Place Order/,
+      }
+    )
+  )
+
+  expect(
+    toast.error
+  ).toHaveBeenCalledWith(
+    'Please enter the Transaction ID'
+  )
+
+  expect(
+    mockAxios.post
+  ).not.toHaveBeenCalled()
+})
+
+
+// TC-CHECKOUT-014B
+
+test('requires transaction ID for Nagad payment', async () => {
+  renderCheckout()
+
+  await screen.findByText(
+    'Premium Shirt'
+  )
+
+  await userEvent.click(
+    screen.getByRole('button', {
+      name: 'Nagad',
+    })
   )
 
   await fillGuestDetails()
