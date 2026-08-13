@@ -1,4 +1,3 @@
-import React from "react";
 import DashboardStats from "./DashboardStats";
 import RecentOrders from "./RecentOrders";
 

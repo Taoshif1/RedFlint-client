@@ -180,7 +180,7 @@ test('increases product quantity when plus button is clicked', async () => {
     screen.getByRole(
       'button',
       {
-        name: '+',
+        name: 'Increase Premium Shirt quantity',
       }
     )
   )
@@ -204,7 +204,7 @@ test('decreases product quantity when minus button is clicked', async () => {
     screen.getByRole(
       'button',
       {
-        name: '-',
+        name: 'Decrease Premium Shirt quantity',
       }
     )
   )
@@ -322,7 +322,7 @@ test('does not decrease product quantity below one', async () => {
     screen.getByRole(
       'button',
       {
-        name: '-',
+        name: 'Decrease Premium Shirt quantity',
       }
     )
   )
@@ -370,7 +370,7 @@ test('shows error message when updating quantity fails', async () => {
     screen.getByRole(
       'button',
       {
-        name: '+',
+        name: 'Increase Premium Shirt quantity',
       }
     )
   )

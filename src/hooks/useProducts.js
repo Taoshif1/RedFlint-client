@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useAxiosSecure from "./useAxiosSecure";
 
 const useProducts = () => {
@@ -7,7 +7,7 @@ const useProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       const { data } = await axiosSecure.get("/products");
       setProducts(data);
@@ -16,11 +16,11 @@ const useProducts = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [axiosSecure]);
 
   useEffect(() => {
     fetchProducts();
-  }, [axiosSecure]);
+  }, [fetchProducts]);
 
   return {
     products,

@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 const QuantitySelector = ({ quantity, setQuantity }) => {
   return (
     <div className="space-y-3">

@@ -1,5 +1,3 @@
-import React from "react";
-
 const AboutSection = () => {
   return (
     <div className="min-h-[70vh] bg-base-200 flex items-center justify-center p-4">

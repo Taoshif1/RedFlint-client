@@ -10,5 +10,8 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: './src/test/setup.js',
+    // UI tests use global DOM and module mocks. Running every file at once made
+    // slower CI machines time out and cascade state into later assertions.
+    fileParallelism: false,
   },
 })
