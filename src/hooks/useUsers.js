@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useAxiosSecure from "./useAxiosSecure";
 
 const useUsers = () => {
@@ -7,7 +7,7 @@ const useUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const { data } = await axiosSecure.get("/admin/users");
       setUsers(data);
@@ -16,11 +16,11 @@ const useUsers = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [axiosSecure]);
 
   useEffect(() => {
     fetchUsers();
-  }, [axiosSecure]);
+  }, [fetchUsers]);
 
   return {
     users,

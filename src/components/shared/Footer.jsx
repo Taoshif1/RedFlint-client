@@ -53,6 +53,20 @@ const Footer = () => {
           >
             Delivery
           </Link>
+
+          <Link
+            to="/privacy"
+            className="link link-hover text-primary transition-all duration-200 hover:scale-105 hover:text-white active:text-white"
+          >
+            Privacy Policy
+          </Link>
+
+          <Link
+            to="/terms"
+            className="link link-hover text-primary transition-all duration-200 hover:scale-105 hover:text-white active:text-white"
+          >
+            Terms &amp; Conditions
+          </Link>
         </nav>
 
         <nav className="col-span-2 flex w-full flex-col items-center gap-2 text-center md:col-span-1">

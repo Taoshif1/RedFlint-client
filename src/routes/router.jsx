@@ -34,6 +34,14 @@ export const router = createBrowserRouter([
       { path: "contact", lazy: lazyRoute(() => import("../pages/ContactUs")) },
       { path: "delivery", lazy: lazyRoute(() => import("../pages/Delivery")) },
       {
+        path: "privacy",
+        lazy: lazyRoute(() => import("../pages/PrivacyPolicy")),
+      },
+      {
+        path: "terms",
+        lazy: lazyRoute(() => import("../pages/TermsConditions")),
+      },
+      {
         path: "products/:id",
         lazy: lazyRoute(() => import("../pages/ProductDetails")),
       },

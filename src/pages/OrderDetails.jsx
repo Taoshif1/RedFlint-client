@@ -11,6 +11,7 @@ const badgeColor = (status) => {
     case "Shipped":
       return "badge-secondary";
     case "Pending":
+    case "Due":
       return "badge-warning";
     case "Cancelled":
       return "badge-error";

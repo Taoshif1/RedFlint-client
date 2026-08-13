@@ -54,6 +54,7 @@ const getPaymentBadge = (status) => {
     case "verified":
       return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
     case "pending":
+    case "due":
       return "bg-amber-500/10 text-amber-400 border-amber-500/20";
     default:
       return "bg-rose-500/10 text-rose-400 border-rose-500/20";
@@ -237,6 +238,7 @@ const AdminOrders = () => {
                           value={order.payment?.status || "Pending"}
                           onChange={(event) => handlePayment(order._id, event.target.value)}
                         >
+                          <option value="Due">Due</option>
                           <option value="Pending">Pending</option>
                           <option value="Verified">Verified</option>
                         </select>

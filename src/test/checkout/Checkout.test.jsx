@@ -92,6 +92,15 @@ const buyNowItem = {
   image: 'polo.jpg',
 }
 
+const testPaymentMethods = {
+  bkash: {
+    enabled: true,
+    accountNumber: 'TEST-BKASH-MERCHANT',
+    accountType: 'Merchant',
+    instructions: 'Use the test merchant account.',
+  },
+}
+
 
 let mockAxios
 let mockRefetchCart
@@ -123,6 +132,7 @@ beforeEach(() => {
           data: {
             shippingFee: 120,
             freeShipping: 3000,
+            paymentMethods: testPaymentMethods,
           },
         })
       }
@@ -372,6 +382,7 @@ test('loads registered customer cart and saved delivery information', async () =
           data: {
             shippingFee: 120,
             freeShipping: 3000,
+            paymentMethods: testPaymentMethods,
           },
         })
       }
@@ -895,8 +906,6 @@ test('allows Cash on Delivery without transaction ID', async () => {
       '/orders/guest',
       expect.objectContaining({
         paymentMethod: 'cod',
-
-        transactionId: '',
       })
     )
   })
@@ -910,6 +919,16 @@ test('allows Cash on Delivery without transaction ID', async () => {
   expect(
     screen.getByText(
       'RF-COD-001'
+    )
+  ).toBeInTheDocument()
+
+  expect(
+    mockAxios.post.mock.calls[0][1]
+  ).not.toHaveProperty('transactionId')
+
+  expect(
+    screen.getByText(
+      'Payment will be collected when your order is delivered.'
     )
   ).toBeInTheDocument()
 })
@@ -1112,6 +1131,7 @@ test('places registered customer cart order and refreshes cart', async () => {
           data: {
             shippingFee: 120,
             freeShipping: 3000,
+            paymentMethods: testPaymentMethods,
           },
         })
       }
@@ -1266,6 +1286,7 @@ test('places registered customer Buy Now order with selected product only', asyn
           data: {
             shippingFee: 120,
             freeShipping: 3000,
+            paymentMethods: testPaymentMethods,
           },
         })
       }

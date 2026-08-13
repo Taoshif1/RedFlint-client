@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { CartContext } from "./CartContext";
 
@@ -25,7 +25,7 @@ const CartProvider = ({ children }) => {
   // Fetch Cart
   // =====================================
 
-  const fetchCart = async () => {
+  const fetchCart = useCallback(async () => {
     setLoading(true);
 
     try {
@@ -44,13 +44,13 @@ const CartProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.email]);
 
   useEffect(() => {
     if (!authLoading) {
       fetchCart();
     }
-  }, [user, authLoading]);
+  }, [authLoading, fetchCart]);
 
   // =====================================
   // Add Item

@@ -76,7 +76,9 @@ test('loads and displays products using default search and sorting', async () =>
       params: {
         search: '',
         sort: 'newest',
+        view: 'card',
       },
+      signal: expect.any(AbortSignal),
     }
   )
 })
@@ -111,7 +113,9 @@ test('loads products using the search query from the URL', async () => {
       params: {
         search: 'shirt',
         sort: 'newest',
+        view: 'card',
       },
+      signal: expect.any(AbortSignal),
     }
   )
 })
@@ -146,7 +150,9 @@ test('changes the product sorting option correctly', async () => {
         params: {
           search: '',
           sort: 'price-desc',
+          view: 'card',
         },
+        signal: expect.any(AbortSignal),
       }
     )
   })
@@ -222,7 +228,9 @@ test('keeps the search query when the sorting option is changed', async () => {
         params: {
           search: 'shirt',
           sort: 'price-asc',
+          view: 'card',
         },
+        signal: expect.any(AbortSignal),
       }
     )
   })
