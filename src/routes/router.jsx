@@ -151,10 +151,6 @@ export const router = createBrowserRouter([
           () => import("../components/dashboard/admin/AdminReviews"),
         ),
       },
-      {
-        path: "dashboard",
-        Component: CustomerDashboard,
-      },
     ],
   },
 ]);
